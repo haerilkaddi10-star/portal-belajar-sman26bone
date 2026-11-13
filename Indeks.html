@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Portal Belajar SMAN 26 Bone</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+  </style>
+</head>
+<body class="bg-slate-100 text-slate-800 min-h-screen flex flex-col">
+
+  <!-- NAVBAR PORTAL BELAJAR SMAN 26 BONE -->
+  <header class="bg-blue-950 text-white shadow-md sticky top-0 z-50">
+    <div class="max-w-6xl mx-auto px-4 py-3 flex justify-between items-center">
+      <div class="flex items-center space-x-3">
+        <div class="w-11 h-11 rounded-full bg-white border-2 border-amber-400 p-1 flex items-center justify-center shadow shrink-0 overflow-hidden">
+          <img src="https://lh3.googleusercontent.com/d/115w1UQqLJ45JRxf1MvkvzzybvFO9XHLM" alt="Logo SMAN 26 Bone" class="w-full h-full object-contain" />
+        </div>
+        <div>
+          <h1 class="font-bold text-base sm:text-lg leading-tight tracking-wide">Portal Belajar SMAN 26 Bone</h1>
+          <p class="text-[11px] sm:text-xs text-amber-300 font-medium">Kelas Digital Masa Kini — Akses Mudah, Paham Lebih Cepat!</p>
+        </div>
+      </div>
+
+      <div id="userNav" class="hidden flex items-center space-x-3 text-sm">
+        <span id="navUserName" class="hidden sm:inline font-medium text-amber-300"></span>
+        <button onclick="logout()" class="bg-red-600 hover:bg-red-700 px-3 py-1.5 rounded-lg text-xs font-semibold transition">Keluar</button>
+      </div>
+    </div>
+  </header>
+
+  <!-- HALAMAN LOGIN PORTAL BELAJAR SMAN 26 BONE -->
+  <main id="loginSection" class="flex-grow flex items-center justify-center p-4">
+    <div class="bg-white rounded-2xl shadow-lg max-w-md w-full p-8 border-t-4 border-blue-900">
+      <div class="flex flex-col items-center text-center mb-6">
+        <div class="w-20 h-20 rounded-full bg-white border-4 border-amber-400 p-1.5 flex items-center justify-center shadow-md mb-3 overflow-hidden">
+          <img src="https://lh3.googleusercontent.com/d/115w1UQqLJ45JRxf1MvkvzzybvFO9XHLM" alt="Logo SMAN 26 Bone" class="w-full h-full object-contain" />
+        </div>
+        <h2 class="text-2xl font-extrabold text-blue-950">Portal Belajar SMAN 26 Bone</h2>
+        <p class="text-xs font-semibold text-amber-600 mt-1">Kelas Digital Masa Kini — Akses Mudah, Paham Lebih Cepat!</p>
+        <p class="text-slate-400 text-xs mt-3">Masuk menggunakan NISN / Username dan PIN</p>
+      </div>
+      
+      <form onsubmit="handleLogin(event)" class="space-y-4">
+        <div>
+          <label class="block text-xs font-bold uppercase text-slate-600 mb-1">Username / NISN</label>
+          <input type="text" id="loginUser" required placeholder="Contoh: 00812345"
+            class="w-full px-4 py-2.5 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-800 outline-none" />
+        </div>
+        <div>
+          <label class="block text-xs font-bold uppercase text-slate-600 mb-1">PIN / Password</label>
+          <input type="password" id="loginPin" required placeholder="••••••"
+            class="w-full px-4 py-2.5 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-800 outline-none" />
+        </div>
+        <button type="submit" id="btnLogin"
+          class="w-full bg-blue-900 hover:bg-blue-800 text-white font-bold py-2.5 rounded-lg transition shadow">
+          Masuk ke Kelas
+        </button>
+      </form>
+      <p id="loginMsg" class="text-center text-sm text-red-600 mt-4 font-medium"></p>
+    </div>
+  </main>
+
+  <!-- DASHBOARD UTAMA (SISWA & GURU) -->
+  <main id="dashboardSection" class="hidden max-w-6xl w-full mx-auto px-4 py-6 flex-grow space-y-6">
+    <div class="bg-white rounded-xl shadow-sm p-5 border-l-4 border-amber-400 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+      <div>
+        <span id="roleBadge" class="text-xs font-bold uppercase px-2.5 py-0.5 rounded bg-blue-100 text-blue-900"></span>
+        <h2 id="welcomeTitle" class="text-xl font-bold text-blue-950 mt-1"></h2>
+        <p class="text-sm text-slate-500">Pilih mata pelajaran dan selesaikan setiap aktivitas pembelajaran secara berurutan.</p>
+      </div>
+      <div id="siswaProgressBox" class="w-full md:w-64 bg-slate-50 p-3 rounded-lg border">
+        <div class="flex justify-between text-xs font-bold mb-1">
+          <span>Progres Ketuntasan</span>
+          <span id="progressText" class="text-blue-900">0%</span>
+        </div>
+        <div class="w-full bg-slate-200 rounded-full h-2.5">
+          <div id="progressBar" class="bg-emerald-500 h-2.5 rounded-full transition-all duration-500" style="width: 0%"></div>
+        </div>
+      </div>
+    </div>
+
+    <div id="guruTabs" class="hidden flex space-x-2 border-b border-slate-300 pb-2">
+      <button onclick="switchTab('kursus')" id="tabBtnKursus" class="px-4 py-2 rounded-lg font-semibold text-sm bg-blue-900 text-white">Struktur Kelas & Materi</button>
+      <button onclick="switchTab('gradebook')" id="tabBtnGradebook" class="px-4 py-2 rounded-lg font-semibold text-sm bg-white text-slate-700 hover:bg-slate-200">Buku Nilai (Gradebook)</button>
+    </div>
+
+    <div id="viewKursus" class="grid grid-cols-1 lg:grid-cols-4 gap-6">
+      <div class="lg:col-span-1 space-y-3">
+        <h3 class="font-bold text-sm uppercase text-slate-500 tracking-wider">Mata Pelajaran</h3>
+        <div id="courseList" class="space-y-2"></div>
+      </div>
+
+      <div class="lg:col-span-3 space-y-4">
+        <div id="courseHeader" class="bg-blue-900 text-white p-5 rounded-xl shadow-sm">
+          <h3 id="activeCourseTitle" class="text-lg font-bold">Memuat kelas...</h3>
+          <p id="activeCourseClass" class="text-xs text-amber-300 mt-0.5"></p>
+        </div>
+        <div id="materiContainer" class="space-y-4"></div>
+      </div>
+    </div>
+
+    <div id="viewGradebook" class="hidden bg-white rounded-xl shadow-sm p-5 overflow-x-auto">
+      <div class="flex justify-between items-center mb-4">
+        <h3 class="font-bold text-lg text-blue-950">Rekap Nilai & Pengumpulan Tugas Siswa</h3>
+        <button onclick="loadAllData()" class="text-xs bg-blue-100 text-blue-900 font-bold px-3 py-1.5 rounded hover:bg-blue-200">Refresh Data</button>
+      </div>
+      <table class="w-full text-left border-collapse text-sm">
+        <thead>
+          <tr class="bg-blue-950 text-white">
+		  <th class="p-3 rounded-tl-lg">Waktu</th>
+            <th class="p-3">Nama Siswa</th>
+            <th class="p-3">ID Materi</th>
+            <th class="p-3">Aktivitas</th>
+            <th class="p-3">Skor</th>
+            <th class="p-3 rounded-tr-lg">File Tugas</th>
+          </tr>
+        </thead>
+        <tbody id="gradebookTableBody" class="divide-y divide-slate-200"></tbody>
+      </table>
+    </div>
+  </main>
+
+  <!-- MODAL AREA -->
+  <div id="activityModal" class="hidden fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4">
+    <div class="bg-white rounded-2xl max-w-3xl w-full max-h-[90vh] flex flex-col shadow-2xl overflow-hidden">
+      <div class="bg-blue-950 text-white px-5 py-3.5 flex justify-between items-center">
+        <h3 id="modalTitle" class="font-bold text-base">Judul Aktivitas</h3>
+        <button onclick="closeModal()" class="text-slate-300 hover:text-white font-bold text-xl">&times;</button>
+      </div>
+      <div id="modalBody" class="p-5 overflow-y-auto space-y-4 flex-grow"></div>
+    </div>
+  </div>
+
+  <script>
+    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbx7BY02VykL5vOUWtBxnyGSYVWptOQiP2ph84Vv9Myz8Ge3memFEGCF8kQgNgnJ2wtybw/exec";
+
+    let currentUser = null;
+    let dbData = { kursus: [], materi: [], soal: [], nilai: [] };
+    let activeKursusId = null;
+
+    async function handleLogin(e) {
+      e.preventDefault();
+      const btn = document.getElementById("btnLogin");
+      const msg = document.getElementById("loginMsg");
+      btn.textContent = "Memeriksa akun...";
+      btn.disabled = true;
+      msg.textContent = "";
+
+      try {
+        const res = await fetch(SCRIPT_URL, {
+          method: "POST",
+          body: JSON.stringify({
+            action: "login",
+            username: document.getElementById("loginUser").value.trim(),
+            pin: document.getElementById("loginPin").value.trim()
+          })
+        });
+        const result = await res.json();
+        if (result.status === "success") {
+          currentUser = result.user;
+          initDashboard();
+        } else {
+          msg.textContent = result.message;
+        }
+      } catch (err) {
+        msg.textContent = "Gagal terhubung ke server. Pastikan URL Apps Script sudah benar.";
+      } finally {
+        btn.textContent = "Masuk ke Kelas";
+        btn.disabled = false;
+      }
+    }
+
+    function logout() {
+      currentUser = null;
+      document.getElementById("dashboardSection").classList.add("hidden");
+      document.getElementById("userNav").classList.add("hidden");
+      document.getElementById("loginSection").classList.remove("hidden");
+    }
+
+    async function initDashboard() {
+      document.getElementById("loginSection").classList.add("hidden");
+      document.getElementById("dashboardSection").classList.remove("hidden");
+      document.getElementById("userNav").classList.remove("hidden");
+
+      document.getElementById("navUserName").textContent = currentUser.nama;
+      document.getElementById("welcomeTitle").textContent = `Halo, ${currentUser.nama}!`;
+      document.getElementById("roleBadge").textContent = `Akun ${currentUser.role}`;
+
+      if (currentUser.role === "guru") {
+        document.getElementById("guruTabs").classList.remove("hidden");
+        document.getElementById("siswaProgressBox").classList.add("hidden");
+      } else {
+        document.getElementById("guruTabs").classList.add("hidden");
+        document.getElementById("siswaProgressBox").classList.remove("hidden");
+      }
+
+      await loadAllData();
+    }
+
+    async function loadAllData() {
+      const res = await fetch(`${SCRIPT_URL}?action=getData`);
+      dbData = await res.json();
+      renderCourses();
+      if (currentUser.role === "guru") renderGradebook();
+    }
+
+    function renderCourses() {
+      const list = document.getElementById("courseList");
+      list.innerHTML = "";
+      if (dbData.kursus.length === 0) {
+        list.innerHTML = `<p class="text-xs text-slate-500">Belum ada data kursus di Google Sheets.</p>`;
+        return;
+      }
+      if (!activeKursusId) activeKursusId = dbData.kursus[0].kursus_id;
+
+      dbData.kursus.forEach(k => {
+        const isActive = k.kursus_id === activeKursusId;
+        const btn = document.createElement("button");
+        btn.className = `w-full text-left p-3 rounded-xl border transition ${isActive ? 'bg-blue-900 text-white border-blue-900 shadow' : 'bg-white text-slate-700 hover:bg-blue-50'}`;
+        btn.innerHTML = `<div class="font-bold text-sm">${k.nama_kursus}</div><div class="text-xs opacity-80">Kelas ${k.kelas}</div>`;
+        btn.onclick = () => { activeKursusId = k.kursus_id; renderCourses(); };
+        list.appendChild(btn);
+      });
+
+      const activeCourse = dbData.kursus.find(k => k.kursus_id === activeKursusId);
+      document.getElementById("activeCourseTitle").textContent = activeCourse.nama_kursus;
+      document.getElementById("activeCourseClass").textContent = `Kelas ${activeCourse.kelas} • Kode Gabung: ${activeCourse.kode_gabung}`;
+      renderMateri();
+    }
+
+    function renderMateri() {
+      const container = document.getElementById("materiContainer");
+      container.innerHTML = "";
+      const listMateri = dbData.materi
+        .filter(m => m.kursus_id === activeKursusId)
+        .sort((a, b) => a.urutan - b.urutan);
+
+      const selesaiIds = new Set(
+        dbData.nilai
+          .filter(n => String(n.user_id) === String(currentUser.user_id))
+          .map(n => n.materi_id)
+      );
+      const persen = listMateri.length ? Math.round((selesaiIds.size / listMateri.length) * 100) : 0;
+      document.getElementById("progressText").textContent = `${persen}%`;
+      document.getElementById("progressBar").style.width = `${persen}%`;
+
+      const groups = {};
+      listMateri.forEach(m => {
+        if (!groups[m.bab_pertemuan]) groups[m.bab_pertemuan] = [];
+        groups[m.bab_pertemuan].push(m);
+      });
+
+      for (let bab in groups) {
+        const card = document.createElement("div");
+        card.className = "bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden";
+        let itemsHtml = groups[bab].map(item => {
+          const isDone = selesaiIds.has(item.materi_id);
+          const hasQuiz = dbData.soal.some(s => s.materi_id === item.materi_id);
+          return `
+            <div class="p-4 border-t border-slate-100 flex flex-col sm:flex-row sm:items-center justify-between gap-3 hover:bg-slate-50">
+              <div class="flex items-center space-x-3">
+                <span class="w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold ${isDone ? 'bg-emerald-100 text-emerald-700' : 'bg-slate-200 text-slate-600'}">
+                  ${isDone ? '✓' : item.urutan}
+                </span>
+                <div>
+                  <h4 class="font-semibold text-sm text-slate-800">${item.judul_materi}</h4>
+                  <span class="text-xs uppercase font-bold text-blue-700">${item.tipe_konten}</span>
+                </div>
+              </div>
+              <div class="flex flex-wrap gap-2">
+                <button onclick='openKonten(${JSON.stringify(item)})' class="px-3 py-1.5 bg-blue-100 text-blue-900 hover:bg-blue-200 rounded-lg text-xs font-bold">Buka Materi</button>
+                ${hasQuiz ? `<button onclick="openQuiz('${item.materi_id}', '${item.judul_materi}')" class="px-3 py-1.5 bg-amber-400 text-blue-950 hover:bg-amber-500 rounded-lg text-xs font-bold">Kerjakan Kuis</button>` : ''}
+                <button onclick="openUpload('${item.materi_id}', '${item.judul_materi}')" class="px-3 py-1.5 bg-emerald-600 text-white hover:bg-emerald-700 rounded-lg text-xs font-bold">Kirim Tugas</button>
+              </div>
+            </div>
+          `;
+        }).join("");
+
+        card.innerHTML = `
+          <div class="bg-slate-50 px-4 py-3 font-bold text-blue-950 text-sm flex justify-between items-center">
+            <span>📂 ${bab}</span>
+            <span class="text-xs font-normal text-slate-500">${groups[bab].length} Aktivitas</span>
+          </div>
+          <div>${itemsHtml}</div>
+        `;
+        container.appendChild(card);
+      }
+    }
+
+    function openKonten(item) {
+      document.getElementById("modalTitle").textContent = item.judul_materi;
+      const body = document.getElementById("modalBody");
+      if (item.tipe_konten === "video" || item.tipe_konten === "simulasi") {
+        body.innerHTML = `
+          <div class="aspect-video w-full rounded-xl overflow-hidden border bg-black">
+            <iframe src="${item.konten_url_atau_teks}" class="w-full h-full" frameborder="0" allowfullscreen></iframe>
+          </div>
+        `;
+      } else {
+        body.innerHTML = `<div class="prose max-w-none text-sm leading-relaxed whitespace-pre-line">${item.konten_url_atau_teks}</div>`;
+      }
+      document.getElementById("activityModal").classList.remove("hidden");
+    }
+
+    function openQuiz(materiId, judul) {
+      const soalList = dbData.soal
+        .filter(s => s.materi_id === materiId)
+        .sort(() => Math.random() - 0.5);
+
+      document.getElementById("modalTitle").textContent = `Kuis: ${judul}`;
+      const body = document.getElementById("modalBody");
+
+      let formHtml = soalList.map((s, idx) => `
+        <div class="p-4 bg-slate-50 rounded-xl border space-y-2">
+          <p class="font-semibold text-sm">${idx + 1}. ${s.pertanyaan}</p>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-sm">
+            ${['A', 'B', 'C', 'D'].map(opt => `
+              <label class="flex items-center space-x-2 p-2 bg-white border rounded-lg cursor-pointer hover:bg-blue-50">
+                <input type="radio" name="q_${s.soal_id}" value="${opt}" required />
+                <span><b>${opt}.</b> ${s['opsi_' + opt.toLowerCase()]}</span>
+              </label>
+            `).join("")}
+          </div>
+        </div>
+      `).join("");
+
+      body.innerHTML = `
+        <form onsubmit="submitQuiz(event, '${materiId}')" class="space-y-4">
+          ${formHtml}
+          <button type="submit" id="btnSubmitQuiz" class="w-full bg-blue-900 hover:bg-blue-800 text-white font-bold py-2.5 rounded-xl">Kirim Jawaban & Lihat Nilai</button>
+        </form>
+      `;
+      document.getElementById("activityModal").classList.remove("hidden");
+    }
+
+    async function submitQuiz(e, materiId) {
+      e.preventDefault();
+      const btn = document.getElementById("btnSubmitQuiz");
+      btn.textContent = "Menghitung skor...";
+      btn.disabled = true;
+
+      const soalList = dbData.soal.filter(s => s.materi_id === materiId);
+      let totalPoin = 0;
+      let maxPoin = 0;
+
+      soalList.forEach(s => {
+        const poinSoal = Number(s.poin) || 10;
+        maxPoin += poinSoal;
+        const selected = document.querySelector(`input[name="q_${s.soal_id}"]:checked`);
+        if (selected && selected.value.toUpperCase() === String(s.kunci).toUpperCase()) {
+          totalPoin += poinSoal;
+        }
+      });
+
+      const skorAkhir = maxPoin > 0 ? Math.round((totalPoin / maxPoin) * 100) : 0;
+
+      await fetch(SCRIPT_URL, {
+        method: "POST",
+        body: JSON.stringify({
+          action: "submitQuiz",
+          user_id: currentUser.user_id,
+          nama_lengkap: currentUser.nama,
+          materi_id: materiId,
+          skor: skorAkhir
+        })
+      });
+
+      document.getElementById("modalBody").innerHTML = `
+        <div class="text-center py-8 space-y-3">
+          <div class="text-5xl font-extrabold text-blue-900">${skorAkhir}</div>
+          <p class="font-bold text-lg text-slate-800">Kuis Selesai & Nilai Tercatat!</p>
+          <p class="text-sm text-slate-500">Skor kamu sudah otomatis masuk ke Buku Nilai Guru.</p>
+          <button onclick="closeModal(); loadAllData();" class="mt-4 bg-emerald-600 text-white px-6 py-2 rounded-lg font-bold text-sm">Tutup & Perbarui Progres</button>
+        </div>
+      `;
+    }
+
+    function openUpload(materiId, judul) {
+      document.getElementById("modalTitle").textContent = `Kirim Tugas: ${judul}`;
+      document.getElementById("modalBody").innerHTML = `
+        <form onsubmit="submitTugas(event, '${materiId}')" class="space-y-4">
+          <p class="text-sm text-slate-600">Unggah foto hasil praktikum atau file PDF tugasmu. File akan otomatis tersimpan di Google Drive Guru.</p>
+          <input type="file" id="fileInput" accept="image/*,.pdf" required class="w-full p-3 border border-dashed border-blue-400 rounded-xl bg-blue-50 text-sm" />
+          <button type="submit" id="btnUpload" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2.5 rounded-xl">Unggah Sekarang</button>
+        </form>
+      `;
+      document.getElementById("activityModal").classList.remove("hidden");
+    }
+
+    function submitTugas(e, materiId) {
+      e.preventDefault();
+      const file = document.getElementById("fileInput").files[0];
+      if (!file) return;
+
+      const btn = document.getElementById("btnUpload");
+      btn.textContent = "Mengunggah ke Google Drive...";
+      btn.disabled = true;
+
+      const reader = new FileReader();
+      reader.onload = async function() {
+        const base64Data = reader.result.split(",")[1];
+        await fetch(SCRIPT_URL, {
+          method: "POST",
+          body: JSON.stringify({
+            action: "uploadTugas",
+            user_id: currentUser.user_id,
+            nama_lengkap: currentUser.nama,
+            materi_id: materiId,
+            fileName: file.name,
+            mimeType: file.type,
+            fileBase64: base64Data
+          })
+        });
+
+        document.getElementById("modalBody").innerHTML = `
+          <div class="text-center py-8 space-y-3">
+            <div class="text-4xl">✅</div>
+            <p class="font-bold text-lg text-emerald-700">Tugas Berhasil Diunggah!</p>
+            <p class="text-sm text-slate-500">File kamu sudah rapi tersimpan di Google Drive.</p>
+            <button onclick="closeModal(); loadAllData();" class="mt-4 bg-blue-900 text-white px-6 py-2 rounded-lg font-bold text-sm">Selesai</button>
+          </div>
+        `;
+      };
+      reader.readAsDataURL(file);
+    }
+
+    function renderGradebook() {
+      const tbody = document.getElementById("gradebookTableBody");
+      tbody.innerHTML = dbData.nilai.slice().reverse().map(n => `
+        <tr class="hover:bg-slate-50">
+          <td class="p-3 text-xs text-slate-500">${new Date(n.timestamp).toLocaleString('id-ID')}</td>
+          <td class="p-3 font-semibold">${n.nama_lengkap}</td>
+          <td class="p-3"><span class="bg-slate-200 px-2 py-0.5 rounded text-xs font-bold">${n.materi_id}</span></td>
+          <td class="p-3">${n.jenis_aktivitas}</td>
+          <td class="p-3 font-bold text-blue-900">${n.skor_nilai}</td>
+          <td class="p-3">
+            ${n.link_file_drive && n.link_file_drive !== "-" 
+              ? `<a href="${n.link_file_drive}" target="_blank" class="text-blue-600 underline font-semibold">Lihat File</a>` 
+              : "-"}
+          </td>
+        </tr>
+      `).join("");
+    }
+
+    function switchTab(tab) {
+      const isKursus = tab === 'kursus';
+      document.getElementById("viewKursus").classList.toggle("hidden", !isKursus);
+      document.getElementById("viewGradebook").classList.toggle("hidden", isKursus);
+      document.getElementById("tabBtnKursus").className = isKursus ? "px-4 py-2 rounded-lg font-semibold text-sm bg-blue-900 text-white" : "px-4 py-2 rounded-lg font-semibold text-sm bg-white text-slate-700";
+      document.getElementById("tabBtnGradebook").className = !isKursus ? "px-4 py-2 rounded-lg font-semibold text-sm bg-blue-900 text-white" : "px-4 py-2 rounded-lg font-semibold text-sm bg-white text-slate-700";
+    }
+
+    function closeModal() {
+      document.getElementById("activityModal").classList.add("hidden");
+    }
+  </script>
+</body>
+</html>
