@@ -79,6 +79,7 @@
     @media(min-width: 768px) { .hero-card { flex-direction: row; align-items: center; justify-content: space-between; } }
     .role-row { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin-bottom: 6px; }
     .pill-blue { background: #E0F2FE; color: #0369A1; font-size: 11px; font-weight: 800; padding: 4px 10px; border-radius: 99px; }
+    .pill-kelas { background: #EDE9FE; color: #5B21B6; font-size: 11px; font-weight: 800; padding: 4px 10px; border-radius: 99px; }
     .pill-rank { background: var(--gold-soft); color: #B45309; font-size: 11px; font-weight: 800; padding: 4px 10px; border-radius: 99px; border: 1px solid #FDE68A; }
     .hero-card h2 { margin: 0 0 4px; font-size: 19px; color: var(--navy); }
     .hero-card p { margin: 0; font-size: 13px; color: var(--muted); }
@@ -114,6 +115,7 @@
     .badges-inline { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
     .tag-type { font-size: 11px; font-weight: 800; color: #2563EB; text-transform: uppercase; }
     .tag-done { font-size: 11px; font-weight: 700; background: var(--green-soft); color: #065F46; padding: 2px 8px; border-radius: 99px; }
+    .tag-score { font-size: 11px; font-weight: 700; background: #FEF3C7; color: #92400E; padding: 2px 8px; border-radius: 99px; border: 1px solid #FDE68A; }
 
     /* MOBILE THUMB-FRIENDLY BUTTONS */
     .action-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(105px, 1fr)); gap: 8px; width: 100%; }
@@ -126,6 +128,14 @@
     .btn-materi { background: #E0E7FF; color: #1E40AF; }
     .btn-kuis { background: var(--gold); color: #1E293B; }
     .btn-tugas { background: var(--green); color: #fff; }
+
+    /* QUICK SCORE CHIPS */
+    .quick-chips { display: flex; flex-wrap: wrap; gap: 8px; margin: 10px 0 14px; }
+    .chip-btn {
+      background: #F1F5F9; border: 1.5px solid #CBD5E1; border-radius: 99px; padding: 7px 12px;
+      font-size: 12px; font-weight: 700; color: var(--navy); cursor: pointer;
+    }
+    .chip-btn:active { background: var(--gold-soft); border-color: var(--gold); }
 
     /* MODALS */
     .modal-backdrop {
@@ -144,7 +154,7 @@
     /* UPLOAD PREVIEW */
     .upload-zone {
       border: 2px dashed #94A3B8; border-radius: 14px; padding: 18px; text-align: center;
-      background: #F8FAFC; margin: 12px 0; cursor: pointer;
+      background: #F8FAFC; margin: 12px 0; cursor: pointer; display: block;
     }
     .preview-img { max-width: 100%; max-height: 200px; border-radius: 10px; margin-top: 10px; display: none; object-fit: contain; border: 1px solid var(--border); }
     .compress-info { font-size: 12px; color: #059669; font-weight: 700; margin-top: 6px; }
@@ -195,7 +205,7 @@
     <div class="form-group">
       <label>Username / NISN</label>
       <div class="input-wrap">
-        <input type="text" id="loginUser" placeholder="Contoh: 00812345" autocomplete="username" />
+        <input type="text" id="loginUser" placeholder="Contoh: 812345" autocomplete="username" />
       </div>
     </div>
     <div class="form-group">
@@ -215,6 +225,7 @@
       <div>
         <div class="role-row">
           <span class="pill-blue" id="roleBadge">AKUN SISWA</span>
+          <span class="pill-kelas" id="kelasBadge">KELAS XI-A</span>
           <span class="pill-rank" id="rankBadge">🏅 Penjelajah Fisika</span>
         </div>
         <h2 id="greetingText">Halo!</h2>
@@ -239,8 +250,8 @@
     <div id="teacherView" style="display:none;">
       <div class="bab-card">
         <div class="bab-header">
-          <span>📊 Buku Nilai & Arsip Tugas Siswa (Real-Time)</span>
-          <button class="btn-act btn-materi" onclick="loadLMSData()">🔄 Segarkan Data</button>
+          <span>📊 Buku Nilai & Arsip Tugas Siswa</span>
+          <button class="btn-act btn-materi" onclick="loadLMSData()">🔄 Segarkan</button>
         </div>
         <div class="table-wrap">
           <table>
@@ -250,7 +261,7 @@
                 <th>Nama Siswa</th>
                 <th>Materi</th>
                 <th>Aktivitas</th>
-                <th>Skor / Status</th>
+                <th>Skor / Catatan Guru</th>
                 <th>Lampiran Drive</th>
               </tr>
             </thead>
@@ -306,6 +317,31 @@
   </div>
 </div>
 
+<!-- MODAL BERI NILAI GURU -->
+<div class="modal-backdrop" id="gradeModal">
+  <div class="modal-card" style="max-width:440px;">
+    <div class="modal-head">
+      <h3 id="gradeModalTitle">Beri Nilai Tugas</h3>
+      <button class="modal-close" onclick="closeModal('gradeModal')">×</button>
+    </div>
+    <div class="modal-body">
+      <div style="font-size:12px;font-weight:700;color:var(--muted);">Pilih Skor Cepat atau Ketik Manual:</div>
+      <div class="quick-chips">
+        <button type="button" class="chip-btn" onclick="setQuickGrade('100 - Sangat Tepat & Rapi!')">🌟 100 - Sangat Tepat</button>
+        <button type="button" class="chip-btn" onclick="setQuickGrade('90 - Analisis Bagus!')">👍 90 - Bagus</button>
+        <button type="button" class="chip-btn" onclick="setQuickGrade('85 - Sudah Baik')">✅ 85 - Baik</button>
+      </div>
+      <div class="form-group">
+        <label>Nilai & Catatan Feedback untuk Siswa</label>
+        <div class="input-wrap">
+          <input type="text" id="gradeInput" placeholder="Contoh: 95 - Langkah pengerjaan sangat jelas!" />
+        </div>
+      </div>
+      <button class="btn-primary" id="btnSaveGrade" onclick="saveGrade()">Simpan Nilai ke Siswa</button>
+    </div>
+  </div>
+</div>
+
 <footer>
   <strong>Portal Belajar SMAN 26 Bone</strong> • Dikembangkan untuk Pembelajaran Digital Interaktif
 </footer>
@@ -317,6 +353,7 @@
   let activeCourseId = null;
   let activeMateriId = null;
   let processedFile = null;
+  let gradingRowIndex = null;
 
   function togglePin() {
     const inp = document.getElementById("loginPin");
@@ -364,6 +401,7 @@
   function logout() {
     localStorage.removeItem("sman26_user");
     currentUser = null;
+    activeCourseId = null;
     document.getElementById("appSection").style.display = "none";
     document.getElementById("navActions").style.display = "none";
     document.getElementById("loginSection").style.display = "block";
@@ -374,286 +412,49 @@
     document.getElementById("appSection").style.display = "block";
     document.getElementById("navActions").style.display = "flex";
     document.getElementById("navUserName").textContent = currentUser.nama;
-    document.getElementById("greetingText").textContent = `${getTimeGreeting()}, ${currentUser.nama}!`;
+    document.getElementById("greetingText").textContent = `${getTimeGreeting()},${currentUser.nama}!`;
 
     const isGuru = String(currentUser.role).toLowerCase() === "guru";
+    const userKelas = currentUser.kelas || "Semua";
     document.getElementById("roleBadge").textContent = isGuru ? "AKUN GURU" : "AKUN SISWA";
-    document.getElementById("studentProgressBox").style.display = isGuru ? "none" : "block";
-    document.getElementById("rankBadge").style.display = isGuru ? "none" : "inline-block";
-    document.getElementById("studentView").style.display = isGuru ? "none" : "block";
-    document.getElementById("teacherView").style.display = isGuru ? "block" : "none";
-
-    await loadLMSData();
-  }
-
-  async function loadLMSData() {
-    const res = await fetch(`${SCRIPT_URL}?action=getData`);
+    document.getElementById("kelasBadge").textContent = isGuru ? "SEMUA KELAS" : `KELAS ${userKelas}`; document.getElementById("studentProgressBox").style.display = isGuru ? "none" : "block"; document.getElementById("rankBadge").style.display = isGuru ? "none" : "inline-block"; document.getElementById("studentView").style.display = isGuru ? "none" : "block"; document.getElementById("teacherView").style.display = isGuru ? "block" : "none";  await loadLMSData(); }  async function loadLMSData() { const res = await fetch(`${SCRIPT_URL}?action=getData`);
     lmsData = await res.json();
     if (String(currentUser.role).toLowerCase() === "guru") {
       renderGradebook();
     } else {
-      if (lmsData.kursus.length && !activeCourseId) activeCourseId = lmsData.kursus[0].kursus_id;
+      const daftarKursus = getFilteredCourses();
+      if (daftarKursus.length && !activeCourseId) activeCourseId = daftarKursus[0].kursus_id;
       renderStudentCourses();
     }
   }
 
+  // PENCOCOKAN KELAS PINTAR (XI cocok dengan XI-A, XI-B, dst.)
+  function getFilteredCourses() {
+    const userKelas = String(currentUser.kelas || "Semua").trim().toUpperCase();
+    if (userKelas === "SEMUA" || userKelas === "") return lmsData.kursus;
+    const tingkatSiswa = userKelas.split("-")[0]; // Misal "XI-A" -> "XI"
+
+    return lmsData.kursus.filter(k => {
+      const kKelas = String(k.kelas || "Semua").replace(/KELAS\s*/gi, "").trim().toUpperCase();
+      if (kKelas === "SEMUA" || kKelas === "") return true;
+      if (kKelas === userKelas) return true;
+      if (kKelas === tingkatSiswa) return true;
+      return false;
+    });
+  }
+
   function renderStudentCourses() {
+    const daftarKursus = getFilteredCourses();
     const tabs = document.getElementById("courseTabs");
-    tabs.innerHTML = lmsData.kursus.map(k => `
-      <button class="course-tab ${k.kursus_id === activeCourseId ? 'active' : ''}" onclick="selectCourse('${k.kursus_id}')">
-        ${k.nama_kursus}
-      </button>
-    `).join("");
 
-    const course = lmsData.kursus.find(k => k.kursus_id === activeCourseId);
-    if (!course) return;
-
-    const materiList = lmsData.materi
-      .filter(m => m.kursus_id === activeCourseId)
-      .sort((a, b) => Number(a.urutan) - Number(b.urutan));
-
-    const myNilai = lmsData.nilai.filter(n => String(n.user_id) === String(currentUser.user_id));
-    const doneMateriIds = new Set(myNilai.map(n => n.materi_id));
-    const pct = materiList.length ? Math.round((doneMateriIds.size / materiList.length) * 100) : 0;
-
-    document.getElementById("progressPercent").textContent = `${pct}%`;
-    document.getElementById("progressFill").style.width = `${pct}%`;
-    document.getElementById("rankBadge").textContent =
-      pct >= 100 ? "🏆 Master Fisika SMAN 26" : pct >= 50 ? "⚡ Bintang Eksperimen" : "🏅 Penjelajah Fisika";
-
-    // Kelompokkan berdasarkan bab_pertemuan
-    const groups = {};
-    materiList.forEach(m => {
-      const bab = m.bab_pertemuan || "Materi Pembelajaran";
-      if (!groups[bab]) groups[bab] = [];
-      groups[bab].push(m);
-    });
-
-    let html = `
-      <div class="course-banner">
-        <h3>${course.nama_kursus}</h3>
-        <span>${course.kelas || ''} • Kode Gabung: ${course.kode_gabung || '-'}</span>
-      </div>
-    `;
-
-    Object.keys(groups).forEach(bab => {
-      html += `<div class="bab-card"><div class="bab-header"><span>📁 ${bab}</span><span>${groups[bab].length} Aktivitas</span></div>`;
-      groups[bab].forEach((m, idx) => {
-        const hasQuiz = lmsData.soal.some(s => s.materi_id === m.materi_id);
-        const isDone = doneMateriIds.has(m.materi_id);
-        html += `
-          <div class="materi-item">
-            <div class="materi-info">
-              <div class="num-circle">${idx + 1}</div>
-              <div>
-                <div class="materi-title">${m.judul_materi}</div>
-                <div class="badges-inline">
-                  <span class="tag-type">${m.tipe_konten}</span>
-                  ${isDone ? '<span class="tag-done">✅ Sudah Dikerjakan</span>' : ''}
-                </div>
-              </div>
-            </div>
-            <div class="action-grid">
-              <button class="btn-act btn-materi" onclick="openMateri('${m.materi_id}')">Buka Materi</button>
-              ${hasQuiz ? `<button class="btn-act btn-kuis" onclick="openQuiz('${m.materi_id}')">Kerjakan Kuis</button>` : ''}
-              <button class="btn-act btn-tugas" onclick="openUpload('${m.materi_id}')">Kirim Tugas</button>
-            </div>
-          </div>
-        `;
-      });
-      html += `</div>`;
-    });
-
-    document.getElementById("courseContent").innerHTML = html;
-  }
-
-  function selectCourse(id) { activeCourseId = id; renderStudentCourses(); }
-
-  function openMateri(materiId) {
-    const m = lmsData.materi.find(x => x.materi_id === materiId);
-    document.getElementById("materiModalTitle").textContent = m.judul_materi;
-    const body = document.getElementById("materiModalBody");
-    const konten = String(m.konten_url_atau_teks || "");
-    if (konten.startsWith("http")) {
-      body.innerHTML = `<iframe src="${konten}" style="width:100%;height:65vh;border:none;border-radius:10px;" allowfullscreen></iframe>
-      <p style="text-align:center;margin-top:10px;"><a href="${konten}" target="_blank" style="color:#2563EB;font-weight:700;">Buka Simulasi di Layar Penuh ↗</a></p>`;
-    } else {
-      body.innerHTML = `<div style="white-space:pre-line;font-size:15px;">${konten}</div>`;
-    }
-    document.getElementById("materiModal").style.display = "flex";
-  }
-
-  function openQuiz(materiId) {
-    activeMateriId = materiId;
-    const m = lmsData.materi.find(x => x.materi_id === materiId);
-    const questions = lmsData.soal.filter(s => s.materi_id === materiId);
-    document.getElementById("quizModalTitle").textContent = `Kuis: ${m.judul_materi}`;
-
-    let html = questions.map((q, i) => `
-      <div class="quiz-q">
-        <div style="font-weight:700;margin-bottom:6px;">${i + 1}. ${q.pertanyaan}</div>
-        ${['A','B','C','D'].map(opt => q['opsi_' + opt.toLowerCase()] ? `
-          <label class="quiz-opt">
-            <input type="radio" name="q_${i}" value="${opt}" /> ${opt}. ${q['opsi_' + opt.toLowerCase()]}
-          </label>
-        ` : '').join("")}
-      </div>
-    `).join("");
-
-    html += `<button class="btn-primary" onclick="submitQuiz()">Kirim Jawaban Kuis</button>`;
-    document.getElementById("quizModalBody").innerHTML = html;
-    document.getElementById("quizModal").style.display = "flex";
-  }
-
-  async function submitQuiz() {
-    const questions = lmsData.soal.filter(s => s.materi_id === activeMateriId);
-    let benar = 0;
-    questions.forEach((q, i) => {
-      const sel = document.querySelector(`input[name="q_${i}"]:checked`);
-      if (sel && sel.value.toUpperCase() === String(q.kunci_jawaban).trim().toUpperCase()) benar++;
-    });
-    const skor = Math.round((benar / questions.length) * 100);
-
-    document.getElementById("quizModalBody").innerHTML = `
-      <div style="text-align:center;padding:20px;">
-        <div style="font-size:48px;">🎉</div>
-        <h2 style="margin:8px 0;color:var(--navy);">Skor Kamu: ${skor}</h2>
-        <p style="color:var(--muted);">Menjawab benar ${benar} dari ${questions.length} soal.</p>
-        <button class="btn-primary" onclick="closeModal('quizModal')">Selesai & Tutup</button>
-      </div>
-    `;
-
-    await fetch(SCRIPT_URL, {
-      method: "POST",
-      body: JSON.stringify({
-        action: "submitQuiz",
-        user_id: currentUser.user_id,
-        nama_lengkap: currentUser.nama,
-        materi_id: activeMateriId,
-        skor
-      })
-    });
-    loadLMSData();
-  }
-
-  function openUpload(materiId) {
-    activeMateriId = materiId;
-    processedFile = null;
-    const m = lmsData.materi.find(x => x.materi_id === materiId);
-    document.getElementById("uploadModalTitle").textContent = `Kirim Tugas: ${m.judul_materi}`;
-    document.getElementById("selectedFileName").textContent = "Belum ada file dipilih";
-    document.getElementById("previewImg").style.display = "none";
-    document.getElementById("compressInfo").textContent = "";
-    document.getElementById("tugasFile").value = "";
-    document.getElementById("uploadModal").style.display = "flex";
-  }
-
-  // KOMPRESI FOTO OTOMATIS UNTUK HP SISWA
-  function handleFileSelect(event) {
-    const file = event.target.files[0];
-    if (!file) return;
-    document.getElementById("selectedFileName").textContent = file.name;
-    const preview = document.getElementById("previewImg");
-    const info = document.getElementById("compressInfo");
-
-    if (file.type.startsWith("image/")) {
-      const reader = new FileReader();
-      reader.onload = e => {
-        const img = new Image();
-        img.onload = () => {
-          const canvas = document.createElement("canvas");
-          const MAX_WIDTH = 1200;
-          const scale = img.width > MAX_WIDTH ? MAX_WIDTH / img.width : 1;
-          canvas.width = img.width * scale;
-          canvas.height = img.height * scale;
-          const ctx = canvas.getContext("2d");
-          ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-          const dataUrl = canvas.toDataURL("image/jpeg", 0.75);
-          preview.src = dataUrl;
-          preview.style.display = "inline-block";
-          const kb = Math.round((dataUrl.length * 3) / 4 / 1024);
-          info.textContent = `⚡ Foto otomatis dikompres menjadi ${kb} KB (Super cepat dikirim!)`;
-          processedFile = {
-            base64: dataUrl.split(",")[1],
-            mimeType: "image/jpeg",
-            fileName: file.name.replace(/\.[^/.]+$/, "") + ".jpg"
-          };
-        };
-        img.src = e.target.result;
-      };
-      reader.readAsDataURL(file);
-    } else {
-      preview.style.display = "none";
-      const reader = new FileReader();
-      reader.onload = e => {
-        processedFile = {
-          base64: e.target.result.split(",")[1],
-          mimeType: file.type,
-          fileName: file.name
-        };
-        info.textContent = `📄 File PDF siap diunggah (${Math.round(file.size / 1024)} KB)`;
-      };
-      reader.readAsDataURL(file);
-    }
-  }
-
-  async function submitTugas() {
-    if (!processedFile) { alert("Pilih foto atau file PDF terlebih dahulu!"); return; }
-    const btn = document.getElementById("btnSubmitTugas");
-    btn.disabled = true; btn.textContent = "Mengunggah ke Google Drive...";
-
-    try {
-      const res = await fetch(SCRIPT_URL, {
-        method: "POST",
-        body: JSON.stringify({
-          action: "uploadTugas",
-          user_id: currentUser.user_id,
-          nama_lengkap: currentUser.nama,
-          materi_id: activeMateriId,
-          fileName: processedFile.fileName,
-          mimeType: processedFile.mimeType,
-          fileBase64: processedFile.base64
-        })
-      });
-      const json = await res.json();
-      if (json.status === "success") {
-        alert("✅ Tugas Berhasil Diunggah ke Google Drive Guru!");
-        closeModal("uploadModal");
-        loadLMSData();
-      } else {
-        alert("Gagal mengunggah: " + (json.message || "Terjadi kesalahan"));
-      }
-    } catch (e) {
-      alert("Koneksi terputus saat mengunggah. Coba lagi!");
-    } finally {
-      btn.disabled = false; btn.textContent = "Unggah Sekarang";
-    }
-  }
-
-  function renderGradebook() {
-    const tbody = document.getElementById("gradebookBody");
-    if (!lmsData.nilai.length) {
-      tbody.innerHTML = `<tr><td colspan="6" style="text-align:center;color:var(--muted);">Belum ada data nilai atau tugas masuk.</td></tr>`;
+    if (!daftarKursus.length) {
+      tabs.innerHTML = "";
+      document.getElementById("courseContent").innerHTML = `
+        <div class="bab-card" style="text-align:center;padding:28px;">
+          <p style="color:var(--muted);margin:0;">Belum ada mata pelajaran aktif untuk kelas <strong>${currentUser.kelas}</strong>.</p>
+        </div>`;
       return;
     }
-    tbody.innerHTML = lmsData.nilai.slice().reverse().map(n => `
-      <tr>
-        <td>${new Date(n.waktu).toLocaleString('id-ID')}</td>
-        <td><strong>${n.nama_lengkap}</strong></td>
-        <td>${n.materi_id}</td>
-        <td>${n.jenis_aktivitas}</td>
-        <td><strong>${n.skor_atau_status}</strong></td>
-        <td>${String(n.link_file).startsWith("http") ? `<a href="${n.link_file}" target="_blank" style="color:#2563EB;font-weight:700;">Lihat File ↗</a>` : '-'}</td>
-      </tr>
-    `).join("");
-  }
 
-  function closeModal(id) { document.getElementById(id).style.display = "none"; }
-
-  window.onload = () => {
-    const saved = localStorage.getItem("sman26_user");
-    if (saved) { currentUser = JSON.parse(saved); initDashboard(); }
-  };
-</script>
-</body>
-</html>
+    tabs.innerHTML = daftarKursus.map(k => `
+      <button class="course-tab ${k.kursus_id === activeCourseId ? 'active' : ''}" onclick="selectCourse
