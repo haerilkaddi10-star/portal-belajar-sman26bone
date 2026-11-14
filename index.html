@@ -2,459 +2,253 @@
 <html lang="id">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>Portal Belajar SMAN 26 Bone</title>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Portal Belajar Digital — UPT SMAN 26 Bone</title>
+  <!-- Favicon Logo Resmi SMAN 26 Bone -->
+  <link rel="icon" type="image/png" href="https://lh3.googleusercontent.com/d/115w1UQqLJ45JRxf1MvkvzzybvFO9XHLM" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet" />
   <style>
     :root {
-      --navy: #0F172A;
-      --navy-light: #1E293B;
-      --gold: #F59E0B;
-      --gold-soft: #FEF3C7;
-      --cyan: #06B6D4;
-      --green: #10B981;
-      --green-soft: #D1FAE5;
-      --bg: #F1F5F9;
-      --card: #FFFFFF;
-      --text: #1E293B;
-      --muted: #64748B;
-      --border: #E2E8F0;
+      --navy-dark: #0F172A;
+      --navy-card: #1E293B;
+      --cyan-accent: #06B6D4;
+      --amber-gold: #F59E0B;
+      --bg-light: #F1F5F9;
     }
-    * { box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; -webkit-tap-highlight-color: transparent; }
-    body { margin: 0; background: var(--bg); color: var(--text); min-height: 100vh; display: flex; flex-direction: column; }
-
-    /* HEADER */
-    header {
-      background: linear-gradient(135deg, var(--navy) 0%, #172554 100%);
-      color: #fff; padding: 14px 18px; position: sticky; top: 0; z-index: 50;
-      box-shadow: 0 4px 14px rgba(15, 23, 42, 0.2); border-bottom: 3px solid var(--gold);
+    body {
+      background-color: var(--bg-light);
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      color: #1E293B;
     }
-    .header-wrap { max-width: 1040px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; gap: 10px; }
-    .brand { display: flex; align-items: center; gap: 10px; }
-    .brand-logo { width: 40px; height: 40px; border-radius: 50%; background: #fff; border: 2px solid var(--gold); display: flex; align-items: center; justify-content: center; font-weight: 800; color: var(--navy); font-size: 13px; flex-shrink: 0; }
-    .brand h1 { margin: 0; font-size: 16px; font-weight: 800; letter-spacing: -0.2px; }
-    .brand p { margin: 2px 0 0; font-size: 11px; color: #FCD34D; font-weight: 500; }
-    .user-actions { display: flex; align-items: center; gap: 8px; }
-    .user-name-pill { font-size: 12px; font-weight: 700; color: #FDE68A; display: none; }
-    @media(min-width: 640px) { .user-name-pill { display: inline-block; } }
-    .btn-logout { background: #EF4444; color: #fff; border: none; padding: 8px 14px; border-radius: 10px; font-weight: 700; font-size: 12px; cursor: pointer; }
-
-    /* CONTAINER */
-    main { flex: 1; width: 100%; max-width: 1040px; margin: 0 auto; padding: 16px; }
-
-    /* LOGIN CARD */
-    .login-box {
-      max-width: 420px; margin: 24px auto; background: var(--card); border-radius: 20px;
-      padding: 28px 22px; box-shadow: 0 12px 30px rgba(15, 23, 42, 0.08); text-align: center;
-      border-top: 5px solid var(--gold);
+    /* Halaman Login */
+    .login-wrapper {
+      min-height: 100vh;
+      background: linear-gradient(135deg, #0F172A 0%, #1E293B 60%, #0E7490 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 1.5rem;
     }
-    .login-badge { width: 68px; height: 68px; border-radius: 50%; background: var(--navy); color: var(--gold); border: 3px solid var(--gold); margin: 0 auto 14px; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 18px; }
-    .login-box h2 { margin: 0 0 6px; font-size: 22px; color: var(--navy); }
-    .login-box .sub { font-size: 13px; color: var(--muted); margin-bottom: 22px; }
-    .form-group { text-align: left; margin-bottom: 16px; }
-    .form-group label { display: block; font-size: 11px; font-weight: 800; color: var(--navy); letter-spacing: 0.6px; margin-bottom: 6px; text-transform: uppercase; }
-    .input-wrap { position: relative; display: flex; align-items: center; }
-    .input-wrap input {
-      width: 100%; padding: 14px 44px 14px 14px; border: 2px solid var(--border); border-radius: 12px;
-      font-size: 16px; font-weight: 600; color: var(--navy); outline: none; transition: 0.2s;
+    .login-card {
+      background: #FFFFFF;
+      border-radius: 1.25rem;
+      max-width: 420px;
+      width: 100%;
+      padding: 2.25rem 2rem;
+      box-shadow: 0 20px 45px rgba(0, 0, 0, 0.35);
+      border-top: 5px solid var(--amber-gold);
     }
-    .input-wrap input:focus { border-color: var(--navy); background: #F8FAFC; }
-    .toggle-pin {
-      position: absolute; right: 12px; background: none; border: none; font-size: 18px;
-      cursor: pointer; padding: 6px; color: var(--muted);
+    .school-logo-login {
+      width: 88px;
+      height: 88px;
+      object-fit: contain;
+      filter: drop-shadow(0 4px 10px rgba(15, 23, 42, 0.25));
     }
-    .btn-primary {
-      width: 100%; padding: 15px; background: var(--navy); color: #fff; border: none; border-radius: 12px;
-      font-size: 15px; font-weight: 700; cursor: pointer; transition: 0.2s; box-shadow: 0 4px 12px rgba(15, 23, 42, 0.2);
+    /* Navbar Dashboard */
+    .navbar-portal {
+      background-color: var(--navy-dark);
+      border-bottom: 3px solid var(--amber-gold);
     }
-    .btn-primary:active { transform: scale(0.98); }
-    .error-msg { color: #DC2626; font-size: 13px; font-weight: 600; margin-top: 12px; min-height: 18px; }
-
-    /* WELCOME & GAMIFICATION BANNER */
-    .hero-card {
-      background: var(--card); border-radius: 18px; padding: 18px; margin-bottom: 18px;
-      box-shadow: 0 4px 15px rgba(0,0,0,0.04); border-left: 5px solid var(--gold);
-      display: flex; flex-direction: column; gap: 14px;
+    .school-logo-nav {
+      width: 38px;
+      height: 38px;
+      object-fit: contain;
     }
-    @media(min-width: 768px) { .hero-card { flex-direction: row; align-items: center; justify-content: space-between; } }
-    .role-row { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin-bottom: 6px; }
-    .pill-blue { background: #E0F2FE; color: #0369A1; font-size: 11px; font-weight: 800; padding: 4px 10px; border-radius: 99px; }
-    .pill-kelas { background: #EDE9FE; color: #5B21B6; font-size: 11px; font-weight: 800; padding: 4px 10px; border-radius: 99px; }
-    .pill-rank { background: var(--gold-soft); color: #B45309; font-size: 11px; font-weight: 800; padding: 4px 10px; border-radius: 99px; border: 1px solid #FDE68A; }
-    .hero-card h2 { margin: 0 0 4px; font-size: 19px; color: var(--navy); }
-    .hero-card p { margin: 0; font-size: 13px; color: var(--muted); }
-    .progress-box { background: #F8FAFC; border: 1px solid var(--border); border-radius: 12px; padding: 12px 14px; min-width: 220px; }
-    .progress-head { display: flex; justify-content: space-between; font-size: 12px; font-weight: 700; margin-bottom: 6px; }
-    .progress-bar { height: 8px; background: #E2E8F0; border-radius: 99px; overflow: hidden; }
-    .progress-fill { height: 100%; background: linear-gradient(90deg, var(--cyan), var(--green)); width: 0%; transition: width 0.5s ease; }
-
-    /* COURSE & MATERI LIST */
-    .course-tabs { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 8px; margin-bottom: 14px; }
-    .course-tab {
-      background: var(--card); border: 2px solid var(--border); padding: 10px 14px; border-radius: 12px;
-      font-size: 13px; font-weight: 700; color: var(--navy); cursor: pointer; white-space: nowrap;
+    /* Kartu & Lencana */
+    .course-card {
+      border: none;
+      border-radius: 1rem;
+      box-shadow: 0 4px 14px rgba(15, 23, 42, 0.06);
+      transition: transform 0.2s ease;
     }
-    .course-tab.active { background: var(--navy); color: #fff; border-color: var(--navy); }
-    .course-banner {
-      background: linear-gradient(135deg, var(--navy) 0%, #1E3A8A 100%); color: #fff;
-      padding: 18px; border-radius: 16px; margin-bottom: 16px;
+    .course-card:hover {
+      transform: translateY(-3px);
     }
-    .course-banner h3 { margin: 0 0 4px; font-size: 18px; }
-    .course-banner span { font-size: 12px; color: #FDE68A; font-weight: 600; }
-
-    .bab-card { background: var(--card); border-radius: 16px; padding: 16px; margin-bottom: 16px; box-shadow: 0 4px 12px rgba(0,0,0,0.03); }
-    .bab-header { display: flex; justify-content: space-between; align-items: center; padding-bottom: 12px; border-bottom: 1px solid var(--border); margin-bottom: 12px; font-weight: 800; font-size: 15px; color: var(--navy); }
-    .materi-item {
-      border: 1px solid var(--border); border-radius: 14px; padding: 14px; margin-bottom: 12px;
-      display: flex; flex-direction: column; gap: 12px; background: #FFFFFF;
+    .badge-lencana {
+      background: linear-gradient(135deg, #F59E0B, #D97706);
+      color: #FFFFFF;
+      font-weight: 600;
+      padding: 0.45rem 0.85rem;
+      border-radius: 2rem;
+      font-size: 0.85rem;
     }
-    @media(min-width: 768px) { .materi-item { flex-direction: row; align-items: center; justify-content: space-between; } }
-    .materi-info { display: flex; align-items: flex-start; gap: 12px; }
-    .num-circle { width: 32px; height: 32px; border-radius: 50%; background: #F1F5F9; color: var(--navy); font-weight: 800; font-size: 13px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
-    .materi-title { font-weight: 700; font-size: 15px; color: var(--navy); margin-bottom: 4px; }
-    .badges-inline { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
-    .tag-type { font-size: 11px; font-weight: 800; color: #2563EB; text-transform: uppercase; }
-    .tag-done { font-size: 11px; font-weight: 700; background: var(--green-soft); color: #065F46; padding: 2px 8px; border-radius: 99px; }
-    .tag-score { font-size: 11px; font-weight: 700; background: #FEF3C7; color: #92400E; padding: 2px 8px; border-radius: 99px; border: 1px solid #FDE68A; }
-
-    /* MOBILE THUMB-FRIENDLY BUTTONS */
-    .action-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(105px, 1fr)); gap: 8px; width: 100%; }
-    @media(min-width: 768px) { .action-grid { width: auto; display: flex; } }
-    .btn-act {
-      padding: 11px 12px; border-radius: 10px; border: none; font-size: 12px; font-weight: 700;
-      cursor: pointer; text-align: center; transition: 0.15s;
+    .btn-primary-navy {
+      background-color: var(--navy-dark);
+      color: #FFFFFF;
+      border: none;
     }
-    .btn-act:active { transform: scale(0.97); }
-    .btn-materi { background: #E0E7FF; color: #1E40AF; }
-    .btn-kuis { background: var(--gold); color: #1E293B; }
-    .btn-tugas { background: var(--green); color: #fff; }
-
-    /* QUICK SCORE CHIPS */
-    .quick-chips { display: flex; flex-wrap: wrap; gap: 8px; margin: 10px 0 14px; }
-    .chip-btn {
-      background: #F1F5F9; border: 1.5px solid #CBD5E1; border-radius: 99px; padding: 7px 12px;
-      font-size: 12px; font-weight: 700; color: var(--navy); cursor: pointer;
+    .btn-primary-navy:hover {
+      background-color: #1E293B;
+      color: #FFFFFF;
     }
-    .chip-btn:active { background: var(--gold-soft); border-color: var(--gold); }
-
-    /* MODALS */
-    .modal-backdrop {
-      position: fixed; inset: 0; background: rgba(15, 23, 42, 0.65); backdrop-filter: blur(3px);
-      display: none; align-items: center; justify-content: center; padding: 14px; z-index: 100;
+    .simulasi-frame {
+      width: 100%;
+      height: 460px;
+      border: none;
+      border-radius: 0.75rem;
+      background: #000;
     }
-    .modal-card {
-      background: #fff; width: 100%; max-width: 600px; max-height: 90vh; border-radius: 18px;
-      overflow: hidden; display: flex; flex-direction: column; box-shadow: 0 20px 40px rgba(0,0,0,0.25);
-    }
-    .modal-head { background: var(--navy); color: #fff; padding: 16px 18px; display: flex; justify-content: space-between; align-items: center; gap: 10px; }
-    .modal-head h3 { margin: 0; font-size: 16px; }
-    .modal-close { background: rgba(255,255,255,0.15); border: none; color: #fff; width: 32px; height: 32px; border-radius: 50%; font-size: 18px; cursor: pointer; }
-    .modal-body { padding: 18px; overflow-y: auto; line-height: 1.6; font-size: 14px; }
-
-    /* UPLOAD PREVIEW */
-    .upload-zone {
-      border: 2px dashed #94A3B8; border-radius: 14px; padding: 18px; text-align: center;
-      background: #F8FAFC; margin: 12px 0; cursor: pointer; display: block;
-    }
-    .preview-img { max-width: 100%; max-height: 200px; border-radius: 10px; margin-top: 10px; display: none; object-fit: contain; border: 1px solid var(--border); }
-    .compress-info { font-size: 12px; color: #059669; font-weight: 700; margin-top: 6px; }
-
-    /* QUIZ */
-    .quiz-q { background: #F8FAFC; border: 1px solid var(--border); border-radius: 12px; padding: 14px; margin-bottom: 14px; }
-    .quiz-opt { display: block; padding: 11px 12px; margin-top: 8px; background: #fff; border: 1.5px solid var(--border); border-radius: 10px; cursor: pointer; font-size: 13px; font-weight: 600; }
-    .quiz-opt input { margin-right: 8px; }
-
-    /* GRADEBOOK TABLE */
-    .table-wrap { overflow-x: auto; background: #fff; border-radius: 14px; padding: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.04); }
-    table { width: 100%; border-collapse: collapse; font-size: 13px; }
-    th, td { padding: 11px 10px; border-bottom: 1px solid var(--border); text-align: left; }
-    th { background: #F8FAFC; color: var(--navy); font-weight: 800; }
-
-    /* FOOTER */
-    footer {
-      text-align: center; padding: 16px; font-size: 12px; color: var(--muted);
-      border-top: 1px solid var(--border); background: #fff; margin-top: 24px;
-    }
-    footer strong { color: var(--navy); }
   </style>
 </head>
 <body>
 
-<header>
-  <div class="header-wrap">
-    <div class="brand">
-      <div class="brand-logo">26</div>
-      <div>
-        <h1>Portal Belajar SMAN 26 Bone</h1>
-        <p>Kelas Digital Masa Kini — Akses Mudah, Paham Lebih Cepat!</p>
+  <!-- ================= 1. HALAMAN LOGIN ================= -->
+  <div id="loginSection" class="login-wrapper">
+    <div class="login-card">
+      <div class="text-center mb-3">
+        <img
+          src="https://lh3.googleusercontent.com/d/115w1UQqLJ45JRxf1MvkvzzybvFO9XHLM"
+          alt="Logo Resmi UPT SMAN 26 Bone"
+          class="school-logo-login mb-2"
+        />
+        <div class="fw-bold text-uppercase small" style="color: #D97706; letter-spacing: 1px;">
+          UPT SMA NEGERI 26 BONE
+        </div>
+        <h4 class="fw-bold mb-1" style="color: #0F172A;">Portal Belajar Digital</h4>
+        <p class="text-muted small mb-0">Masuk menggunakan NIS 7 digit kalian</p>
       </div>
-    </div>
-    <div class="user-actions" id="navActions" style="display:none;">
-      <span class="user-name-pill" id="navUserName"></span>
-      <button class="btn-logout" onclick="logout()">Keluar</button>
+
+      <form id="loginForm" class="mt-3">
+        <div class="mb-3">
+          <label class="form-label fw-semibold small">Username / NIS (7 Digit)</label>
+          <div class="input-group">
+            <span class="input-group-text bg-light"><i class="bi bi-person-badge"></i></span>
+            <input type="text" id="inputUser" class="form-control" placeholder="Contoh: 2026001" required />
+          </div>
+        </div>
+        <div class="mb-3">
+          <label class="form-label fw-semibold small">PIN Akses (7 Digit)</label>
+          <div class="input-group">
+            <span class="input-group-text bg-light"><i class="bi bi-key"></i></span>
+            <input type="password" id="inputPin" class="form-control" placeholder="Masukkan NIS 7 digit" required />
+          </div>
+        </div>
+        <div id="loginAlert" class="alert alert-danger py-2 small d-none"></div>
+        <button type="submit" id="btnLogin" class="btn btn-primary-navy w-100 py-2 fw-bold rounded-3">
+          <i class="bi bi-box-arrow-in-right me-1"></i> Masuk ke Kelas
+        </button>
+      </form>
     </div>
   </div>
-</header>
 
-<main>
-  <!-- HALAMAN LOGIN -->
-  <section id="loginSection" class="login-box">
-    <div class="login-badge">SMAN 26</div>
-    <h2>Portal Belajar SMAN 26 Bone</h2>
-    <p class="sub">Masuk menggunakan NISN / Username dan PIN</p>
-    <div class="form-group">
-      <label>Username / NISN</label>
-      <div class="input-wrap">
-        <input type="text" id="loginUser" placeholder="Contoh: 812345" autocomplete="username" />
-      </div>
-    </div>
-    <div class="form-group">
-      <label>PIN / Password</label>
-      <div class="input-wrap">
-        <input type="password" id="loginPin" inputmode="numeric" placeholder="Masukkan 6 digit PIN" />
-        <button type="button" class="toggle-pin" onclick="togglePin()" title="Intip PIN">👁️</button>
-      </div>
-    </div>
-    <button class="btn-primary" id="btnLogin" onclick="handleLogin()">Masuk ke Kelas</button>
-    <div class="error-msg" id="loginError"></div>
-  </section>
-
-  <!-- DASHBOARD SISWA & GURU -->
-  <section id="appSection" style="display:none;">
-    <div class="hero-card">
-      <div>
-        <div class="role-row">
-          <span class="pill-blue" id="roleBadge">AKUN SISWA</span>
-          <span class="pill-kelas" id="kelasBadge">KELAS XI-A</span>
-          <span class="pill-rank" id="rankBadge">🏅 Penjelajah Fisika</span>
+  <!-- ================= 2. DASHBOARD UTAMA ================= -->
+  <div id="dashboardSection" class="d-none">
+    <nav class="navbar navbar-dark navbar-portal sticky-top px-3 py-2">
+      <div class="container-fluid">
+        <div class="d-flex align-items-center">
+          <img
+            src="https://lh3.googleusercontent.com/d/115w1UQqLJ45JRxf1MvkvzzybvFO9XHLM"
+            alt="Logo SMAN 26 Bone"
+            class="school-logo-nav me-2"
+          />
+          <div>
+            <span class="navbar-brand fw-bold mb-0 d-block lh-1 fs-6">Portal Belajar SMAN 26 Bone</span>
+            <small class="text-info" style="font-size: 0.72rem;">Fisika Interaktif &amp; Lab Virtual</small>
+          </div>
         </div>
-        <h2 id="greetingText">Halo!</h2>
-        <p id="subGreeting">Pilih mata pelajaran dan selesaikan setiap aktivitas pembelajaran secara berurutan.</p>
-      </div>
-      <div class="progress-box" id="studentProgressBox">
-        <div class="progress-head">
-          <span>Progres Ketuntasan</span>
-          <span id="progressPercent">0%</span>
-        </div>
-        <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
-      </div>
-    </div>
-
-    <!-- TAMPILAN SISWA -->
-    <div id="studentView">
-      <div class="course-tabs" id="courseTabs"></div>
-      <div id="courseContent"></div>
-    </div>
-
-    <!-- TAMPILAN GURU (GRADEBOOK) -->
-    <div id="teacherView" style="display:none;">
-      <div class="bab-card">
-        <div class="bab-header">
-          <span>📊 Buku Nilai & Arsip Tugas Siswa</span>
-          <button class="btn-act btn-materi" onclick="loadLMSData()">🔄 Segarkan</button>
-        </div>
-        <div class="table-wrap">
-          <table>
-            <thead>
-              <tr>
-                <th>Waktu</th>
-                <th>Nama Siswa</th>
-                <th>Materi</th>
-                <th>Aktivitas</th>
-                <th>Skor / Catatan Guru</th>
-                <th>Lampiran Drive</th>
-              </tr>
-            </thead>
-            <tbody id="gradebookBody"></tbody>
-          </table>
+        <div class="d-flex align-items-center gap-2">
+          <span id="userBadgeNav" class="badge bg-warning text-dark fw-bold"></span>
+          <button onclick="logout()" class="btn btn-outline-light btn-sm">
+            <i class="bi bi-box-arrow-right"></i> Keluar
+          </button>
         </div>
       </div>
-    </div>
-  </section>
-</main>
+    </nav>
 
-<!-- MODAL MATERI -->
-<div class="modal-backdrop" id="materiModal">
-  <div class="modal-card">
-    <div class="modal-head">
-      <h3 id="materiModalTitle">Materi Pembelajaran</h3>
-      <button class="modal-close" onclick="closeModal('materiModal')">×</button>
-    </div>
-    <div class="modal-body" id="materiModalBody"></div>
-  </div>
-</div>
+    <div class="container py-4">
+      <!-- Banner Sambutan & Lencana -->
+      <div class="card border-0 rounded-4 shadow-sm mb-4 text-white" style="background: linear-gradient(135deg, #0F172A, #1E293B);">
+        <div class="card-body p-4 d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3">
+          <div>
+            <span class="badge bg-info text-dark mb-2" id="userKelasLabel">Kelas -</span>
+            <h4 class="fw-bold mb-1">Selamat Datang, <span id="userNameLabel">Siswa</span>!</h4>
+            <p class="mb-0 text-light opacity-75 small">Eksplorasi simulasi PhET, kerjakan kuis interaktif, dan unggah hasil praktikum langsung dari HP.</p>
+          </div>
+          <div id="lencanaContainer" class="text-md-end">
+            <span class="badge-lencana"><i class="bi bi-lightning-charge-fill me-1"></i> Bintang Eksperimen</span>
+          </div>
+        </div>
+      </div>
 
-<!-- MODAL KUIS -->
-<div class="modal-backdrop" id="quizModal">
-  <div class="modal-card">
-    <div class="modal-head">
-      <h3 id="quizModalTitle">Kuis Pemahaman</h3>
-      <button class="modal-close" onclick="closeModal('quizModal')">×</button>
-    </div>
-    <div class="modal-body" id="quizModalBody"></div>
-  </div>
-</div>
+      <!-- Panel Khusus Guru: Ruang Koreksi Nilai -->
+      <div id="panelGuru" class="d-none mb-4">
+        <div class="card border-0 rounded-4 shadow-sm">
+          <div class="card-header bg-white border-bottom py-3 d-flex justify-content-between align-items-center flex-wrap gap-2">
+            <h6 class="fw-bold mb-0"><i class="bi bi-check2-square text-primary me-2"></i>Ruang Koreksi Tugas &amp; Buku Nilai Guru</h6>
+            <div class="d-flex gap-2">
+              <select id="filterKelasGuru" class="form-select form-select-sm" onchange="renderTabelTugasGuru()">
+                <option value="ALL">Semua Kelas</option>
+                <option value="X-E.1">X-E.1</option>
+                <option value="X-E.2">X-E.2</option>
+                <option value="X-E.3">X-E.3</option>
+                <option value="X-E.4">X-E.4</option>
+                <option value="XI-F.3">XI-F.3</option>
+                <option value="XII-F.3">XII-F.3</option>
+              </select>
+              <button class="btn btn-sm btn-primary-navy" onclick="muatDataDashboard()"><i class="bi bi-arrow-clockwise"></i> Segarkan</button>
+            </div>
+          </div>
+          <div class="card-body table-responsive">
+            <table class="table table-hover align-middle small mb-0">
+              <thead class="table-light">
+                <tr>
+                  <th>Siswa</th>
+                  <th>Kelas</th>
+                  <th>Materi</th>
+                  <th>Lampiran</th>
+                  <th>Nilai</th>
+                  <th>Aksi Cepat</th>
+                </tr>
+              </thead>
+              <tbody id="tbodyTugasGuru">
+                <tr><td colspan="6" class="text-center text-muted py-3">Memuat kiriman tugas siswa...</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
 
-<!-- MODAL UPLOAD TUGAS -->
-<div class="modal-backdrop" id="uploadModal">
-  <div class="modal-card">
-    <div class="modal-head">
-      <h3 id="uploadModalTitle">Kirim Tugas</h3>
-      <button class="modal-close" onclick="closeModal('uploadModal')">×</button>
-    </div>
-    <div class="modal-body">
-      <p style="margin-top:0;color:var(--muted);">Ambil foto hasil praktikum atau pilih file PDF. Foto kamera HP otomatis dikompres agar hemat kuota & cepat terkirim!</p>
-      <label class="upload-zone" for="tugasFile">
-        <div style="font-size:28px;">📸 / 📄</div>
-        <div style="font-weight:700;color:var(--navy);margin-top:4px;">Ketuk di sini untuk Kamera atau Pilih File</div>
-        <div id="selectedFileName" style="font-size:12px;color:var(--muted);margin-top:4px;">Belum ada file dipilih</div>
-        <img id="previewImg" class="preview-img" alt="Pratinjau Tugas" />
-        <div id="compressInfo" class="compress-info"></div>
-      </label>
-      <input type="file" id="tugasFile" accept="image/*,application/pdf" style="display:none;" onchange="handleFileSelect(event)" />
-      <button class="btn-primary" id="btnSubmitTugas" style="background:var(--green);" onclick="submitTugas()">Unggah Sekarang</button>
+      <!-- Daftar Mata Pelajaran & Materi -->
+      <div id="kursusContainer" class="row g-4"></div>
     </div>
   </div>
-</div>
 
-<!-- MODAL BERI NILAI GURU -->
-<div class="modal-backdrop" id="gradeModal">
-  <div class="modal-card" style="max-width:440px;">
-    <div class="modal-head">
-      <h3 id="gradeModalTitle">Beri Nilai Tugas</h3>
-      <button class="modal-close" onclick="closeModal('gradeModal')">×</button>
-    </div>
-    <div class="modal-body">
-      <div style="font-size:12px;font-weight:700;color:var(--muted);">Pilih Skor Cepat atau Ketik Manual:</div>
-      <div class="quick-chips">
-        <button type="button" class="chip-btn" onclick="setQuickGrade('100 - Sangat Tepat & Rapi!')">🌟 100 - Sangat Tepat</button>
-        <button type="button" class="chip-btn" onclick="setQuickGrade('90 - Analisis Bagus!')">👍 90 - Bagus</button>
-        <button type="button" class="chip-btn" onclick="setQuickGrade('85 - Sudah Baik')">✅ 85 - Baik</button>
-      </div>
-      <div class="form-group">
-        <label>Nilai & Catatan Feedback untuk Siswa</label>
-        <div class="input-wrap">
-          <input type="text" id="gradeInput" placeholder="Contoh: 95 - Langkah pengerjaan sangat jelas!" />
+  <!-- ================= 3. MODAL BACA MATERI / SIMULASI / KUIS / TUGAS ================= -->
+  <div class="modal fade" id="modalAktivitas" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+      <div class="modal-content rounded-4 border-0">
+        <div class="modal-header bg-dark text-white">
+          <h6 class="modal-title fw-bold" id="modalTitle">Judul Aktivitas</h6>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
         </div>
+        <div class="modal-body p-4" id="modalBody"></div>
       </div>
-      <button class="btn-primary" id="btnSaveGrade" onclick="saveGrade()">Simpan Nilai ke Siswa</button>
     </div>
   </div>
-</div>
 
-<footer>
-  <strong>Portal Belajar SMAN 26 Bone</strong> • Dikembangkan untuk Pembelajaran Digital Interaktif
-</footer>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    // =========================================================================
+    // TEMPEL URL WEB APP APPS SCRIPT KAMU DI BAWAH INI (BERAKHIRAN /exec)
+    // =========================================================================
+    const API_URL = "https://script.google.com/macros/s/AKfycbx7BY02VykL5vOUWtBxnyGSYVWptOQiP2ph84Vv9Myz8Ge3memFEGCF8kQgNgnJ2wtybw/exec";
 
-<script>
-  const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbx7BY02VykL5vOUWtBxnyGSYVWptOQiP2ph84Vv9Myz8Ge3memFEGCF8kQgNgnJ2wtybw/exec";
-  let currentUser = null;
-  let lmsData = { kursus: [], materi: [], soal: [], nilai: [] };
-  let activeCourseId = null;
-  let activeMateriId = null;
-  let processedFile = null;
-  let gradingRowIndex = null;
+    let currentUser = null;
+    let appData = { kursus: [], materi: [], soal: [], nilai: [], tugas: [] };
+    const modalObj = new bootstrap.Modal(document.getElementById("modalAktivitas"));
 
-  function togglePin() {
-    const inp = document.getElementById("loginPin");
-    inp.type = inp.type === "password" ? "text" : "password";
-  }
-
-  function getTimeGreeting() {
-    const h = new Date().getHours();
-    if (h < 11) return "Selamat Pagi";
-    if (h < 15) return "Selamat Siang";
-    if (h < 18) return "Selamat Sore";
-    return "Selamat Malam";
-  }
-
-  async function handleLogin() {
-    const username = document.getElementById("loginUser").value.trim();
-    const pin = document.getElementById("loginPin").value.trim();
-    const err = document.getElementById("loginError");
-    const btn = document.getElementById("btnLogin");
-
-    if (!username || !pin) { err.textContent = "Harap isi Username/NISN dan PIN!"; return; }
-    err.textContent = "";
-    btn.disabled = true; btn.textContent = "Memeriksa akun...";
-
-    try {
-      const res = await fetch(SCRIPT_URL, {
-        method: "POST",
-        body: JSON.stringify({ action: "login", username, pin })
-      });
-      const json = await res.json();
-      if (json.status === "success") {
-        currentUser = json.user;
-        localStorage.setItem("sman26_user", JSON.stringify(currentUser));
-        initDashboard();
-      } else {
-        err.textContent = json.message || "Username/NISN atau PIN salah!";
+    // Cek sesi tersimpan
+    window.addEventListener("DOMContentLoaded", () => {
+      const saved = localStorage.getItem("portal_sman26_user");
+      if (saved) {
+        currentUser = JSON.parse(saved);
+        tampilkanDashboard();
       }
-    } catch (e) {
-      err.textContent = "Gagal terhubung ke server. Periksa koneksi internet!";
-    } finally {
-      btn.disabled = false; btn.textContent = "Masuk ke Kelas";
-    }
-  }
-
-  function logout() {
-    localStorage.removeItem("sman26_user");
-    currentUser = null;
-    activeCourseId = null;
-    document.getElementById("appSection").style.display = "none";
-    document.getElementById("navActions").style.display = "none";
-    document.getElementById("loginSection").style.display = "block";
-  }
-
-  async function initDashboard() {
-    document.getElementById("loginSection").style.display = "none";
-    document.getElementById("appSection").style.display = "block";
-    document.getElementById("navActions").style.display = "flex";
-    document.getElementById("navUserName").textContent = currentUser.nama;
-    document.getElementById("greetingText").textContent = `${getTimeGreeting()},${currentUser.nama}!`;
-
-    const isGuru = String(currentUser.role).toLowerCase() === "guru";
-    const userKelas = currentUser.kelas || "Semua";
-    document.getElementById("roleBadge").textContent = isGuru ? "AKUN GURU" : "AKUN SISWA";
-    document.getElementById("kelasBadge").textContent = isGuru ? "SEMUA KELAS" : `KELAS ${userKelas}`; document.getElementById("studentProgressBox").style.display = isGuru ? "none" : "block"; document.getElementById("rankBadge").style.display = isGuru ? "none" : "inline-block"; document.getElementById("studentView").style.display = isGuru ? "none" : "block"; document.getElementById("teacherView").style.display = isGuru ? "block" : "none";  await loadLMSData(); }  async function loadLMSData() { const res = await fetch(`${SCRIPT_URL}?action=getData`);
-    lmsData = await res.json();
-    if (String(currentUser.role).toLowerCase() === "guru") {
-      renderGradebook();
-    } else {
-      const daftarKursus = getFilteredCourses();
-      if (daftarKursus.length && !activeCourseId) activeCourseId = daftarKursus[0].kursus_id;
-      renderStudentCourses();
-    }
-  }
-
-  // PENCOCOKAN KELAS PINTAR (XI cocok dengan XI-A, XI-B, dst.)
-  function getFilteredCourses() {
-    const userKelas = String(currentUser.kelas || "Semua").trim().toUpperCase();
-    if (userKelas === "SEMUA" || userKelas === "") return lmsData.kursus;
-    const tingkatSiswa = userKelas.split("-")[0]; // Misal "XI-A" -> "XI"
-
-    return lmsData.kursus.filter(k => {
-      const kKelas = String(k.kelas || "Semua").replace(/KELAS\s*/gi, "").trim().toUpperCase();
-      if (kKelas === "SEMUA" || kKelas === "") return true;
-      if (kKelas === userKelas) return true;
-      if (kKelas === tingkatSiswa) return true;
-      return false;
     });
-  }
 
-  function renderStudentCourses() {
-    const daftarKursus = getFilteredCourses();
-    const tabs = document.getElementById("courseTabs");
-
-    if (!daftarKursus.length) {
-      tabs.innerHTML = "";
-      document.getElementById("courseContent").innerHTML = `
-        <div class="bab-card" style="text-align:center;padding:28px;">
-          <p style="color:var(--muted);margin:0;">Belum ada mata pelajaran aktif untuk kelas <strong>${currentUser.kelas}</strong>.</p>
-        </div>`;
-      return;
-    }
-
-    tabs.innerHTML = daftarKursus.map(k => `
-      <button class="course-tab ${k.kursus_id === activeCourseId ? 'active' : ''}" onclick="selectCourse
+    // Proses Login
+    document.getElementById("loginForm").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const username = document.getElementById("inputUser").value.trim();
+      const pin = document.getElement
