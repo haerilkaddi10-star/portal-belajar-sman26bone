@@ -4,217 +4,65 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Portal Belajar Digital — UPT SMAN 26 Bone</title>
-  <!-- Favicon Logo Resmi SMAN 26 Bone -->
   <link rel="icon" type="image/png" href="https://lh3.googleusercontent.com/d/115w1UQqLJ45JRxf1MvkvzzybvFO9XHLM" />
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet" />
   <style>
-    :root {
-      --navy-dark: #0F172A;
-      --navy-card: #1E293B;
-      --cyan-accent: #06B6D4;
-      --amber-gold: #F59E0B;
-      --bg-light: #F1F5F9;
-    }
-    body {
-      background-color: var(--bg-light);
-      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
-      color: #1E293B;
-    }
-    /* Halaman Login */
-    .login-wrapper {
-      min-height: 100vh;
-      background: linear-gradient(135deg, #0F172A 0%, #1E293B 60%, #0E7490 100%);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 1.5rem;
-    }
-    .login-card {
-      background: #FFFFFF;
-      border-radius: 1.25rem;
-      max-width: 420px;
-      width: 100%;
-      padding: 2.25rem 2rem;
-      box-shadow: 0 20px 45px rgba(0, 0, 0, 0.35);
-      border-top: 5px solid var(--amber-gold);
-    }
-    .school-logo-login {
-      width: 88px;
-      height: 88px;
-      object-fit: contain;
-      filter: drop-shadow(0 4px 10px rgba(15, 23, 42, 0.25));
-    }
-    /* Navbar Dashboard */
-    .navbar-portal {
-      background-color: var(--navy-dark);
-      border-bottom: 3px solid var(--amber-gold);
-    }
-    .school-logo-nav {
-      width: 38px;
-      height: 38px;
-      object-fit: contain;
-    }
-    /* Kartu & Lencana */
-    .course-card {
-      border: none;
-      border-radius: 1rem;
-      box-shadow: 0 4px 14px rgba(15, 23, 42, 0.06);
-      transition: transform 0.2s ease;
-    }
-    .course-card:hover {
-      transform: translateY(-3px);
-    }
-    .badge-lencana {
-      background: linear-gradient(135deg, #F59E0B, #D97706);
-      color: #FFFFFF;
-      font-weight: 600;
-      padding: 0.45rem 0.85rem;
-      border-radius: 2rem;
-      font-size: 0.85rem;
-    }
-    .btn-primary-navy {
-      background-color: var(--navy-dark);
-      color: #FFFFFF;
-      border: none;
-    }
-    .btn-primary-navy:hover {
-      background-color: #1E293B;
-      color: #FFFFFF;
-    }
-    .simulasi-frame {
-      width: 100%;
-      height: 460px;
-      border: none;
-      border-radius: 0.75rem;
-      background: #000;
-    }
+    :root { --navy: #0F172A; --gold: #F59E0B; --cyan: #06B6D4; }
+    html, body { margin: 0; padding: 0; min-height: 100vh; font-family: 'Segoe UI', system-ui, sans-serif; background: #F1F5F9; color: #1E293B; }
+    .login-wrapper { min-height: 100vh; width: 100%; background: linear-gradient(135deg, #0F172A 0%, #1E293B 60%, #0E7490 100%); display: flex; align-items: center; justify-content: center; padding: 1.5rem; }
+    .login-card { background: #FFFFFF; border-radius: 1.25rem; max-width: 410px; width: 100%; padding: 2.2rem 1.85rem; box-shadow: 0 22px 48px rgba(0, 0, 0, 0.38); border-top: 5px solid var(--gold); }
+    .logo-login { width: 86px; height: 86px; object-fit: contain; filter: drop-shadow(0 4px 10px rgba(15, 23, 42, 0.25)); }
+    .navbar-portal { background-color: var(--navy); border-bottom: 3px solid var(--gold); }
+    .logo-nav { width: 38px; height: 38px; object-fit: contain; }
+    .btn-navy { background-color: var(--navy); color: #FFFFFF; border: none; }
+    .btn-navy:hover { background-color: #1E293B; color: #FFFFFF; }
+    .badge-lencana { background: linear-gradient(135deg, #F59E0B, #D97706); color: #FFF; font-weight: 600; padding: 0.45rem 0.9rem; border-radius: 2rem; font-size: 0.85rem; }
+    .simulasi-frame { width: 100%; height: 450px; border: none; border-radius: 0.75rem; background: #000; }
   </style>
 </head>
 <body>
 
-  <!-- ================= 1. HALAMAN LOGIN ================= -->
+  <!-- HALAMAN LOGIN -->
   <div id="loginSection" class="login-wrapper">
     <div class="login-card">
       <div class="text-center mb-3">
-        <img
-          src="https://lh3.googleusercontent.com/d/115w1UQqLJ45JRxf1MvkvzzybvFO9XHLM"
-          alt="Logo Resmi UPT SMAN 26 Bone"
-          class="school-logo-login mb-2"
-        />
-        <div class="fw-bold text-uppercase small" style="color: #D97706; letter-spacing: 1px;">
-          UPT SMA NEGERI 26 BONE
-        </div>
+        <img src="https://lh3.googleusercontent.com/d/115w1UQqLJ45JRxf1MvkvzzybvFO9XHLM" alt="Logo UPT SMAN 26 Bone" class="logo-login mb-2" />
+        <div class="fw-bold text-uppercase small" style="color: #D97706; letter-spacing: 1px;">UPT SMA NEGERI 26 BONE</div>
         <h4 class="fw-bold mb-1" style="color: #0F172A;">Portal Belajar Digital</h4>
         <p class="text-muted small mb-0">Masuk menggunakan NIS 7 digit kalian</p>
       </div>
 
-      <form id="loginForm" class="mt-3">
+      <div class="mt-3">
         <div class="mb-3">
           <label class="form-label fw-semibold small">Username / NIS (7 Digit)</label>
           <div class="input-group">
             <span class="input-group-text bg-light"><i class="bi bi-person-badge"></i></span>
-            <input type="text" id="inputUser" class="form-control" placeholder="Contoh: 2026001" required />
+            <input type="text" id="inputUser" class="form-control" placeholder="Contoh: 2026001" />
           </div>
         </div>
         <div class="mb-3">
           <label class="form-label fw-semibold small">PIN Akses (7 Digit)</label>
           <div class="input-group">
             <span class="input-group-text bg-light"><i class="bi bi-key"></i></span>
-            <input type="password" id="inputPin" class="form-control" placeholder="Masukkan NIS 7 digit" required />
+            <input type="password" id="inputPin" class="form-control" placeholder="Masukkan NIS 7 digit" />
+            <button class="btn btn-outline-secondary" type="button" onclick="togglePin()"><i id="iconMata" class="bi bi-eye"></i></button>
           </div>
         </div>
         <div id="loginAlert" class="alert alert-danger py-2 small d-none"></div>
-        <button type="submit" id="btnLogin" class="btn btn-primary-navy w-100 py-2 fw-bold rounded-3">
+        <button type="button" id="btnLogin" onclick="prosesLogin()" class="btn btn-navy w-100 py-2 fw-bold rounded-3">
           <i class="bi bi-box-arrow-in-right me-1"></i> Masuk ke Kelas
         </button>
-      </form>
+      </div>
     </div>
   </div>
 
-  <!-- ================= 2. DASHBOARD UTAMA ================= -->
+  <!-- DASHBOARD UTAMA -->
   <div id="dashboardSection" class="d-none">
     <nav class="navbar navbar-dark navbar-portal sticky-top px-3 py-2">
       <div class="container-fluid">
-        <div class="d-flex align-items-center">
-          <img
-            src="https://lh3.googleusercontent.com/d/115w1UQqLJ45JRxf1MvkvzzybvFO9XHLM"
-            alt="Logo SMAN 26 Bone"
-            class="school-logo-nav me-2"
-          />
-          <div>
-            <span class="navbar-brand fw-bold mb-0 d-block lh-1 fs-6">Portal Belajar SMAN 26 Bone</span>
-            <small class="text-info" style="font-size: 0.72rem;">Fisika Interaktif &amp; Lab Virtual</small>
-          </div>
-        </div>
-        <div class="d-flex align-items-center gap-2">
-          <span id="userBadgeNav" class="badge bg-warning text-dark fw-bold"></span>
-          <button onclick="logout()" class="btn btn-outline-light btn-sm">
-            <i class="bi bi-box-arrow-right"></i> Keluar
-          </button>
-        </div>
-      </div>
-    </nav>
-
-    <div class="container py-4">
-      <!-- Banner Sambutan & Lencana -->
-      <div class="card border-0 rounded-4 shadow-sm mb-4 text-white" style="background: linear-gradient(135deg, #0F172A, #1E293B);">
-        <div class="card-body p-4 d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3">
-          <div>
-            <span class="badge bg-info text-dark mb-2" id="userKelasLabel">Kelas -</span>
-            <h4 class="fw-bold mb-1">Selamat Datang, <span id="userNameLabel">Siswa</span>!</h4>
-            <p class="mb-0 text-light opacity-75 small">Eksplorasi simulasi PhET, kerjakan kuis interaktif, dan unggah hasil praktikum langsung dari HP.</p>
-          </div>
-          <div id="lencanaContainer" class="text-md-end">
-            <span class="badge-lencana"><i class="bi bi-lightning-charge-fill me-1"></i> Bintang Eksperimen</span>
-          </div>
-        </div>
-      </div>
-
-      <!-- Panel Khusus Guru: Ruang Koreksi Nilai -->
-      <div id="panelGuru" class="d-none mb-4">
-        <div class="card border-0 rounded-4 shadow-sm">
-          <div class="card-header bg-white border-bottom py-3 d-flex justify-content-between align-items-center flex-wrap gap-2">
-            <h6 class="fw-bold mb-0"><i class="bi bi-check2-square text-primary me-2"></i>Ruang Koreksi Tugas &amp; Buku Nilai Guru</h6>
-            <div class="d-flex gap-2">
-              <select id="filterKelasGuru" class="form-select form-select-sm" onchange="renderTabelTugasGuru()">
-                <option value="ALL">Semua Kelas</option>
-                <option value="X-E.1">X-E.1</option>
-                <option value="X-E.2">X-E.2</option>
-                <option value="X-E.3">X-E.3</option>
-                <option value="X-E.4">X-E.4</option>
-                <option value="XI-F.3">XI-F.3</option>
-                <option value="XII-F.3">XII-F.3</option>
-              </select>
-              <button class="btn btn-sm btn-primary-navy" onclick="muatDataDashboard()"><i class="bi bi-arrow-clockwise"></i> Segarkan</button>
-            </div>
-          </div>
-          <div class="card-body table-responsive">
-            <table class="table table-hover align-middle small mb-0">
-              <thead class="table-light">
-                <tr>
-                  <th>Siswa</th>
-                  <th>Kelas</th>
-                  <th>Materi</th>
-                  <th>Lampiran</th>
-                  <th>Nilai</th>
-                  <th>Aksi Cepat</th>
-                </tr>
-              </thead>
-              <tbody id="tbodyTugasGuru">
-                <tr><td colspan="6" class="text-center text-muted py-3">Memuat kiriman tugas siswa...</td></tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
-      </div>
-
-      <!-- Daftar Mata Pelajaran & Materi -->
-      <div id="kursusContainer" class="row g-4"></div>
-    </div>
-  </div>
-
-  <!-- ================= 3. MODAL BACA MATERI / SIMULASI / KUIS / TUGAS ================= -->
+        <div class="d-flex align-items-center
+		<!-- MODAL AKTIVITAS -->
   <div class="modal fade" id="modalAktivitas" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
       <div class="modal-content rounded-4 border-0">
@@ -229,26 +77,117 @@
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
   <script>
-    // =========================================================================
-    // TEMPEL URL WEB APP APPS SCRIPT KAMU DI BAWAH INI (BERAKHIRAN /exec)
-    // =========================================================================
     const API_URL = "https://script.google.com/macros/s/AKfycbx7BY02VykL5vOUWtBxnyGSYVWptOQiP2ph84Vv9Myz8Ge3memFEGCF8kQgNgnJ2wtybw/exec";
-
     let currentUser = null;
     let appData = { kursus: [], materi: [], soal: [], nilai: [], tugas: [] };
     const modalObj = new bootstrap.Modal(document.getElementById("modalAktivitas"));
 
-    // Cek sesi tersimpan
     window.addEventListener("DOMContentLoaded", () => {
       const saved = localStorage.getItem("portal_sman26_user");
       if (saved) {
         currentUser = JSON.parse(saved);
         tampilkanDashboard();
       }
+      document.getElementById("inputPin").addEventListener("keypress", (e) => {
+        if (e.key === "Enter") prosesLogin();
+      });
     });
 
-    // Proses Login
-    document.getElementById("loginForm").addEventListener("submit", async (e) => {
-      e.preventDefault();
+    function togglePin() {
+      const inp = document.getElementById("inputPin");
+      const icon = document.getElementById("iconMata");
+      if (inp.type === "password") {
+        inp.type = "text";
+        icon.className = "bi bi-eye-slash";
+      } else {
+        inp.type = "password";
+        icon.className = "bi bi-eye";
+      }
+    }
+
+    async function prosesLogin() {
       const username = document.getElementById("inputUser").value.trim();
-      const pin = document.getElement
+      const pin = document.getElementById("inputPin").value.trim();
+      const btn = document.getElementById("btnLogin");
+      const alertBox = document.getElementById("loginAlert");
+
+      if (!username || !pin) {
+        alertBox.textContent = "Harap isi Username/NIS dan PIN terlebih dahulu!";
+        alertBox.classList.remove("d-none");
+        return;
+      }
+
+      alertBox.classList.add("d-none");
+      btn.disabled = true;
+      btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Memeriksa akun...';
+
+      try {
+        const res = await fetch(`${API_URL}?action=login&username=${encodeURIComponent(username)}&pin=${encodeURIComponent(pin)}`);
+        const json = await res.json();
+
+        if (json.status === "success" && json.user) {
+          currentUser = json.user;
+          localStorage.setItem("portal_sman26_user", JSON.stringify(currentUser));
+          tampilkanDashboard();
+        } else {
+          alertBox.textContent = json.message || "Username atau PIN tidak cocok. Pastikan memakai NIS 7 digit!";
+          alertBox.classList.remove("d-none");
+        }
+      } catch (err) {
+        alertBox.textContent = "Gagal terhubung ke server Apps Script. Pastikan izin akses Web App sudah 'Siapa saja (Anyone)'.";
+        alertBox.classList.remove("d-none");
+      } finally {
+        btn.disabled = false;
+        btn.innerHTML = '<i class="bi bi-box-arrow-in-right me-1"></i> Masuk ke Kelas';
+      }
+    }
+
+    function logout() {
+      localStorage.removeItem("portal_sman26_user");
+      currentUser = null;
+      document.getElementById("dashboardSection").classList.add("d-none");
+      document.getElementById("loginSection").classList.remove("d-none");
+    }
+
+    function tampilkanDashboard() {
+      document.getElementById("loginSection").classList.add("d-none");
+      document.getElementById("dashboardSection").classList.remove("d-none");
+      document.getElementById("userNameLabel").textContent = currentUser.nama_lengkap;
+      document.getElementById("userKelasLabel").textContent = `Kelas ${currentUser.Kelas || "-"}`;
+      document.getElementById("userBadgeNav").textContent = `${currentUser.role.toUpperCase()} • ${currentUser.Kelas || "SMAN 26"}`;
+
+      if (currentUser.role === "guru" || currentUser.role === "admin") {
+        document.getElementById("panelGuru").classList.remove("d-none");
+      } else {
+        document.getElementById("panelGuru").classList.add("d-none");
+      }
+      muatDataDashboard();
+    }
+
+    function cocokKelas(kelasKursus, kelasSiswa) {
+      if (!kelasKursus || currentUser.role === "guru" || currentUser.role === "admin") return true;
+      const k = String(kelasKursus).trim().toUpperCase();
+      const s = String(kelasSiswa || "").trim().toUpperCase();
+      if (k === "ALL" || k === "SEMUA" || k === s) return true;
+      if (k === "XII" && s.startsWith("XII")) return true;
+      if (k === "XI" && s.startsWith("XI") && !s.startsWith("XII")) return true;
+      if (k === "X" && s.startsWith("X") && !s.startsWith("XI")) return true;
+      return false;
+    }
+
+    async function muatDataDashboard() {
+      const container = document.getElementById("kursusContainer");
+      container.innerHTML = '<div class="col-12 text-center py-5"><div class="spinner-border text-primary"></div><p class="mt-2 text-muted small">Memuat materi pembelajaran...</p></div>';
+
+      try {
+        const res = await fetch(`${API_URL}?action=getDashboard&user_id=${encodeURIComponent(currentUser.user_id)}`);
+        const json = await res.json();
+        appData = {
+          kursus: json.kursus || [],
+          materi: json.materi || [],
+          soal: json.soal || [],
+          nilai: json.nilai || [],
+          tugas: json.tugas || []
+        };
+        renderKursus();
+        if (currentUser.
