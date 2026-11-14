@@ -2,460 +2,658 @@
 <html lang="id">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   <title>Portal Belajar SMAN 26 Bone</title>
-  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <style>
-    body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+    :root {
+      --navy: #0F172A;
+      --navy-light: #1E293B;
+      --gold: #F59E0B;
+      --gold-soft: #FEF3C7;
+      --cyan: #06B6D4;
+      --green: #10B981;
+      --green-soft: #D1FAE5;
+      --bg: #F1F5F9;
+      --card: #FFFFFF;
+      --text: #1E293B;
+      --muted: #64748B;
+      --border: #E2E8F0;
+    }
+    * { box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; -webkit-tap-highlight-color: transparent; }
+    body { margin: 0; background: var(--bg); color: var(--text); min-height: 100vh; display: flex; flex-direction: column; }
+
+    /* HEADER */
+    header {
+      background: linear-gradient(135deg, var(--navy) 0%, #172554 100%);
+      color: #fff; padding: 14px 18px; position: sticky; top: 0; z-index: 50;
+      box-shadow: 0 4px 14px rgba(15, 23, 42, 0.2); border-bottom: 3px solid var(--gold);
+    }
+    .header-wrap { max-width: 1040px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+    .brand { display: flex; align-items: center; gap: 10px; }
+    .brand-logo { width: 40px; height: 40px; border-radius: 50%; background: #fff; border: 2px solid var(--gold); display: flex; align-items: center; justify-content: center; font-weight: 800; color: var(--navy); font-size: 13px; flex-shrink: 0; }
+    .brand h1 { margin: 0; font-size: 16px; font-weight: 800; letter-spacing: -0.2px; }
+    .brand p { margin: 2px 0 0; font-size: 11px; color: #FCD34D; font-weight: 500; }
+    .user-actions { display: flex; align-items: center; gap: 8px; }
+    .user-name-pill { font-size: 12px; font-weight: 700; color: #FDE68A; display: none; }
+    @media(min-width: 640px) { .user-name-pill { display: inline-block; } }
+    .btn-logout { background: #EF4444; color: #fff; border: none; padding: 8px 14px; border-radius: 10px; font-weight: 700; font-size: 12px; cursor: pointer; }
+
+    /* CONTAINER */
+    main { flex: 1; width: 100%; max-width: 1040px; margin: 0 auto; padding: 16px; }
+
+    /* LOGIN CARD */
+    .login-box {
+      max-width: 420px; margin: 24px auto; background: var(--card); border-radius: 20px;
+      padding: 28px 22px; box-shadow: 0 12px 30px rgba(15, 23, 42, 0.08); text-align: center;
+      border-top: 5px solid var(--gold);
+    }
+    .login-badge { width: 68px; height: 68px; border-radius: 50%; background: var(--navy); color: var(--gold); border: 3px solid var(--gold); margin: 0 auto 14px; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 18px; }
+    .login-box h2 { margin: 0 0 6px; font-size: 22px; color: var(--navy); }
+    .login-box .sub { font-size: 13px; color: var(--muted); margin-bottom: 22px; }
+    .form-group { text-align: left; margin-bottom: 16px; }
+    .form-group label { display: block; font-size: 11px; font-weight: 800; color: var(--navy); letter-spacing: 0.6px; margin-bottom: 6px; text-transform: uppercase; }
+    .input-wrap { position: relative; display: flex; align-items: center; }
+    .input-wrap input {
+      width: 100%; padding: 14px 44px 14px 14px; border: 2px solid var(--border); border-radius: 12px;
+      font-size: 16px; font-weight: 600; color: var(--navy); outline: none; transition: 0.2s;
+    }
+    .input-wrap input:focus { border-color: var(--navy); background: #F8FAFC; }
+    .toggle-pin {
+      position: absolute; right: 12px; background: none; border: none; font-size: 18px;
+      cursor: pointer; padding: 6px; color: var(--muted);
+    }
+    .btn-primary {
+      width: 100%; padding: 15px; background: var(--navy); color: #fff; border: none; border-radius: 12px;
+      font-size: 15px; font-weight: 700; cursor: pointer; transition: 0.2s; box-shadow: 0 4px 12px rgba(15, 23, 42, 0.2);
+    }
+    .btn-primary:active { transform: scale(0.98); }
+    .error-msg { color: #DC2626; font-size: 13px; font-weight: 600; margin-top: 12px; min-height: 18px; }
+
+    /* WELCOME & GAMIFICATION BANNER */
+    .hero-card {
+      background: var(--card); border-radius: 18px; padding: 18px; margin-bottom: 18px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.04); border-left: 5px solid var(--gold);
+      display: flex; flex-direction: column; gap: 14px;
+    }
+    @media(min-width: 768px) { .hero-card { flex-direction: row; align-items: center; justify-content: space-between; } }
+    .role-row { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin-bottom: 6px; }
+    .pill-blue { background: #E0F2FE; color: #0369A1; font-size: 11px; font-weight: 800; padding: 4px 10px; border-radius: 99px; }
+    .pill-rank { background: var(--gold-soft); color: #B45309; font-size: 11px; font-weight: 800; padding: 4px 10px; border-radius: 99px; border: 1px solid #FDE68A; }
+    .hero-card h2 { margin: 0 0 4px; font-size: 19px; color: var(--navy); }
+    .hero-card p { margin: 0; font-size: 13px; color: var(--muted); }
+    .progress-box { background: #F8FAFC; border: 1px solid var(--border); border-radius: 12px; padding: 12px 14px; min-width: 220px; }
+    .progress-head { display: flex; justify-content: space-between; font-size: 12px; font-weight: 700; margin-bottom: 6px; }
+    .progress-bar { height: 8px; background: #E2E8F0; border-radius: 99px; overflow: hidden; }
+    .progress-fill { height: 100%; background: linear-gradient(90deg, var(--cyan), var(--green)); width: 0%; transition: width 0.5s ease; }
+
+    /* COURSE & MATERI LIST */
+    .course-tabs { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 8px; margin-bottom: 14px; }
+    .course-tab {
+      background: var(--card); border: 2px solid var(--border); padding: 10px 14px; border-radius: 12px;
+      font-size: 13px; font-weight: 700; color: var(--navy); cursor: pointer; white-space: nowrap;
+    }
+    .course-tab.active { background: var(--navy); color: #fff; border-color: var(--navy); }
+    .course-banner {
+      background: linear-gradient(135deg, var(--navy) 0%, #1E3A8A 100%); color: #fff;
+      padding: 18px; border-radius: 16px; margin-bottom: 16px;
+    }
+    .course-banner h3 { margin: 0 0 4px; font-size: 18px; }
+    .course-banner span { font-size: 12px; color: #FDE68A; font-weight: 600; }
+
+    .bab-card { background: var(--card); border-radius: 16px; padding: 16px; margin-bottom: 16px; box-shadow: 0 4px 12px rgba(0,0,0,0.03); }
+    .bab-header { display: flex; justify-content: space-between; align-items: center; padding-bottom: 12px; border-bottom: 1px solid var(--border); margin-bottom: 12px; font-weight: 800; font-size: 15px; color: var(--navy); }
+    .materi-item {
+      border: 1px solid var(--border); border-radius: 14px; padding: 14px; margin-bottom: 12px;
+      display: flex; flex-direction: column; gap: 12px; background: #FFFFFF;
+    }
+    @media(min-width: 768px) { .materi-item { flex-direction: row; align-items: center; justify-content: space-between; } }
+    .materi-info { display: flex; align-items: flex-start; gap: 12px; }
+    .num-circle { width: 32px; height: 32px; border-radius: 50%; background: #F1F5F9; color: var(--navy); font-weight: 800; font-size: 13px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+    .materi-title { font-weight: 700; font-size: 15px; color: var(--navy); margin-bottom: 4px; }
+    .badges-inline { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
+    .tag-type { font-size: 11px; font-weight: 800; color: #2563EB; text-transform: uppercase; }
+    .tag-done { font-size: 11px; font-weight: 700; background: var(--green-soft); color: #065F46; padding: 2px 8px; border-radius: 99px; }
+
+    /* MOBILE THUMB-FRIENDLY BUTTONS */
+    .action-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(105px, 1fr)); gap: 8px; width: 100%; }
+    @media(min-width: 768px) { .action-grid { width: auto; display: flex; } }
+    .btn-act {
+      padding: 11px 12px; border-radius: 10px; border: none; font-size: 12px; font-weight: 700;
+      cursor: pointer; text-align: center; transition: 0.15s;
+    }
+    .btn-act:active { transform: scale(0.97); }
+    .btn-materi { background: #E0E7FF; color: #1E40AF; }
+    .btn-kuis { background: var(--gold); color: #1E293B; }
+    .btn-tugas { background: var(--green); color: #fff; }
+
+    /* MODALS */
+    .modal-backdrop {
+      position: fixed; inset: 0; background: rgba(15, 23, 42, 0.65); backdrop-filter: blur(3px);
+      display: none; align-items: center; justify-content: center; padding: 14px; z-index: 100;
+    }
+    .modal-card {
+      background: #fff; width: 100%; max-width: 600px; max-height: 90vh; border-radius: 18px;
+      overflow: hidden; display: flex; flex-direction: column; box-shadow: 0 20px 40px rgba(0,0,0,0.25);
+    }
+    .modal-head { background: var(--navy); color: #fff; padding: 16px 18px; display: flex; justify-content: space-between; align-items: center; gap: 10px; }
+    .modal-head h3 { margin: 0; font-size: 16px; }
+    .modal-close { background: rgba(255,255,255,0.15); border: none; color: #fff; width: 32px; height: 32px; border-radius: 50%; font-size: 18px; cursor: pointer; }
+    .modal-body { padding: 18px; overflow-y: auto; line-height: 1.6; font-size: 14px; }
+
+    /* UPLOAD PREVIEW */
+    .upload-zone {
+      border: 2px dashed #94A3B8; border-radius: 14px; padding: 18px; text-align: center;
+      background: #F8FAFC; margin: 12px 0; cursor: pointer;
+    }
+    .preview-img { max-width: 100%; max-height: 200px; border-radius: 10px; margin-top: 10px; display: none; object-fit: contain; border: 1px solid var(--border); }
+    .compress-info { font-size: 12px; color: #059669; font-weight: 700; margin-top: 6px; }
+
+    /* QUIZ */
+    .quiz-q { background: #F8FAFC; border: 1px solid var(--border); border-radius: 12px; padding: 14px; margin-bottom: 14px; }
+    .quiz-opt { display: block; padding: 11px 12px; margin-top: 8px; background: #fff; border: 1.5px solid var(--border); border-radius: 10px; cursor: pointer; font-size: 13px; font-weight: 600; }
+    .quiz-opt input { margin-right: 8px; }
+
+    /* GRADEBOOK TABLE */
+    .table-wrap { overflow-x: auto; background: #fff; border-radius: 14px; padding: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.04); }
+    table { width: 100%; border-collapse: collapse; font-size: 13px; }
+    th, td { padding: 11px 10px; border-bottom: 1px solid var(--border); text-align: left; }
+    th { background: #F8FAFC; color: var(--navy); font-weight: 800; }
+
+    /* FOOTER */
+    footer {
+      text-align: center; padding: 16px; font-size: 12px; color: var(--muted);
+      border-top: 1px solid var(--border); background: #fff; margin-top: 24px;
+    }
+    footer strong { color: var(--navy); }
   </style>
 </head>
-<body class="bg-slate-100 text-slate-800 min-h-screen flex flex-col">
+<body>
 
-  <!-- NAVBAR PORTAL BELAJAR SMAN 26 BONE -->
-  <header class="bg-blue-950 text-white shadow-md sticky top-0 z-50">
-    <div class="max-w-6xl mx-auto px-4 py-3 flex justify-between items-center">
-      <div class="flex items-center space-x-3">
-        <div class="w-11 h-11 rounded-full bg-white border-2 border-amber-400 p-1 flex items-center justify-center shadow shrink-0 overflow-hidden">
-          <img src="https://lh3.googleusercontent.com/d/115w1UQqLJ45JRxf1MvkvzzybvFO9XHLM" alt="Logo SMAN 26 Bone" class="w-full h-full object-contain" />
-        </div>
-        <div>
-          <h1 class="font-bold text-base sm:text-lg leading-tight tracking-wide">Portal Belajar SMAN 26 Bone</h1>
-          <p class="text-[11px] sm:text-xs text-amber-300 font-medium">Kelas Digital Masa Kini — Akses Mudah, Paham Lebih Cepat!</p>
-        </div>
-      </div>
-
-      <div id="userNav" class="hidden flex items-center space-x-3 text-sm">
-        <span id="navUserName" class="hidden sm:inline font-medium text-amber-300"></span>
-        <button onclick="logout()" class="bg-red-600 hover:bg-red-700 px-3 py-1.5 rounded-lg text-xs font-semibold transition">Keluar</button>
-      </div>
-    </div>
-  </header>
-
-  <!-- HALAMAN LOGIN PORTAL BELAJAR SMAN 26 BONE -->
-  <main id="loginSection" class="flex-grow flex items-center justify-center p-4">
-    <div class="bg-white rounded-2xl shadow-lg max-w-md w-full p-8 border-t-4 border-blue-900">
-      <div class="flex flex-col items-center text-center mb-6">
-        <div class="w-20 h-20 rounded-full bg-white border-4 border-amber-400 p-1.5 flex items-center justify-center shadow-md mb-3 overflow-hidden">
-          <img src="https://lh3.googleusercontent.com/d/115w1UQqLJ45JRxf1MvkvzzybvFO9XHLM" alt="Logo SMAN 26 Bone" class="w-full h-full object-contain" />
-        </div>
-        <h2 class="text-2xl font-extrabold text-blue-950">Portal Belajar SMAN 26 Bone</h2>
-        <p class="text-xs font-semibold text-amber-600 mt-1">Kelas Digital Masa Kini — Akses Mudah, Paham Lebih Cepat!</p>
-        <p class="text-slate-400 text-xs mt-3">Masuk menggunakan NISN / Username dan PIN</p>
-      </div>
-      
-      <form onsubmit="handleLogin(event)" class="space-y-4">
-        <div>
-          <label class="block text-xs font-bold uppercase text-slate-600 mb-1">Username / NISN</label>
-          <input type="text" id="loginUser" required placeholder="Contoh: 00812345"
-            class="w-full px-4 py-2.5 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-800 outline-none" />
-        </div>
-        <div>
-          <label class="block text-xs font-bold uppercase text-slate-600 mb-1">PIN / Password</label>
-          <input type="password" id="loginPin" required placeholder="••••••"
-            class="w-full px-4 py-2.5 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-800 outline-none" />
-        </div>
-        <button type="submit" id="btnLogin"
-          class="w-full bg-blue-900 hover:bg-blue-800 text-white font-bold py-2.5 rounded-lg transition shadow">
-          Masuk ke Kelas
-        </button>
-      </form>
-      <p id="loginMsg" class="text-center text-sm text-red-600 mt-4 font-medium"></p>
-    </div>
-  </main>
-
-  <!-- DASHBOARD UTAMA (SISWA & GURU) -->
-  <main id="dashboardSection" class="hidden max-w-6xl w-full mx-auto px-4 py-6 flex-grow space-y-6">
-    <div class="bg-white rounded-xl shadow-sm p-5 border-l-4 border-amber-400 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+<header>
+  <div class="header-wrap">
+    <div class="brand">
+      <div class="brand-logo">26</div>
       <div>
-        <span id="roleBadge" class="text-xs font-bold uppercase px-2.5 py-0.5 rounded bg-blue-100 text-blue-900"></span>
-        <h2 id="welcomeTitle" class="text-xl font-bold text-blue-950 mt-1"></h2>
-        <p class="text-sm text-slate-500">Pilih mata pelajaran dan selesaikan setiap aktivitas pembelajaran secara berurutan.</p>
-      </div>
-      <div id="siswaProgressBox" class="w-full md:w-64 bg-slate-50 p-3 rounded-lg border">
-        <div class="flex justify-between text-xs font-bold mb-1">
-          <span>Progres Ketuntasan</span>
-          <span id="progressText" class="text-blue-900">0%</span>
-        </div>
-        <div class="w-full bg-slate-200 rounded-full h-2.5">
-          <div id="progressBar" class="bg-emerald-500 h-2.5 rounded-full transition-all duration-500" style="width: 0%"></div>
-        </div>
+        <h1>Portal Belajar SMAN 26 Bone</h1>
+        <p>Kelas Digital Masa Kini — Akses Mudah, Paham Lebih Cepat!</p>
       </div>
     </div>
-
-    <div id="guruTabs" class="hidden flex space-x-2 border-b border-slate-300 pb-2">
-      <button onclick="switchTab('kursus')" id="tabBtnKursus" class="px-4 py-2 rounded-lg font-semibold text-sm bg-blue-900 text-white">Struktur Kelas & Materi</button>
-      <button onclick="switchTab('gradebook')" id="tabBtnGradebook" class="px-4 py-2 rounded-lg font-semibold text-sm bg-white text-slate-700 hover:bg-slate-200">Buku Nilai (Gradebook)</button>
-    </div>
-
-    <div id="viewKursus" class="grid grid-cols-1 lg:grid-cols-4 gap-6">
-      <div class="lg:col-span-1 space-y-3">
-        <h3 class="font-bold text-sm uppercase text-slate-500 tracking-wider">Mata Pelajaran</h3>
-        <div id="courseList" class="space-y-2"></div>
-      </div>
-
-      <div class="lg:col-span-3 space-y-4">
-        <div id="courseHeader" class="bg-blue-900 text-white p-5 rounded-xl shadow-sm">
-          <h3 id="activeCourseTitle" class="text-lg font-bold">Memuat kelas...</h3>
-          <p id="activeCourseClass" class="text-xs text-amber-300 mt-0.5"></p>
-        </div>
-        <div id="materiContainer" class="space-y-4"></div>
-      </div>
-    </div>
-
-    <div id="viewGradebook" class="hidden bg-white rounded-xl shadow-sm p-5 overflow-x-auto">
-      <div class="flex justify-between items-center mb-4">
-        <h3 class="font-bold text-lg text-blue-950">Rekap Nilai & Pengumpulan Tugas Siswa</h3>
-        <button onclick="loadAllData()" class="text-xs bg-blue-100 text-blue-900 font-bold px-3 py-1.5 rounded hover:bg-blue-200">Refresh Data</button>
-      </div>
-      <table class="w-full text-left border-collapse text-sm">
-        <thead>
-          <tr class="bg-blue-950 text-white">
-		  <th class="p-3 rounded-tl-lg">Waktu</th>
-            <th class="p-3">Nama Siswa</th>
-            <th class="p-3">ID Materi</th>
-            <th class="p-3">Aktivitas</th>
-            <th class="p-3">Skor</th>
-            <th class="p-3 rounded-tr-lg">File Tugas</th>
-          </tr>
-        </thead>
-        <tbody id="gradebookTableBody" class="divide-y divide-slate-200"></tbody>
-      </table>
-    </div>
-  </main>
-
-  <!-- MODAL AREA -->
-  <div id="activityModal" class="hidden fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4">
-    <div class="bg-white rounded-2xl max-w-3xl w-full max-h-[90vh] flex flex-col shadow-2xl overflow-hidden">
-      <div class="bg-blue-950 text-white px-5 py-3.5 flex justify-between items-center">
-        <h3 id="modalTitle" class="font-bold text-base">Judul Aktivitas</h3>
-        <button onclick="closeModal()" class="text-slate-300 hover:text-white font-bold text-xl">&times;</button>
-      </div>
-      <div id="modalBody" class="p-5 overflow-y-auto space-y-4 flex-grow"></div>
+    <div class="user-actions" id="navActions" style="display:none;">
+      <span class="user-name-pill" id="navUserName"></span>
+      <button class="btn-logout" onclick="logout()">Keluar</button>
     </div>
   </div>
+</header>
 
-  <script>
-    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbx7BY02VykL5vOUWtBxnyGSYVWptOQiP2ph84Vv9Myz8Ge3memFEGCF8kQgNgnJ2wtybw/exec";
+<main>
+  <!-- HALAMAN LOGIN -->
+  <section id="loginSection" class="login-box">
+    <div class="login-badge">SMAN 26</div>
+    <h2>Portal Belajar SMAN 26 Bone</h2>
+    <p class="sub">Masuk menggunakan NISN / Username dan PIN</p>
+    <div class="form-group">
+      <label>Username / NISN</label>
+      <div class="input-wrap">
+        <input type="text" id="loginUser" placeholder="Contoh: 00812345" autocomplete="username" />
+      </div>
+    </div>
+    <div class="form-group">
+      <label>PIN / Password</label>
+      <div class="input-wrap">
+        <input type="password" id="loginPin" inputmode="numeric" placeholder="Masukkan 6 digit PIN" />
+        <button type="button" class="toggle-pin" onclick="togglePin()" title="Intip PIN">👁️</button>
+      </div>
+    </div>
+    <button class="btn-primary" id="btnLogin" onclick="handleLogin()">Masuk ke Kelas</button>
+    <div class="error-msg" id="loginError"></div>
+  </section>
 
-    let currentUser = null;
-    let dbData = { kursus: [], materi: [], soal: [], nilai: [] };
-    let activeKursusId = null;
+  <!-- DASHBOARD SISWA & GURU -->
+  <section id="appSection" style="display:none;">
+    <div class="hero-card">
+      <div>
+        <div class="role-row">
+          <span class="pill-blue" id="roleBadge">AKUN SISWA</span>
+          <span class="pill-rank" id="rankBadge">🏅 Penjelajah Fisika</span>
+        </div>
+        <h2 id="greetingText">Halo!</h2>
+        <p id="subGreeting">Pilih mata pelajaran dan selesaikan setiap aktivitas pembelajaran secara berurutan.</p>
+      </div>
+      <div class="progress-box" id="studentProgressBox">
+        <div class="progress-head">
+          <span>Progres Ketuntasan</span>
+          <span id="progressPercent">0%</span>
+        </div>
+        <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+      </div>
+    </div>
 
-    async function handleLogin(e) {
-      e.preventDefault();
-      const btn = document.getElementById("btnLogin");
-      const msg = document.getElementById("loginMsg");
-      btn.textContent = "Memeriksa akun...";
-      btn.disabled = true;
-      msg.textContent = "";
+    <!-- TAMPILAN SISWA -->
+    <div id="studentView">
+      <div class="course-tabs" id="courseTabs"></div>
+      <div id="courseContent"></div>
+    </div>
 
-      try {
-        const res = await fetch(SCRIPT_URL, {
-          method: "POST",
-          body: JSON.stringify({
-            action: "login",
-            username: document.getElementById("loginUser").value.trim(),
-            pin: document.getElementById("loginPin").value.trim()
-          })
-        });
-        const result = await res.json();
-        if (result.status === "success") {
-          currentUser = result.user;
-          initDashboard();
-        } else {
-          msg.textContent = result.message;
-        }
-      } catch (err) {
-        msg.textContent = "Gagal terhubung ke server. Pastikan URL Apps Script sudah benar.";
-      } finally {
-        btn.textContent = "Masuk ke Kelas";
-        btn.disabled = false;
-      }
-    }
+    <!-- TAMPILAN GURU (GRADEBOOK) -->
+    <div id="teacherView" style="display:none;">
+      <div class="bab-card">
+        <div class="bab-header">
+          <span>📊 Buku Nilai & Arsip Tugas Siswa (Real-Time)</span>
+          <button class="btn-act btn-materi" onclick="loadLMSData()">🔄 Segarkan Data</button>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Waktu</th>
+                <th>Nama Siswa</th>
+                <th>Materi</th>
+                <th>Aktivitas</th>
+                <th>Skor / Status</th>
+                <th>Lampiran Drive</th>
+              </tr>
+            </thead>
+            <tbody id="gradebookBody"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
 
-    function logout() {
-      currentUser = null;
-      document.getElementById("dashboardSection").classList.add("hidden");
-      document.getElementById("userNav").classList.add("hidden");
-      document.getElementById("loginSection").classList.remove("hidden");
-    }
+<!-- MODAL MATERI -->
+<div class="modal-backdrop" id="materiModal">
+  <div class="modal-card">
+    <div class="modal-head">
+      <h3 id="materiModalTitle">Materi Pembelajaran</h3>
+      <button class="modal-close" onclick="closeModal('materiModal')">×</button>
+    </div>
+    <div class="modal-body" id="materiModalBody"></div>
+  </div>
+</div>
 
-    async function initDashboard() {
-      document.getElementById("loginSection").classList.add("hidden");
-      document.getElementById("dashboardSection").classList.remove("hidden");
-      document.getElementById("userNav").classList.remove("hidden");
+<!-- MODAL KUIS -->
+<div class="modal-backdrop" id="quizModal">
+  <div class="modal-card">
+    <div class="modal-head">
+      <h3 id="quizModalTitle">Kuis Pemahaman</h3>
+      <button class="modal-close" onclick="closeModal('quizModal')">×</button>
+    </div>
+    <div class="modal-body" id="quizModalBody"></div>
+  </div>
+</div>
 
-      document.getElementById("navUserName").textContent = currentUser.nama;
-      document.getElementById("welcomeTitle").textContent = `Halo, ${currentUser.nama}!`;
-      document.getElementById("roleBadge").textContent = `Akun ${currentUser.role}`;
+<!-- MODAL UPLOAD TUGAS -->
+<div class="modal-backdrop" id="uploadModal">
+  <div class="modal-card">
+    <div class="modal-head">
+      <h3 id="uploadModalTitle">Kirim Tugas</h3>
+      <button class="modal-close" onclick="closeModal('uploadModal')">×</button>
+    </div>
+    <div class="modal-body">
+      <p style="margin-top:0;color:var(--muted);">Ambil foto hasil praktikum atau pilih file PDF. Foto kamera HP otomatis dikompres agar hemat kuota & cepat terkirim!</p>
+      <label class="upload-zone" for="tugasFile">
+        <div style="font-size:28px;">📸 / 📄</div>
+        <div style="font-weight:700;color:var(--navy);margin-top:4px;">Ketuk di sini untuk Kamera atau Pilih File</div>
+        <div id="selectedFileName" style="font-size:12px;color:var(--muted);margin-top:4px;">Belum ada file dipilih</div>
+        <img id="previewImg" class="preview-img" alt="Pratinjau Tugas" />
+        <div id="compressInfo" class="compress-info"></div>
+      </label>
+      <input type="file" id="tugasFile" accept="image/*,application/pdf" style="display:none;" onchange="handleFileSelect(event)" />
+      <button class="btn-primary" id="btnSubmitTugas" style="background:var(--green);" onclick="submitTugas()">Unggah Sekarang</button>
+    </div>
+  </div>
+</div>
 
-      if (currentUser.role === "guru") {
-        document.getElementById("guruTabs").classList.remove("hidden");
-        document.getElementById("siswaProgressBox").classList.add("hidden");
+<footer>
+  <strong>Portal Belajar SMAN 26 Bone</strong> • Dikembangkan untuk Pembelajaran Digital Interaktif
+</footer>
+
+<script>
+  const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbx7BY02VykL5vOUWtBxnyGSYVWptOQiP2ph84Vv9Myz8Ge3memFEGCF8kQgNgnJ2wtybw/exec";
+  let currentUser = null;
+  let lmsData = { kursus: [], materi: [], soal: [], nilai: [] };
+  let activeCourseId = null;
+  let activeMateriId = null;
+  let processedFile = null;
+
+  function togglePin() {
+    const inp = document.getElementById("loginPin");
+    inp.type = inp.type === "password" ? "text" : "password";
+  }
+
+  function getTimeGreeting() {
+    const h = new Date().getHours();
+    if (h < 11) return "Selamat Pagi";
+    if (h < 15) return "Selamat Siang";
+    if (h < 18) return "Selamat Sore";
+    return "Selamat Malam";
+  }
+
+  async function handleLogin() {
+    const username = document.getElementById("loginUser").value.trim();
+    const pin = document.getElementById("loginPin").value.trim();
+    const err = document.getElementById("loginError");
+    const btn = document.getElementById("btnLogin");
+
+    if (!username || !pin) { err.textContent = "Harap isi Username/NISN dan PIN!"; return; }
+    err.textContent = "";
+    btn.disabled = true; btn.textContent = "Memeriksa akun...";
+
+    try {
+      const res = await fetch(SCRIPT_URL, {
+        method: "POST",
+        body: JSON.stringify({ action: "login", username, pin })
+      });
+      const json = await res.json();
+      if (json.status === "success") {
+        currentUser = json.user;
+        localStorage.setItem("sman26_user", JSON.stringify(currentUser));
+        initDashboard();
       } else {
-        document.getElementById("guruTabs").classList.add("hidden");
-        document.getElementById("siswaProgressBox").classList.remove("hidden");
+        err.textContent = json.message || "Username/NISN atau PIN salah!";
       }
-
-      await loadAllData();
+    } catch (e) {
+      err.textContent = "Gagal terhubung ke server. Periksa koneksi internet!";
+    } finally {
+      btn.disabled = false; btn.textContent = "Masuk ke Kelas";
     }
+  }
 
-    async function loadAllData() {
-      const res = await fetch(`${SCRIPT_URL}?action=getData`);
-      dbData = await res.json();
-      renderCourses();
-      if (currentUser.role === "guru") renderGradebook();
+  function logout() {
+    localStorage.removeItem("sman26_user");
+    currentUser = null;
+    document.getElementById("appSection").style.display = "none";
+    document.getElementById("navActions").style.display = "none";
+    document.getElementById("loginSection").style.display = "block";
+  }
+
+  async function initDashboard() {
+    document.getElementById("loginSection").style.display = "none";
+    document.getElementById("appSection").style.display = "block";
+    document.getElementById("navActions").style.display = "flex";
+    document.getElementById("navUserName").textContent = currentUser.nama;
+    document.getElementById("greetingText").textContent = `${getTimeGreeting()}, ${currentUser.nama}!`;
+
+    const isGuru = String(currentUser.role).toLowerCase() === "guru";
+    document.getElementById("roleBadge").textContent = isGuru ? "AKUN GURU" : "AKUN SISWA";
+    document.getElementById("studentProgressBox").style.display = isGuru ? "none" : "block";
+    document.getElementById("rankBadge").style.display = isGuru ? "none" : "inline-block";
+    document.getElementById("studentView").style.display = isGuru ? "none" : "block";
+    document.getElementById("teacherView").style.display = isGuru ? "block" : "none";
+
+    await loadLMSData();
+  }
+
+  async function loadLMSData() {
+    const res = await fetch(`${SCRIPT_URL}?action=getData`);
+    lmsData = await res.json();
+    if (String(currentUser.role).toLowerCase() === "guru") {
+      renderGradebook();
+    } else {
+      if (lmsData.kursus.length && !activeCourseId) activeCourseId = lmsData.kursus[0].kursus_id;
+      renderStudentCourses();
     }
+  }
 
-    function renderCourses() {
-      const list = document.getElementById("courseList");
-      list.innerHTML = "";
-      if (dbData.kursus.length === 0) {
-        list.innerHTML = `<p class="text-xs text-slate-500">Belum ada data kursus di Google Sheets.</p>`;
-        return;
-      }
-      if (!activeKursusId) activeKursusId = dbData.kursus[0].kursus_id;
+  function renderStudentCourses() {
+    const tabs = document.getElementById("courseTabs");
+    tabs.innerHTML = lmsData.kursus.map(k => `
+      <button class="course-tab ${k.kursus_id === activeCourseId ? 'active' : ''}" onclick="selectCourse('${k.kursus_id}')">
+        ${k.nama_kursus}
+      </button>
+    `).join("");
 
-      dbData.kursus.forEach(k => {
-        const isActive = k.kursus_id === activeKursusId;
-        const btn = document.createElement("button");
-        btn.className = `w-full text-left p-3 rounded-xl border transition ${isActive ? 'bg-blue-900 text-white border-blue-900 shadow' : 'bg-white text-slate-700 hover:bg-blue-50'}`;
-        btn.innerHTML = `<div class="font-bold text-sm">${k.nama_kursus}</div><div class="text-xs opacity-80">Kelas ${k.kelas}</div>`;
-        btn.onclick = () => { activeKursusId = k.kursus_id; renderCourses(); };
-        list.appendChild(btn);
-      });
+    const course = lmsData.kursus.find(k => k.kursus_id === activeCourseId);
+    if (!course) return;
 
-      const activeCourse = dbData.kursus.find(k => k.kursus_id === activeKursusId);
-      document.getElementById("activeCourseTitle").textContent = activeCourse.nama_kursus;
-      document.getElementById("activeCourseClass").textContent = `Kelas ${activeCourse.kelas} • Kode Gabung: ${activeCourse.kode_gabung}`;
-      renderMateri();
-    }
+    const materiList = lmsData.materi
+      .filter(m => m.kursus_id === activeCourseId)
+      .sort((a, b) => Number(a.urutan) - Number(b.urutan));
 
-    function renderMateri() {
-      const container = document.getElementById("materiContainer");
-      container.innerHTML = "";
-      const listMateri = dbData.materi
-        .filter(m => m.kursus_id === activeKursusId)
-        .sort((a, b) => a.urutan - b.urutan);
+    const myNilai = lmsData.nilai.filter(n => String(n.user_id) === String(currentUser.user_id));
+    const doneMateriIds = new Set(myNilai.map(n => n.materi_id));
+    const pct = materiList.length ? Math.round((doneMateriIds.size / materiList.length) * 100) : 0;
 
-      const selesaiIds = new Set(
-        dbData.nilai
-          .filter(n => String(n.user_id) === String(currentUser.user_id))
-          .map(n => n.materi_id)
-      );
-      const persen = listMateri.length ? Math.round((selesaiIds.size / listMateri.length) * 100) : 0;
-      document.getElementById("progressText").textContent = `${persen}%`;
-      document.getElementById("progressBar").style.width = `${persen}%`;
+    document.getElementById("progressPercent").textContent = `${pct}%`;
+    document.getElementById("progressFill").style.width = `${pct}%`;
+    document.getElementById("rankBadge").textContent =
+      pct >= 100 ? "🏆 Master Fisika SMAN 26" : pct >= 50 ? "⚡ Bintang Eksperimen" : "🏅 Penjelajah Fisika";
 
-      const groups = {};
-      listMateri.forEach(m => {
-        if (!groups[m.bab_pertemuan]) groups[m.bab_pertemuan] = [];
-        groups[m.bab_pertemuan].push(m);
-      });
+    // Kelompokkan berdasarkan bab_pertemuan
+    const groups = {};
+    materiList.forEach(m => {
+      const bab = m.bab_pertemuan || "Materi Pembelajaran";
+      if (!groups[bab]) groups[bab] = [];
+      groups[bab].push(m);
+    });
 
-      for (let bab in groups) {
-        const card = document.createElement("div");
-        card.className = "bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden";
-        let itemsHtml = groups[bab].map(item => {
-          const isDone = selesaiIds.has(item.materi_id);
-          const hasQuiz = dbData.soal.some(s => s.materi_id === item.materi_id);
-          return `
-            <div class="p-4 border-t border-slate-100 flex flex-col sm:flex-row sm:items-center justify-between gap-3 hover:bg-slate-50">
-              <div class="flex items-center space-x-3">
-                <span class="w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold ${isDone ? 'bg-emerald-100 text-emerald-700' : 'bg-slate-200 text-slate-600'}">
-                  ${isDone ? '✓' : item.urutan}
-                </span>
-                <div>
-                  <h4 class="font-semibold text-sm text-slate-800">${item.judul_materi}</h4>
-                  <span class="text-xs uppercase font-bold text-blue-700">${item.tipe_konten}</span>
+    let html = `
+      <div class="course-banner">
+        <h3>${course.nama_kursus}</h3>
+        <span>${course.kelas || ''} • Kode Gabung: ${course.kode_gabung || '-'}</span>
+      </div>
+    `;
+
+    Object.keys(groups).forEach(bab => {
+      html += `<div class="bab-card"><div class="bab-header"><span>📁 ${bab}</span><span>${groups[bab].length} Aktivitas</span></div>`;
+      groups[bab].forEach((m, idx) => {
+        const hasQuiz = lmsData.soal.some(s => s.materi_id === m.materi_id);
+        const isDone = doneMateriIds.has(m.materi_id);
+        html += `
+          <div class="materi-item">
+            <div class="materi-info">
+              <div class="num-circle">${idx + 1}</div>
+              <div>
+                <div class="materi-title">${m.judul_materi}</div>
+                <div class="badges-inline">
+                  <span class="tag-type">${m.tipe_konten}</span>
+                  ${isDone ? '<span class="tag-done">✅ Sudah Dikerjakan</span>' : ''}
                 </div>
               </div>
-              <div class="flex flex-wrap gap-2">
-                <button onclick='openKonten(${JSON.stringify(item)})' class="px-3 py-1.5 bg-blue-100 text-blue-900 hover:bg-blue-200 rounded-lg text-xs font-bold">Buka Materi</button>
-                ${hasQuiz ? `<button onclick="openQuiz('${item.materi_id}', '${item.judul_materi}')" class="px-3 py-1.5 bg-amber-400 text-blue-950 hover:bg-amber-500 rounded-lg text-xs font-bold">Kerjakan Kuis</button>` : ''}
-                <button onclick="openUpload('${item.materi_id}', '${item.judul_materi}')" class="px-3 py-1.5 bg-emerald-600 text-white hover:bg-emerald-700 rounded-lg text-xs font-bold">Kirim Tugas</button>
-              </div>
             </div>
-          `;
-        }).join("");
-
-        card.innerHTML = `
-          <div class="bg-slate-50 px-4 py-3 font-bold text-blue-950 text-sm flex justify-between items-center">
-            <span>📂 ${bab}</span>
-            <span class="text-xs font-normal text-slate-500">${groups[bab].length} Aktivitas</span>
-          </div>
-          <div>${itemsHtml}</div>
-        `;
-        container.appendChild(card);
-      }
-    }
-
-    function openKonten(item) {
-      document.getElementById("modalTitle").textContent = item.judul_materi;
-      const body = document.getElementById("modalBody");
-      if (item.tipe_konten === "video" || item.tipe_konten === "simulasi") {
-        body.innerHTML = `
-          <div class="aspect-video w-full rounded-xl overflow-hidden border bg-black">
-            <iframe src="${item.konten_url_atau_teks}" class="w-full h-full" frameborder="0" allowfullscreen></iframe>
+            <div class="action-grid">
+              <button class="btn-act btn-materi" onclick="openMateri('${m.materi_id}')">Buka Materi</button>
+              ${hasQuiz ? `<button class="btn-act btn-kuis" onclick="openQuiz('${m.materi_id}')">Kerjakan Kuis</button>` : ''}
+              <button class="btn-act btn-tugas" onclick="openUpload('${m.materi_id}')">Kirim Tugas</button>
+            </div>
           </div>
         `;
-      } else {
-        body.innerHTML = `<div class="prose max-w-none text-sm leading-relaxed whitespace-pre-line">${item.konten_url_atau_teks}</div>`;
-      }
-      document.getElementById("activityModal").classList.remove("hidden");
-    }
-
-    function openQuiz(materiId, judul) {
-      const soalList = dbData.soal
-        .filter(s => s.materi_id === materiId)
-        .sort(() => Math.random() - 0.5);
-
-      document.getElementById("modalTitle").textContent = `Kuis: ${judul}`;
-      const body = document.getElementById("modalBody");
-
-      let formHtml = soalList.map((s, idx) => `
-        <div class="p-4 bg-slate-50 rounded-xl border space-y-2">
-          <p class="font-semibold text-sm">${idx + 1}. ${s.pertanyaan}</p>
-          <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-sm">
-            ${['A', 'B', 'C', 'D'].map(opt => `
-              <label class="flex items-center space-x-2 p-2 bg-white border rounded-lg cursor-pointer hover:bg-blue-50">
-                <input type="radio" name="q_${s.soal_id}" value="${opt}" required />
-                <span><b>${opt}.</b> ${s['opsi_' + opt.toLowerCase()]}</span>
-              </label>
-            `).join("")}
-          </div>
-        </div>
-      `).join("");
-
-      body.innerHTML = `
-        <form onsubmit="submitQuiz(event, '${materiId}')" class="space-y-4">
-          ${formHtml}
-          <button type="submit" id="btnSubmitQuiz" class="w-full bg-blue-900 hover:bg-blue-800 text-white font-bold py-2.5 rounded-xl">Kirim Jawaban & Lihat Nilai</button>
-        </form>
-      `;
-      document.getElementById("activityModal").classList.remove("hidden");
-    }
-
-    async function submitQuiz(e, materiId) {
-      e.preventDefault();
-      const btn = document.getElementById("btnSubmitQuiz");
-      btn.textContent = "Menghitung skor...";
-      btn.disabled = true;
-
-      const soalList = dbData.soal.filter(s => s.materi_id === materiId);
-      let totalPoin = 0;
-      let maxPoin = 0;
-
-      soalList.forEach(s => {
-        const poinSoal = Number(s.poin) || 10;
-        maxPoin += poinSoal;
-        const selected = document.querySelector(`input[name="q_${s.soal_id}"]:checked`);
-        if (selected && selected.value.toUpperCase() === String(s.kunci).toUpperCase()) {
-          totalPoin += poinSoal;
-        }
       });
+      html += `</div>`;
+    });
 
-      const skorAkhir = maxPoin > 0 ? Math.round((totalPoin / maxPoin) * 100) : 0;
+    document.getElementById("courseContent").innerHTML = html;
+  }
 
-      await fetch(SCRIPT_URL, {
-        method: "POST",
-        body: JSON.stringify({
-          action: "submitQuiz",
-          user_id: currentUser.user_id,
-          nama_lengkap: currentUser.nama,
-          materi_id: materiId,
-          skor: skorAkhir
-        })
-      });
+  function selectCourse(id) { activeCourseId = id; renderStudentCourses(); }
 
-      document.getElementById("modalBody").innerHTML = `
-        <div class="text-center py-8 space-y-3">
-          <div class="text-5xl font-extrabold text-blue-900">${skorAkhir}</div>
-          <p class="font-bold text-lg text-slate-800">Kuis Selesai & Nilai Tercatat!</p>
-          <p class="text-sm text-slate-500">Skor kamu sudah otomatis masuk ke Buku Nilai Guru.</p>
-          <button onclick="closeModal(); loadAllData();" class="mt-4 bg-emerald-600 text-white px-6 py-2 rounded-lg font-bold text-sm">Tutup & Perbarui Progres</button>
-        </div>
-      `;
+  function openMateri(materiId) {
+    const m = lmsData.materi.find(x => x.materi_id === materiId);
+    document.getElementById("materiModalTitle").textContent = m.judul_materi;
+    const body = document.getElementById("materiModalBody");
+    const konten = String(m.konten_url_atau_teks || "");
+    if (konten.startsWith("http")) {
+      body.innerHTML = `<iframe src="${konten}" style="width:100%;height:65vh;border:none;border-radius:10px;" allowfullscreen></iframe>
+      <p style="text-align:center;margin-top:10px;"><a href="${konten}" target="_blank" style="color:#2563EB;font-weight:700;">Buka Simulasi di Layar Penuh ↗</a></p>`;
+    } else {
+      body.innerHTML = `<div style="white-space:pre-line;font-size:15px;">${konten}</div>`;
     }
+    document.getElementById("materiModal").style.display = "flex";
+  }
 
-    function openUpload(materiId, judul) {
-      document.getElementById("modalTitle").textContent = `Kirim Tugas: ${judul}`;
-      document.getElementById("modalBody").innerHTML = `
-        <form onsubmit="submitTugas(event, '${materiId}')" class="space-y-4">
-          <p class="text-sm text-slate-600">Unggah foto hasil praktikum atau file PDF tugasmu. File akan otomatis tersimpan di Google Drive Guru.</p>
-          <input type="file" id="fileInput" accept="image/*,.pdf" required class="w-full p-3 border border-dashed border-blue-400 rounded-xl bg-blue-50 text-sm" />
-          <button type="submit" id="btnUpload" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2.5 rounded-xl">Unggah Sekarang</button>
-        </form>
-      `;
-      document.getElementById("activityModal").classList.remove("hidden");
-    }
+  function openQuiz(materiId) {
+    activeMateriId = materiId;
+    const m = lmsData.materi.find(x => x.materi_id === materiId);
+    const questions = lmsData.soal.filter(s => s.materi_id === materiId);
+    document.getElementById("quizModalTitle").textContent = `Kuis: ${m.judul_materi}`;
 
-    function submitTugas(e, materiId) {
-      e.preventDefault();
-      const file = document.getElementById("fileInput").files[0];
-      if (!file) return;
+    let html = questions.map((q, i) => `
+      <div class="quiz-q">
+        <div style="font-weight:700;margin-bottom:6px;">${i + 1}. ${q.pertanyaan}</div>
+        ${['A','B','C','D'].map(opt => q['opsi_' + opt.toLowerCase()] ? `
+          <label class="quiz-opt">
+            <input type="radio" name="q_${i}" value="${opt}" /> ${opt}. ${q['opsi_' + opt.toLowerCase()]}
+          </label>
+        ` : '').join("")}
+      </div>
+    `).join("");
 
-      const btn = document.getElementById("btnUpload");
-      btn.textContent = "Mengunggah ke Google Drive...";
-      btn.disabled = true;
+    html += `<button class="btn-primary" onclick="submitQuiz()">Kirim Jawaban Kuis</button>`;
+    document.getElementById("quizModalBody").innerHTML = html;
+    document.getElementById("quizModal").style.display = "flex";
+  }
 
+  async function submitQuiz() {
+    const questions = lmsData.soal.filter(s => s.materi_id === activeMateriId);
+    let benar = 0;
+    questions.forEach((q, i) => {
+      const sel = document.querySelector(`input[name="q_${i}"]:checked`);
+      if (sel && sel.value.toUpperCase() === String(q.kunci_jawaban).trim().toUpperCase()) benar++;
+    });
+    const skor = Math.round((benar / questions.length) * 100);
+
+    document.getElementById("quizModalBody").innerHTML = `
+      <div style="text-align:center;padding:20px;">
+        <div style="font-size:48px;">🎉</div>
+        <h2 style="margin:8px 0;color:var(--navy);">Skor Kamu: ${skor}</h2>
+        <p style="color:var(--muted);">Menjawab benar ${benar} dari ${questions.length} soal.</p>
+        <button class="btn-primary" onclick="closeModal('quizModal')">Selesai & Tutup</button>
+      </div>
+    `;
+
+    await fetch(SCRIPT_URL, {
+      method: "POST",
+      body: JSON.stringify({
+        action: "submitQuiz",
+        user_id: currentUser.user_id,
+        nama_lengkap: currentUser.nama,
+        materi_id: activeMateriId,
+        skor
+      })
+    });
+    loadLMSData();
+  }
+
+  function openUpload(materiId) {
+    activeMateriId = materiId;
+    processedFile = null;
+    const m = lmsData.materi.find(x => x.materi_id === materiId);
+    document.getElementById("uploadModalTitle").textContent = `Kirim Tugas: ${m.judul_materi}`;
+    document.getElementById("selectedFileName").textContent = "Belum ada file dipilih";
+    document.getElementById("previewImg").style.display = "none";
+    document.getElementById("compressInfo").textContent = "";
+    document.getElementById("tugasFile").value = "";
+    document.getElementById("uploadModal").style.display = "flex";
+  }
+
+  // KOMPRESI FOTO OTOMATIS UNTUK HP SISWA
+  function handleFileSelect(event) {
+    const file = event.target.files[0];
+    if (!file) return;
+    document.getElementById("selectedFileName").textContent = file.name;
+    const preview = document.getElementById("previewImg");
+    const info = document.getElementById("compressInfo");
+
+    if (file.type.startsWith("image/")) {
       const reader = new FileReader();
-      reader.onload = async function() {
-        const base64Data = reader.result.split(",")[1];
-        await fetch(SCRIPT_URL, {
-          method: "POST",
-          body: JSON.stringify({
-            action: "uploadTugas",
-            user_id: currentUser.user_id,
-            nama_lengkap: currentUser.nama,
-            materi_id: materiId,
-            fileName: file.name,
-            mimeType: file.type,
-            fileBase64: base64Data
-          })
-        });
-
-        document.getElementById("modalBody").innerHTML = `
-          <div class="text-center py-8 space-y-3">
-            <div class="text-4xl">✅</div>
-            <p class="font-bold text-lg text-emerald-700">Tugas Berhasil Diunggah!</p>
-            <p class="text-sm text-slate-500">File kamu sudah rapi tersimpan di Google Drive.</p>
-            <button onclick="closeModal(); loadAllData();" class="mt-4 bg-blue-900 text-white px-6 py-2 rounded-lg font-bold text-sm">Selesai</button>
-          </div>
-        `;
+      reader.onload = e => {
+        const img = new Image();
+        img.onload = () => {
+          const canvas = document.createElement("canvas");
+          const MAX_WIDTH = 1200;
+          const scale = img.width > MAX_WIDTH ? MAX_WIDTH / img.width : 1;
+          canvas.width = img.width * scale;
+          canvas.height = img.height * scale;
+          const ctx = canvas.getContext("2d");
+          ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+          const dataUrl = canvas.toDataURL("image/jpeg", 0.75);
+          preview.src = dataUrl;
+          preview.style.display = "inline-block";
+          const kb = Math.round((dataUrl.length * 3) / 4 / 1024);
+          info.textContent = `⚡ Foto otomatis dikompres menjadi ${kb} KB (Super cepat dikirim!)`;
+          processedFile = {
+            base64: dataUrl.split(",")[1],
+            mimeType: "image/jpeg",
+            fileName: file.name.replace(/\.[^/.]+$/, "") + ".jpg"
+          };
+        };
+        img.src = e.target.result;
+      };
+      reader.readAsDataURL(file);
+    } else {
+      preview.style.display = "none";
+      const reader = new FileReader();
+      reader.onload = e => {
+        processedFile = {
+          base64: e.target.result.split(",")[1],
+          mimeType: file.type,
+          fileName: file.name
+        };
+        info.textContent = `📄 File PDF siap diunggah (${Math.round(file.size / 1024)} KB)`;
       };
       reader.readAsDataURL(file);
     }
+  }
 
-    function renderGradebook() {
-      const tbody = document.getElementById("gradebookTableBody");
-      tbody.innerHTML = dbData.nilai.slice().reverse().map(n => `
-        <tr class="hover:bg-slate-50">
-          <td class="p-3 text-xs text-slate-500">${new Date(n.timestamp).toLocaleString('id-ID')}</td>
-          <td class="p-3 font-semibold">${n.nama_lengkap}</td>
-          <td class="p-3"><span class="bg-slate-200 px-2 py-0.5 rounded text-xs font-bold">${n.materi_id}</span></td>
-          <td class="p-3">${n.jenis_aktivitas}</td>
-          <td class="p-3 font-bold text-blue-900">${n.skor_nilai}</td>
-          <td class="p-3">
-            ${n.link_file_drive && n.link_file_drive !== "-" 
-              ? `<a href="${n.link_file_drive}" target="_blank" class="text-blue-600 underline font-semibold">Lihat File</a>` 
-              : "-"}
-          </td>
-        </tr>
-      `).join("");
-    }
+  async function submitTugas() {
+    if (!processedFile) { alert("Pilih foto atau file PDF terlebih dahulu!"); return; }
+    const btn = document.getElementById("btnSubmitTugas");
+    btn.disabled = true; btn.textContent = "Mengunggah ke Google Drive...";
 
-    function switchTab(tab) {
-      const isKursus = tab === 'kursus';
-      document.getElementById("viewKursus").classList.toggle("hidden", !isKursus);
-      document.getElementById("viewGradebook").classList.toggle("hidden", isKursus);
-      document.getElementById("tabBtnKursus").className = isKursus ? "px-4 py-2 rounded-lg font-semibold text-sm bg-blue-900 text-white" : "px-4 py-2 rounded-lg font-semibold text-sm bg-white text-slate-700";
-      document.getElementById("tabBtnGradebook").className = !isKursus ? "px-4 py-2 rounded-lg font-semibold text-sm bg-blue-900 text-white" : "px-4 py-2 rounded-lg font-semibold text-sm bg-white text-slate-700";
+    try {
+      const res = await fetch(SCRIPT_URL, {
+        method: "POST",
+        body: JSON.stringify({
+          action: "uploadTugas",
+          user_id: currentUser.user_id,
+          nama_lengkap: currentUser.nama,
+          materi_id: activeMateriId,
+          fileName: processedFile.fileName,
+          mimeType: processedFile.mimeType,
+          fileBase64: processedFile.base64
+        })
+      });
+      const json = await res.json();
+      if (json.status === "success") {
+        alert("✅ Tugas Berhasil Diunggah ke Google Drive Guru!");
+        closeModal("uploadModal");
+        loadLMSData();
+      } else {
+        alert("Gagal mengunggah: " + (json.message || "Terjadi kesalahan"));
+      }
+    } catch (e) {
+      alert("Koneksi terputus saat mengunggah. Coba lagi!");
+    } finally {
+      btn.disabled = false; btn.textContent = "Unggah Sekarang";
     }
+  }
 
-    function closeModal() {
-      document.getElementById("activityModal").classList.add("hidden");
+  function renderGradebook() {
+    const tbody = document.getElementById("gradebookBody");
+    if (!lmsData.nilai.length) {
+      tbody.innerHTML = `<tr><td colspan="6" style="text-align:center;color:var(--muted);">Belum ada data nilai atau tugas masuk.</td></tr>`;
+      return;
     }
-  </script>
+    tbody.innerHTML = lmsData.nilai.slice().reverse().map(n => `
+      <tr>
+        <td>${new Date(n.waktu).toLocaleString('id-ID')}</td>
+        <td><strong>${n.nama_lengkap}</strong></td>
+        <td>${n.materi_id}</td>
+        <td>${n.jenis_aktivitas}</td>
+        <td><strong>${n.skor_atau_status}</strong></td>
+        <td>${String(n.link_file).startsWith("http") ? `<a href="${n.link_file}" target="_blank" style="color:#2563EB;font-weight:700;">Lihat File ↗</a>` : '-'}</td>
+      </tr>
+    `).join("");
+  }
+
+  function closeModal(id) { document.getElementById(id).style.display = "none"; }
+
+  window.onload = () => {
+    const saved = localStorage.getItem("sman26_user");
+    if (saved) { currentUser = JSON.parse(saved); initDashboard(); }
+  };
+</script>
 </body>
 </html>
