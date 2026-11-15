@@ -29,7 +29,6 @@
       <h4 class="fw-bold mt-1 mb-1" style="color:var(--navy);">Portal Belajar Digital</h4>
       <p class="small text-secondary mb-3" id="subJudulKartu">Masuk menggunakan NIS 7 digit kalian</p>
 
-      <!-- FORM MASUK -->
       <div id="formMasukBox">
         <div class="mb-3 text-start">
           <label class="form-label small fw-bold">Username / NIS (7 Digit)</label>
@@ -50,7 +49,6 @@
         </div>
       </div>
 
-      <!-- FORM DAFTAR MANDIRI SISWA -->
       <div id="formDaftarBox" class="d-none text-start">
         <div class="mb-2">
           <label class="form-label small fw-bold mb-1">Nama Lengkap Siswa</label>
@@ -208,7 +206,7 @@
       const isGuru = String(user.role).toLowerCase() === "guru";
       document.getElementById("infoPenggunaNavbar").textContent = `${user.nama_lengkap} (${user.username})`;
       document.getElementById("salamDashboard").textContent = isGuru ? `Selamat Datang, ${user.nama_lengkap}!` : `Halo, ${user.nama_lengkap}!`;
-      document.getElementById("subSalamDashboard").textContent = isGuru ? "Mode Guru Aktif — Pantau rekap nilai live, bukti foto praktikum & daftar siswa." : `Terdaftar di Kelas ${user.Kelas || "-"} • Siap belajar Fisika!`;
+      document.getElementById("subSalamDashboard").textContent = isGuru ? "Mode Guru Aktif — Pantau rekap nilai live, bukti foto praktikum & reset PIN siswa." : `Terdaftar di Kelas ${user.Kelas || "-"} • Siap belajar Fisika!`;
       document.getElementById("badgeRoleKelas").textContent = isGuru ? "GURU PENGAMPU" : `SISWA • ${user.Kelas || "AKTIF"}`;
       muatRekapDanTop5(isGuru);
     }
@@ -254,8 +252,11 @@
                 <button class="btn btn-sm btn-success" onclick="unduhCSV()">CSV</button>
               </div>
             </div>
+            <div id="boxCariSiswa" class="mb-3 d-none">
+              <input type="text" id="inputCariSiswa" class="form-control form-control-sm" placeholder="🔍 Ketik nama atau NIS siswa untuk mencari cepat..." oninput="renderGuru()" />
+            </div>
             <div id="boxTabelNilai" class="table-responsive"><table class="table table-hover align-middle small mb-0"><thead class="table-dark"><tr><th>Waktu</th><th>Nama Siswa</th><th>Kelas</th><th>Materi</th><th>Aktivitas</th><th>Skor</th><th>Bukti Drive</th></tr></thead><tbody id="tbodyGuru"></tbody></table></div>
-            <div id="boxTabelSiswa" class="table-responsive d-none"><table class="table table-hover align-middle small mb-0"><thead class="table-primary"><tr><th>ID</th><th>Nama Lengkap</th><th>NIS / Username</th><th>PIN Akses</th><th>Kelas</th></tr></thead><tbody id="tbodySiswa"></tbody></table></div>
+            <div id="boxTabelSiswa" class="table-responsive d-none"><table class="table table-hover align-middle small mb-0"><thead class="table-primary"><tr><th>ID</th><th>Nama Lengkap</th><th>NIS / Username</th><th>PIN Akses</th><th>Kelas</th><th>Aksi</th></tr></thead><tbody id="tbodySiswa"></tbody></table></div>
           </div>`;
           renderGuru();
         }
@@ -265,12 +266,14 @@
     function gantiTabGuru(tab) {
       document.getElementById("boxTabelNilai").classList.toggle("d-none", tab === "siswa");
       document.getElementById("boxTabelSiswa").classList.toggle("d-none", tab !== "siswa");
+      document.getElementById("boxCariSiswa").classList.toggle("d-none", tab !== "siswa");
       document.getElementById("tabBtnNilai").className = tab === "nilai" ? "btn btn-sm btn-dark fw-bold" : "btn btn-sm btn-outline-dark fw-bold";
       document.getElementById("tabBtnSiswa").className = tab === "siswa" ? "btn btn-sm btn-dark fw-bold" : "btn btn-sm btn-outline-dark fw-bold";
     }
 
     function renderGuru() {
       const k = document.getElementById("filterKelas").value;
+      const kata = (document.getElementById("inputCariSiswa")?.value || "").trim().toLowerCase();
       const rows = (window._rekap || []).filter(r => k === "SEMUA" || r.kelas === k);
       document.getElementById("tbodyGuru").innerHTML = rows.length ? rows.map(r => `<tr>
         <td>${r.timestamp}</td><td class="fw-semibold">${r.nama_lengkap}</td><td><span class="badge bg-secondary">${r.kelas}</span></td>
@@ -279,11 +282,23 @@
         <td>${r.link_file_drive && r.link_file_drive !== "-" ? `<a href="${r.link_file_drive}" target="_blank" class="btn btn-outline-primary py-0 px-2 small">Lihat Foto</a>` : "-"}</td>
       </tr>`).join("") : `<tr><td colspan="7" class="text-center text-secondary py-3">Belum ada data nilai.</td></tr>`;
 
-      const listS = (window._siswa || []).filter(s => k === "SEMUA" || s.kelas === k);
+      const listS = (window._siswa || []).filter(s => (k === "SEMUA" || s.kelas === k) && (!kata || String(s.nama_lengkap).toLowerCase().includes(kata) || String(s.username).toLowerCase().includes(kata)));
       document.getElementById("tbodySiswa").innerHTML = listS.length ? listS.map(s => `<tr>
         <td>${s.user_id}</td><td class="fw-semibold">${s.nama_lengkap}</td><td><code>${s.username}</code></td>
         <td><span class="badge bg-light text-dark border">${s.pin}</span></td><td><span class="badge bg-dark">${s.kelas}</span></td>
-      </tr>`).join("") : `<tr><td colspan="5" class="text-center text-secondary py-3">Belum ada akun siswa di kelas ini.</td></tr>`;
+        <td><button type="button" class="btn btn-warning py-0 px-2 small fw-bold" onclick="resetPinSiswa('${s.username}', '${s.nama_lengkap}')">Reset PIN</button></td>
+      </tr>`).join("") : `<tr><td colspan="6" class="text-center text-secondary py-3">Siswa tidak ditemukan.</td></tr>`;
+    }
+
+    async function resetPinSiswa(nis, nama) {
+      if (!confirm(`Reset PIN milik ${nama} (${nis}) agar kembali sama dengan NIS-nya (${nis})?`)) return;
+      try {
+        const res = await fetch(`${API_URL}?action=resetPin&username=${encodeURIComponent(nis)}`);
+        const data = await res.json();
+        alert(data.message || "PIN berhasil di-reset!");
+        muatRekapDanTop5(true);
+        setTimeout(() => gantiTabGuru("siswa"), 600);
+      } catch (e) { alert("Gagal mereset PIN."); }
     }
 
     function unduhCSV() {
