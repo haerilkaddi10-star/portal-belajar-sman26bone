@@ -11,8 +11,8 @@
     * { box-sizing: border-box; }
     body { margin: 0; min-height: 100vh; font-family: 'Segoe UI', system-ui, sans-serif; background: radial-gradient(circle at top right, #164e63 0%, #0f172a 55%, #090d16 100%); color: #1e293b; }
     #layarLogin { min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 20px; }
-    .kartu-login { width: 100%; max-width: 410px; background: #fff; border-radius: 22px; border-top: 6px solid var(--amber); box-shadow: 0 25px 50px -12px rgba(0,0,0,.55); padding: 32px 28px; text-align: center; }
-    .logo-sekolah { width: 82px; height: 82px; object-fit: contain; margin-bottom: 12px; }
+    .kartu-login { width: 100%; max-width: 420px; background: #fff; border-radius: 22px; border-top: 6px solid var(--amber); box-shadow: 0 25px 50px -12px rgba(0,0,0,.55); padding: 30px 26px; text-align: center; }
+    .logo-sekolah { width: 78px; height: 78px; object-fit: contain; margin-bottom: 10px; }
     .btn-masuk { width: 100%; background: var(--navy); color: #fff; font-weight: 700; border: none; border-radius: 12px; padding: 12px; }
     #layarDashboard { display: none; min-height: 100vh; background: #f1f5f9; }
     .navbar-portal { background: var(--navy); color: #fff; padding: 14px 24px; border-bottom: 3px solid var(--amber); }
@@ -27,20 +27,65 @@
       <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/9/9c/Logo_SMA_Negeri_26_Bone.png/240px-Logo_SMA_Negeri_26_Bone.png" onerror="this.src='https://cdn-icons-png.flaticon.com/512/3135/3135755.png'" alt="Logo" class="logo-sekolah" />
       <div style="font-size:.78rem;font-weight:800;letter-spacing:1.2px;color:#d97706;">UPT SMA NEGERI 26 BONE</div>
       <h4 class="fw-bold mt-1 mb-1" style="color:var(--navy);">Portal Belajar Digital</h4>
-      <p class="small text-secondary mb-4">Masuk menggunakan NIS 7 digit kalian</p>
-      <div class="mb-3 text-start">
-        <label class="form-label small fw-bold">Username / NIS (7 Digit)</label>
-        <input type="text" id="inputUsername" class="form-control" placeholder="Contoh: 2026001 atau guru_fisika" />
-      </div>
-      <div class="mb-3 text-start">
-        <label class="form-label small fw-bold">PIN Akses (7 Digit)</label>
-        <div class="input-group">
-          <input type="password" id="inputPin" class="form-control" placeholder="Masukkan PIN akses" />
-          <button type="button" class="btn btn-outline-secondary" onclick="intipPin()"><i id="ikonMata" class="bi bi-eye"></i></button>
+      <p class="small text-secondary mb-3" id="subJudulKartu">Masuk menggunakan NIS 7 digit kalian</p>
+
+      <!-- FORM MASUK -->
+      <div id="formMasukBox">
+        <div class="mb-3 text-start">
+          <label class="form-label small fw-bold">Username / NIS (7 Digit)</label>
+          <input type="text" id="inputUsername" class="form-control" placeholder="Contoh: 2026001 atau guru_fisika" />
+        </div>
+        <div class="mb-3 text-start">
+          <label class="form-label small fw-bold">PIN Akses (7 Digit)</label>
+          <div class="input-group">
+            <input type="password" id="inputPin" class="form-control" placeholder="Masukkan PIN akses" />
+            <button type="button" class="btn btn-outline-secondary" onclick="intipPin()"><i id="ikonMata" class="bi bi-eye"></i></button>
+          </div>
+        </div>
+        <div id="kotakPesan" class="alert alert-danger py-2 px-3 small text-start d-none"></div>
+        <button type="button" id="btnLogin" class="btn-masuk mt-1" onclick="prosesLogin()"><i class="bi bi-box-arrow-in-right me-1"></i> Masuk ke Kelas</button>
+        <div class="mt-3 pt-2 border-top">
+          <span class="small text-secondary">Siswa baru belum punya akun?</span><br />
+          <button type="button" class="btn btn-link btn-sm fw-bold text-decoration-none" onclick="gantiModeAuth('daftar')">+ Daftar Mandiri Siswa Baru</button>
         </div>
       </div>
-      <div id="kotakPesan" class="alert alert-danger py-2 px-3 small text-start d-none"></div>
-      <button type="button" id="btnLogin" class="btn-masuk mt-1" onclick="prosesLogin()"><i class="bi bi-box-arrow-in-right me-1"></i> Masuk ke Kelas</button>
+
+      <!-- FORM DAFTAR MANDIRI SISWA -->
+      <div id="formDaftarBox" class="d-none text-start">
+        <div class="mb-2">
+          <label class="form-label small fw-bold mb-1">Nama Lengkap Siswa</label>
+          <input type="text" id="regNama" class="form-control form-control-sm" placeholder="Contoh: Andi Nurul Azizah" />
+        </div>
+        <div class="row g-2 mb-2">
+          <div class="col-6">
+            <label class="form-label small fw-bold mb-1">NIS (7 Digit)</label>
+            <input type="text" id="regNis" class="form-control form-control-sm" placeholder="2026015" />
+          </div>
+          <div class="col-6">
+            <label class="form-label small fw-bold mb-1">Kelas</label>
+            <select id="regKelas" class="form-select form-select-sm">
+              <option value="X-E.1">X-E.1</option><option value="X-E.2">X-E.2</option><option value="X-E.3">X-E.3</option>
+              <option value="XI-F.1">XI-F.1</option><option value="XI-F.2">XI-F.2</option><option value="XI-F.3">XI-F.3</option>
+              <option value="XII-F.1">XII-F.1</option><option value="XII-F.2">XII-F.2</option><option value="XII-F.3">XII-F.3</option>
+            </select>
+          </div>
+        </div>
+        <div class="row g-2 mb-2">
+          <div class="col-6">
+            <label class="form-label small fw-bold mb-1">Buat PIN Akses</label>
+            <input type="text" id="regPin" class="form-control form-control-sm" placeholder="Minimal 6 angka" />
+          </div>
+          <div class="col-6">
+            <label class="form-label small fw-bold mb-1">Kode Kelas</label>
+            <input type="text" id="regKode" class="form-control form-control-sm" placeholder="Kode dari Guru" />
+          </div>
+        </div>
+        <div id="kotakPesanReg" class="alert alert-danger py-2 px-3 small d-none"></div>
+        <button type="button" id="btnDaftar" class="btn btn-warning w-100 fw-bold mt-1" onclick="prosesDaftar()"><i class="bi bi-person-plus-fill me-1"></i> Daftar & Masuk Sekarang</button>
+        <div class="text-center mt-2">
+          <button type="button" class="btn btn-link btn-sm text-secondary text-decoration-none" onclick="gantiModeAuth('masuk')">← Sudah punya akun? Kembali Masuk</button>
+        </div>
+      </div>
     </div>
   </div>
   <div id="layarDashboard">
@@ -110,12 +155,17 @@
     const API_URL = "https://script.google.com/macros/s/AKfycbx7BY02VykL5vOUWtBxnyGSYVWptOQiP2ph84Vv9Myz8Ge3memFEGCF8kQgNgnJ2wtybw/exec";
     let userAktif = null, semuaSoal = [], semuaMateri = [], soalTerpilih = [], jawabanSiswa = {}, materiDipilih = "";
 
+    function gantiModeAuth(mode) {
+      document.getElementById("formMasukBox").classList.toggle("d-none", mode === "daftar");
+      document.getElementById("formDaftarBox").classList.toggle("d-none", mode !== "daftar");
+      document.getElementById("subJudulKartu").textContent = mode === "daftar" ? "Buat akun mandiri dengan Kode Kelas dari Guru" : "Masuk menggunakan NIS 7 digit kalian";
+    }
     function intipPin() {
       const i = document.getElementById("inputPin"), m = document.getElementById("ikonMata");
       i.type = i.type === "password" ? "text" : "password";
       m.className = i.type === "password" ? "bi bi-eye" : "bi bi-eye-slash";
     }
-    function tampilkanPesan(t) { const k = document.getElementById("kotakPesan"); k.textContent = t; k.classList.remove("d-none"); }
+    function tampilkanPesan(t, id = "kotakPesan") { const k = document.getElementById(id); k.textContent = t; k.classList.remove("d-none"); }
 
     async function prosesLogin() {
       const u = document.getElementById("inputUsername").value.trim(), p = document.getElementById("inputPin").value.trim(), b = document.getElementById("btnLogin");
@@ -133,6 +183,24 @@
       finally { b.disabled = false; b.innerHTML = '<i class="bi bi-box-arrow-in-right me-1"></i> Masuk ke Kelas'; }
     }
 
+    async function prosesDaftar() {
+      const nama = document.getElementById("regNama").value.trim(), nis = document.getElementById("regNis").value.trim();
+      const kelas = document.getElementById("regKelas").value, pin = document.getElementById("regPin").value.trim(), kode = document.getElementById("regKode").value.trim();
+      const b = document.getElementById("btnDaftar");
+      document.getElementById("kotakPesanReg").classList.add("d-none");
+      if (!nama || !nis || !pin || !kode) return tampilkanPesan("Semua kolom wajib diisi!", "kotakPesanReg");
+      b.disabled = true; b.textContent = "Mendaftarkan akun...";
+      try {
+        const url = `${API_URL}?action=register&nama_lengkap=${encodeURIComponent(nama)}&username=${encodeURIComponent(nis)}&kelas=${encodeURIComponent(kelas)}&pin=${encodeURIComponent(pin)}&kode_kelas=${encodeURIComponent(kode)}`;
+        const res = await fetch(url), data = await res.json();
+        if (data.status === "success" && data.user) {
+          localStorage.setItem("user_sman26bone", JSON.stringify(data.user));
+          bukaDashboard(data.user);
+        } else tampilkanPesan(data.message || "Gagal mendaftar.", "kotakPesanReg");
+      } catch (e) { tampilkanPesan("Gagal terhubung ke server.", "kotakPesanReg"); }
+      finally { b.disabled = false; b.innerHTML = '<i class="bi bi-person-plus-fill me-1"></i> Daftar & Masuk Sekarang'; }
+    }
+
     function bukaDashboard(user) {
       userAktif = user;
       document.getElementById("layarLogin").style.display = "none";
@@ -140,7 +208,7 @@
       const isGuru = String(user.role).toLowerCase() === "guru";
       document.getElementById("infoPenggunaNavbar").textContent = `${user.nama_lengkap} (${user.username})`;
       document.getElementById("salamDashboard").textContent = isGuru ? `Selamat Datang, ${user.nama_lengkap}!` : `Halo, ${user.nama_lengkap}!`;
-      document.getElementById("subSalamDashboard").textContent = isGuru ? "Mode Guru Aktif — Pantau rekap nilai live & bukti foto praktikum siswa." : `Terdaftar di Kelas ${user.Kelas || "-"} • Siap belajar Fisika!`;
+      document.getElementById("subSalamDashboard").textContent = isGuru ? "Mode Guru Aktif — Pantau rekap nilai live, bukti foto praktikum & daftar siswa." : `Terdaftar di Kelas ${user.Kelas || "-"} • Siap belajar Fisika!`;
       document.getElementById("badgeRoleKelas").textContent = isGuru ? "GURU PENGAMPU" : `SISWA • ${user.Kelas || "AKTIF"}`;
       muatRekapDanTop5(isGuru);
     }
@@ -151,13 +219,13 @@
 
     async function muatRekapDanTop5(isGuru) {
       const wGuru = document.getElementById("wadahGuru"), wTop = document.getElementById("wadahTop5");
-      if (isGuru) wGuru.innerHTML = `<div class="card border-0 shadow-sm rounded-4 p-4 mb-4">Memuat rekap nilai live...</div>`;
+      if (isGuru) wGuru.innerHTML = `<div class="card border-0 shadow-sm rounded-4 p-4 mb-4">Memuat data kelas...</div>`;
       else wGuru.innerHTML = "";
 
       try {
         const res = await fetch(`${API_URL}?action=getRekapGuru`), data = await res.json();
-        const daftar = data.rekap || [], top5 = data.top5 || [];
-        window._rekap = daftar;
+        const daftar = data.rekap || [], top5 = data.top5 || [], siswa = data.siswa || [];
+        window._rekap = daftar; window._siswa = siswa;
 
         if (top5.length > 0) {
           const medali = ["🥇", "🥈", "🥉", "🏅", "🏅"];
@@ -166,41 +234,56 @@
               <span class="fw-bold small text-uppercase text-primary"><i class="bi bi-trophy-fill text-warning me-1"></i> Top 5 Jawara Fisika Tercepat</span>
               <span class="badge bg-light text-dark border">Live Leaderboard</span>
             </div>
-            <div class="d-flex flex-wrap gap-2">
-              ${top5.map((t, i) => `<span class="badge rounded-pill bg-dark px-3 py-2">${medali[i]} ${t.nama_lengkap} (${t.kelas}) • <span class="text-warning">${t.skor_nilai}</span></span>`).join("")}
-            </div>
+            <div class="d-flex flex-wrap gap-2">${top5.map((t, i) => `<span class="badge rounded-pill bg-dark px-3 py-2">${medali[i]} ${t.nama_lengkap} (${t.kelas}) • <span class="text-warning">${t.skor_nilai}</span></span>`).join("")}</div>
           </div>`;
         }
 
         if (isGuru) {
-          const kelasList = [...new Set(daftar.map(d => d.kelas).filter(k => k && k !== "-"))].sort();
+          const kelasList = [...new Set([...daftar.map(d => d.kelas), ...siswa.map(s => s.kelas)].filter(k => k && k !== "-"))].sort();
           wGuru.innerHTML = `<div class="card border-0 shadow-sm rounded-4 p-4 mb-4 border-start border-5 border-warning">
             <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3">
-              <div><span class="badge bg-warning text-dark mb-1">RUANG KENDALI GURU</span><h5 class="fw-bold mb-0">Rekap Nilai Live & Bukti Praktikum (${daftar.length} Kiriman)</h5></div>
-              <div class="d-flex gap-2">
-                <select id="filterKelas" class="form-select form-select-sm" onchange="renderGuru()"><option value="SEMUA">Semua Kelas</option>${kelasList.map(k => `<option value="${k}">${k}</option>`).join("")}</select>
-                <button class="btn btn-sm btn-outline-dark" onclick="muatRekapDanTop5(true)">Segarkan</button>
-                <button class="btn btn-sm btn-success" onclick="unduhCSV()">Unduh CSV</button>
+              <div>
+                <span class="badge bg-warning text-dark mb-1">RUANG KENDALI GURU • KODE REGISTRASI: FISIKA26</span>
+                <h5 class="fw-bold mb-0">Panel Pemantauan Kelas (${daftar.length} Nilai • ${siswa.length} Akun Siswa)</h5>
+              </div>
+              <div class="d-flex flex-wrap gap-2">
+                <button id="tabBtnNilai" class="btn btn-sm btn-dark fw-bold" onclick="gantiTabGuru('nilai')">Rekap Nilai</button>
+                <button id="tabBtnSiswa" class="btn btn-sm btn-outline-dark fw-bold" onclick="gantiTabGuru('siswa')">Daftar Siswa (${siswa.length})</button>
+                <select id="filterKelas" class="form-select form-select-sm w-auto" onchange="renderGuru()"><option value="SEMUA">Semua Kelas</option>${kelasList.map(k => `<option value="${k}">${k}</option>`).join("")}</select>
+                <button class="btn btn-sm btn-outline-secondary" onclick="muatRekapDanTop5(true)">Segarkan</button>
+                <button class="btn btn-sm btn-success" onclick="unduhCSV()">CSV</button>
               </div>
             </div>
-            <div class="table-responsive"><table class="table table-hover align-middle small mb-0"><thead class="table-dark"><tr><th>Waktu</th><th>Nama Siswa</th><th>Kelas</th><th>Materi</th><th>Aktivitas</th><th>Skor</th><th>Bukti Drive</th></tr></thead><tbody id="tbodyGuru"></tbody></table></div>
+            <div id="boxTabelNilai" class="table-responsive"><table class="table table-hover align-middle small mb-0"><thead class="table-dark"><tr><th>Waktu</th><th>Nama Siswa</th><th>Kelas</th><th>Materi</th><th>Aktivitas</th><th>Skor</th><th>Bukti Drive</th></tr></thead><tbody id="tbodyGuru"></tbody></table></div>
+            <div id="boxTabelSiswa" class="table-responsive d-none"><table class="table table-hover align-middle small mb-0"><thead class="table-primary"><tr><th>ID</th><th>Nama Lengkap</th><th>NIS / Username</th><th>PIN Akses</th><th>Kelas</th></tr></thead><tbody id="tbodySiswa"></tbody></table></div>
           </div>`;
           renderGuru();
         }
       } catch (e) { if (isGuru) wGuru.innerHTML = `<div class="alert alert-danger">Gagal memuat rekap guru.</div>`; }
     }
 
+    function gantiTabGuru(tab) {
+      document.getElementById("boxTabelNilai").classList.toggle("d-none", tab === "siswa");
+      document.getElementById("boxTabelSiswa").classList.toggle("d-none", tab !== "siswa");
+      document.getElementById("tabBtnNilai").className = tab === "nilai" ? "btn btn-sm btn-dark fw-bold" : "btn btn-sm btn-outline-dark fw-bold";
+      document.getElementById("tabBtnSiswa").className = tab === "siswa" ? "btn btn-sm btn-dark fw-bold" : "btn btn-sm btn-outline-dark fw-bold";
+    }
+
     function renderGuru() {
       const k = document.getElementById("filterKelas").value;
       const rows = (window._rekap || []).filter(r => k === "SEMUA" || r.kelas === k);
       document.getElementById("tbodyGuru").innerHTML = rows.length ? rows.map(r => `<tr>
-        <td>${r.timestamp}</td><td class="fw-semibold">${r.nama_lengkap}</td>
-        <td><span class="badge bg-secondary">${r.kelas}</span></td>
-        <td><span class="badge bg-primary">${r.materi_id}</span></td>
-        <td>${r.jenis_aktivitas}</td>
+        <td>${r.timestamp}</td><td class="fw-semibold">${r.nama_lengkap}</td><td><span class="badge bg-secondary">${r.kelas}</span></td>
+        <td><span class="badge bg-primary">${r.materi_id}</span></td><td>${r.jenis_aktivitas}</td>
         <td><span class="badge ${Number(r.skor_nilai)>=75?'bg-success':'bg-danger'}">${r.skor_nilai}</span></td>
-        <td>${r.link_file_drive && r.link_file_drive !== "-" ? `<a href="${r.link_file_drive}" target="_blank" class="btn btn-xs btn-outline-primary py-0 px-2 small">Lihat Foto</a>` : "-"}</td>
+        <td>${r.link_file_drive && r.link_file_drive !== "-" ? `<a href="${r.link_file_drive}" target="_blank" class="btn btn-outline-primary py-0 px-2 small">Lihat Foto</a>` : "-"}</td>
       </tr>`).join("") : `<tr><td colspan="7" class="text-center text-secondary py-3">Belum ada data nilai.</td></tr>`;
+
+      const listS = (window._siswa || []).filter(s => k === "SEMUA" || s.kelas === k);
+      document.getElementById("tbodySiswa").innerHTML = listS.length ? listS.map(s => `<tr>
+        <td>${s.user_id}</td><td class="fw-semibold">${s.nama_lengkap}</td><td><code>${s.username}</code></td>
+        <td><span class="badge bg-light text-dark border">${s.pin}</span></td><td><span class="badge bg-dark">${s.kelas}</span></td>
+      </tr>`).join("") : `<tr><td colspan="5" class="text-center text-secondary py-3">Belum ada akun siswa di kelas ini.</td></tr>`;
     }
 
     function unduhCSV() {
@@ -220,17 +303,11 @@
         document.getElementById("isiArenaKuis").innerHTML = semuaMateri.length ? `<div class="row g-3">${semuaMateri.map((m,i) => {
           const kd = String(m.materi_id || `M0${i+1}`).trim(), link = m.link_materi || m.url || "";
           return `<div class="col-md-4"><div class="p-3 border rounded-4 bg-light h-100 d-flex flex-column justify-content-between">
-            <div>
-              <span class="badge bg-dark mb-2">${kd}</span><h6 class="fw-bold">${m.judul || kd}</h6>
-              <p class="small text-secondary">${m.deskripsi || m.ringkasan || "Materi pembelajaran Fisika."}</p>
-            </div>
+            <div><span class="badge bg-dark mb-2">${kd}</span><h6 class="fw-bold">${m.judul || kd}</h6><p class="small text-secondary">${m.deskripsi || m.ringkasan || "Materi pembelajaran Fisika."}</p></div>
             <div class="d-grid gap-2">
               ${link ? `<a href="${link}" target="_blank" class="btn btn-primary btn-sm">Buka Materi</a>` : ""}
               <button class="btn btn-warning btn-sm fw-bold" onclick="mulaiKuis('${kd}')">Latihan Kuis ${kd}</button>
-              <label class="btn btn-outline-success btn-sm fw-semibold mb-0">
-                <i class="bi bi-camera-fill me-1"></i> Unggah Foto Praktikum
-                <input type="file" accept="image/*" capture="environment" hidden onchange="unggahFoto('${kd}', this)" />
-              </label>
+              <label class="btn btn-outline-success btn-sm fw-semibold mb-0"><i class="bi bi-camera-fill me-1"></i> Unggah Foto Praktikum<input type="file" accept="image/*" capture="environment" hidden onchange="unggahFoto('${kd}', this)" /></label>
             </div>
           </div></div>`;
         }).join("")}</div>` : `<div class="alert alert-light">Belum ada data pada tab Materi.</div>`;
@@ -239,27 +316,15 @@
     }
 
     function unggahFoto(kodeMateri, inputEl) {
-      const file = inputEl.files[0];
-      if (!file) return;
+      const file = inputEl.files[0]; if (!file) return;
       const reader = new FileReader();
       reader.onload = async function (ev) {
         alert("Sedang mengunggah foto praktikum ke Google Drive sekolah...");
         try {
-          await fetch(API_URL, {
-            method: "POST",
-            body: JSON.stringify({
-              action: "uploadTugas",
-              user_id: userAktif.user_id,
-              nama_lengkap: userAktif.nama_lengkap,
-              materi_id: kodeMateri,
-              image_base64: ev.target.result
-            })
-          });
-          alert("Berhasil! Foto praktikum tersimpan ke Google Drive & tercatat di Nilai_Tugas.");
+          await fetch(API_URL, { method: "POST", body: JSON.stringify({ action: "uploadTugas", user_id: userAktif.user_id, nama_lengkap: userAktif.nama_lengkap, materi_id: kodeMateri, image_base64: ev.target.result }) });
+          alert("Berhasil! Foto praktikum tersimpan ke Drive & tercatat di Nilai_Tugas.");
           muatRekapDanTop5(String(userAktif.role).toLowerCase() === "guru");
-        } catch (e) {
-          alert("Foto terkirim! Silakan cek di Ruang Kendali Guru.");
-        }
+        } catch (e) { alert("Foto terkirim! Silakan cek di Ruang Kendali Guru."); }
       };
       reader.readAsDataURL(file);
     }
@@ -304,7 +369,7 @@
       document.getElementById("isiArenaKuis").innerHTML = `<div class="text-center py-4"><h4>Evaluasi ${materiDipilih} Selesai!</h4><p>Benar ${benar} dari ${soalTerpilih.length} soal</p><div class="display-4 fw-bold text-primary mb-3">Skor: ${skor}</div><button class="btn btn-primary" onclick="tutupArenaKuis();muatRekapDanTop5(String(userAktif.role).toLowerCase()==='guru');">Kembali ke Dashboard</button></div>`;
     }
 
-    document.addEventListener("keydown", e => { if (e.key === "Enter" && document.getElementById("layarLogin").style.display !== "none") prosesLogin(); });
+    document.addEventListener("keydown", e => { if (e.key === "Enter" && document.getElementById("layarLogin").style.display !== "none" && !document.getElementById("formMasukBox").classList.contains("d-none")) prosesLogin(); });
     window.addEventListener("DOMContentLoaded", () => { const s = localStorage.getItem("user_sman26bone"); if (s) try { bukaDashboard(JSON.parse(s)); } catch (e) {} });
   </script>
 </body>
