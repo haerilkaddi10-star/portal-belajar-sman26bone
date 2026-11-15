@@ -213,3 +213,452 @@ function kirimJSON(obj) {
       </button>
     </div>
   </div>
+  <!-- LAYAR DASHBOARD -->
+  <div id="layarDashboard">
+    <nav class="navbar-portal d-flex justify-content-between align-items-center flex-wrap gap-2">
+      <div class="d-flex align-items-center gap-3">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/9/9c/Logo_SMA_Negeri_26_Bone.png/240px-Logo_SMA_Negeri_26_Bone.png"
+          onerror="this.src='https://cdn-icons-png.flaticon.com/512/3135/3135755.png'" alt="Logo" style="width:42px;height:42px;object-fit:contain;" />
+        <div>
+          <div class="fw-bold fs-6">Portal Belajar Digital — UPT SMAN 26 Bone</div>
+          <div class="small text-info" id="infoPenggunaNavbar">Memuat profil...</div>
+        </div>
+      </div>
+      <button type="button" class="btn btn-sm btn-outline-warning fw-semibold" onclick="keluarAkun()">
+        <i class="bi bi-box-arrow-left me-1"></i> Keluar
+      </button>
+    </nav>
+
+    <div class="container py-4">
+      <div class="alert alert-primary border-0 shadow-sm rounded-4 d-flex align-items-center justify-content-between flex-wrap gap-2">
+        <div>
+          <h5 class="fw-bold mb-1" id="salamDashboard">Selamat Datang di Kelas Digital!</h5>
+          <p class="mb-0 small text-secondary" id="subSalamDashboard">Siap mengeksplorasi simulasi interaktif, materi, dan evaluasi hari ini.</p>
+        </div>
+        <span class="badge bg-dark px-3 py-2 rounded-pill" id="badgeRoleKelas">AKTIF</span>
+      </div>
+
+      <!-- MENU UTAMA DASHBOARD -->
+      <div class="row g-4 mt-1" id="menuUtamaDashboard">
+        <div class="col-md-4">
+          <div class="kartu-fitur">
+            <div class="fs-2 mb-2">⚛️</div>
+            <h6 class="fw-bold">Laboratorium Simulasi Interaktif</h6>
+            <p class="small text-secondary">Eksplorasi praktikum virtual Fisika (PhET & HTML5) langsung dari perangkatmu.</p>
+            <a href="https://phet.colorado.edu/in/" target="_blank" class="btn btn-sm btn-primary fw-semibold">Buka Simulasi PhET</a>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="kartu-fitur border-info">
+            <div class="fs-2 mb-2">📘</div>
+            <h6 class="fw-bold">Modul & LKPD Kurikulum Merdeka</h6>
+            <p class="small text-secondary">Akses bahan ajar terstruktur, ringkasan konsep, dan lembar aktivitas kelas dari tab Materi.</p>
+            <button type="button" id="btnLihatMateri" class="btn btn-sm btn-outline-dark fw-bold" onclick="bukaDaftarMateri()">
+              <i class="bi bi-journal-richtext me-1"></i> Lihat Daftar Materi
+            </button>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="kartu-fitur border-warning">
+            <div class="fs-2 mb-2">🏆</div>
+            <h6 class="fw-bold">Kuis Kilat & Rekap Nilai_Tugas</h6>
+            <p class="small text-secondary">Kerjakan evaluasi pemahaman dari Bank_Soal dan rekam skor otomatis ke server sekolah.</p>
+            <button type="button" id="btnMulaiEvaluasi" class="btn btn-sm btn-warning fw-bold" onclick="bukaArenaKuis()">
+              <i class="bi bi-play-circle-fill me-1"></i> Mulai Evaluasi
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- PANEL DINAMIS (MATERI ATAU ARENA KUIS) -->
+      <div id="arenaKuis" class="card border-0 shadow-sm rounded-4 p-4 mt-4 d-none">
+        <div class="d-flex justify-content-between align-items-center border-bottom pb-3 mb-3">
+          <div>
+            <span class="badge bg-warning text-dark mb-1" id="labelMateriKuis">PORTAL FISIKA</span>
+            <h5 class="fw-bold mb-0" id="judulArenaKuis">Memuat Konten...</h5>
+          </div>
+          <button type="button" class="btn btn-sm btn-outline-secondary" onclick="tutupArenaKuis()">
+            <i class="bi bi-x-lg me-1"></i> Kembali ke Menu
+          </button>
+        </div>
+        <div id="isiArenaKuis"></div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const API_URL = "https://script.google.com/macros/s/AKfycbx7BY02VykL5vOUWtBxnyGSYVWptOQiP2ph84Vv9Myz8Ge3memFEGCF8kQgNgnJ2wtybw/exec";
+    let userAktif = null;
+    let semuaSoalServer = [];
+    let semuaMateriServer = [];
+    let soalTerpilih = [];
+    let jawabanSiswa = {};
+    let materiDipilih = "";
+
+    function intipPin() {
+      const inp = document.getElementById("inputPin");
+      const ikon = document.getElementById("ikonMata");
+      inp.type = inp.type === "password" ? "text" : "password";
+      ikon.className = inp.type === "password" ? "bi bi-eye" : "bi bi-eye-slash";
+    }
+
+    function tampilkanPesan(teks) {
+      const kotak = document.getElementById("kotakPesan");
+      kotak.textContent = teks;
+      kotak.classList.remove("d-none");
+    }
+
+    async function prosesLogin() {
+      const username = document.getElementById("inputUsername").value.trim();
+      const pin = document.getElementById("inputPin").value.trim();
+      const tombol = document.getElementById("btnLogin");
+      document.getElementById("kotakPesan").classList.add("d-none");
+
+      if (!username || !pin) {
+        tampilkanPesan("Silakan isi Username / NIS dan PIN Akses terlebih dahulu!");
+        return;
+      }
+      tombol.disabled = true;
+      tombol.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Memeriksa akun...';
+
+      try {
+        const res = await fetch(`${API_URL}?action=login&username=${encodeURIComponent(username)}&pin=${encodeURIComponent(pin)}`);
+        const data = await res.json();
+        if (data.status === "success" && data.user) {
+          localStorage.setItem("user_sman26bone", JSON.stringify(data.user));
+          bukaDashboard(data.user);
+        } else {
+          tampilkanPesan(data.message || "Username atau PIN tidak cocok!");
+        }
+      } catch (err) {
+        tampilkanPesan("Gagal terhubung ke server sekolah. Periksa koneksi internet.");
+      } finally {
+        tombol.disabled = false;
+        tombol.innerHTML = '<i class="bi bi-box-arrow-in-right me-1"></i> Masuk ke Kelas';
+      }
+    }
+
+    function bukaDashboard(user) {
+      userAktif = user;
+      document.getElementById("layarLogin").style.display = "none";
+      document.getElementById("layarDashboard").style.display = "block";
+      const isGuru = String(user.role).toLowerCase() === "guru";
+      document.getElementById("infoPenggunaNavbar").textContent = `${user.nama_lengkap} (${user.username})`;
+      document.getElementById("salamDashboard").textContent = isGuru ? `Selamat Datang, ${user.nama_lengkap}!` : `Halo, ${user.nama_lengkap}!`;
+      document.getElementById("subSalamDashboard").textContent = isGuru
+        ? "Mode Guru Aktif — Kelola materi, pantau aktivitas siswa, dan periksa evaluasi kelas."
+        : `Terdaftar di Kelas ${user.Kelas || "-"} • Siap belajar Fisika hari ini!`;
+      document.getElementById("badgeRoleKelas").textContent = isGuru ? "GURU PENGAMPU" : `SISWA • ${user.Kelas || "AKTIF"}`;
+
+      const panelLama = document.getElementById("panelKhususGuru");
+      if (isGuru) {
+        muatPanelGuru();
+      } else if (panelLama) {
+        panelLama.remove();
+      }
+    }
+
+    function keluarAkun() {
+      localStorage.removeItem("user_sman26bone");
+      document.getElementById("layarDashboard").style.display = "none";
+      document.getElementById("layarLogin").style.display = "flex";
+      document.getElementById("inputPin").value = "";
+    }
+
+    function tutupArenaKuis() {
+      document.getElementById("arenaKuis").classList.add("d-none");
+      document.getElementById("menuUtamaDashboard").classList.remove("d-none");
+    }
+
+    function cariJudulMateri(kode, daftarMateri) {
+      const m = (daftarMateri || semuaMateriServer).find(item => String(item.materi_id || item.id || "").trim() === kode);
+      if (!m) return `Paket Evaluasi ${kode}`;
+      return m.judul || m.judul_materi || m.nama_materi || m.topik || `Paket Evaluasi ${kode}`;
+    }
+
+    async function muatPanelGuru() {
+      let wadah = document.getElementById("panelKhususGuru");
+      if (!wadah) {
+        wadah = document.createElement("div");
+        wadah.id = "panelKhususGuru";
+        wadah.className = "card border-0 shadow-sm rounded-4 p-4 mb-4 border-start border-5 border-warning";
+        document.getElementById("menuUtamaDashboard").before(wadah);
+      }
+      wadah.innerHTML = `<div class="text-center py-3"><span class="spinner-border spinner-border-sm me-2"></span>Memuat rekap nilai live kelas...</div>`;
+
+      try {
+        const res = await fetch(`${API_URL}?action=getRekapGuru`);
+        const data = await res.json();
+        const daftar = data.rekap || [];
+        const daftarKelas = [...new Set(daftar.map(d => d.kelas).filter(k => k && k !== "-"))].sort();
+
+        window._dataRekapGuru = daftar;
+        wadah.innerHTML = `
+          <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3">
+            <div>
+              <span class="badge bg-warning text-dark mb-1">RUANG KENDALI GURU</span>
+              <h5 class="fw-bold mb-0">Rekap Nilai Live Siswa (${daftar.length} Kiriman)</h5>
+            </div>
+            <div class="d-flex gap-2">
+              <select id="filterKelasGuru" class="form-select form-select-sm" onchange="renderTabelGuru()">
+                <option value="SEMUA">Semua Kelas</option>
+                ${daftarKelas.map(k => `<option value="${k}">${k}</option>`).join("")}
+              </select>
+              <button type="button" class="btn btn-sm btn-outline-dark fw-semibold" onclick="muatPanelGuru()">Segarkan</button>
+              <button type="button" class="btn btn-sm btn-success fw-semibold" onclick="unduhCSVGuru()">Unduh CSV</button>
+            </div>
+          </div>
+          <div class="table-responsive">
+            <table class="table table-hover align-middle small mb-0">
+              <thead class="table-dark">
+                <tr><th>Waktu</th><th>Nama Siswa</th><th>Kelas</th><th>Materi</th><th>Aktivitas</th><th>Skor</th></tr>
+              </thead>
+              <tbody id="isiTabelGuru"></tbody>
+            </table>
+          </div>`;
+        renderTabelGuru();
+      } catch (e) {
+        wadah.innerHTML = `<div class="alert alert-danger mb-0">Gagal memuat rekap guru.</div>`;
+      }
+    }
+
+    function renderTabelGuru() {
+      const kelas = document.getElementById("filterKelasGuru").value;
+      const baris = (window._dataRekapGuru || []).filter(r => kelas === "SEMUA" || r.kelas === kelas);
+      document.getElementById("isiTabelGuru").innerHTML = baris.length === 0
+        ? `<tr><td colspan="6" class="text-center text-secondary py-3">Belum ada data nilai untuk filter ini.</td></tr>`
+        : baris.map(r => `
+            <tr>
+              <td>${r.timestamp}</td>
+              <td class="fw-semibold">${r.nama_lengkap}</td>
+              <td><span class="badge bg-secondary">${r.kelas}</span></td>
+              <td><span class="badge bg-primary">${r.materi_id}</span></td>
+              <td>${r.jenis_aktivitas}</td>
+              <td><span class="badge ${Number(r.skor_nilai) >= 75 ? 'bg-success' : 'bg-danger'} fs-6">${r.skor_nilai}</span></td>
+            </tr>`).join("");
+    }
+
+    function unduhCSVGuru() {
+      const kelas = document.getElementById("filterKelasGuru").value;
+      const baris = (window._dataRekapGuru || []).filter(r => kelas === "SEMUA" || r.kelas === kelas);
+      const csv = ["Waktu,User_ID,Nama_Lengkap,Kelas,Materi,Aktivitas,Skor",
+        ...baris.map(r => `"${r.timestamp}","${r.user_id}","${r.nama_lengkap}","${r.kelas}","${r.materi_id}","${r.jenis_aktivitas}",${r.skor_nilai}`)
+      ].join("\n");
+      const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
+      const a = document.createElement("a");
+      a.href = URL.createObjectURL(blob);
+      a.download = `Rekap_Nilai_Fisika_${kelas}.csv`;
+      a.click();
+    }
+
+    async function bukaDaftarMateri() {
+      const btn = document.getElementById("btnLihatMateri");
+      btn.disabled = true;
+      btn.innerHTML = '<span class="spinner-border spinner-border-sm me-1"></span>Memuat Materi...';
+
+      try {
+        const res = await fetch(`${API_URL}?action=getMateri`);
+        const data = await res.json();
+        semuaSoalServer = data.soal || [];
+        semuaMateriServer = data.materi || [];
+
+        const badge = document.getElementById("labelMateriKuis");
+        badge.className = "badge bg-info text-dark mb-1";
+        badge.textContent = "MODUL & LKPD KURIKULUM MERDEKA";
+        document.getElementById("judulArenaKuis").textContent = "Daftar Materi Pembelajaran Fisika";
+
+        if (semuaMateriServer.length === 0) {
+          document.getElementById("isiArenaKuis").innerHTML = `<div class="alert alert-light border">Belum ada baris data pada tab <strong>Materi</strong> di Spreadsheet LMS.</div>`;
+        } else {
+          let html = `<div class="row g-3">`;
+          semuaMateriServer.forEach((mat, idx) => {
+            const kode = String(mat.materi_id || `M0${idx + 1}`).trim();
+            const judul = mat.judul || mat.judul_materi || mat.nama_materi || `Materi ${kode}`;
+            const deskripsi = mat.deskripsi || mat.ringkasan || mat.konten || "Pelajari konsep inti, contoh soal, dan simulasi interaktif pada modul ini.";
+            const tautan = mat.link_materi || mat.url || mat.link || "";
+            const adaKuis = semuaSoalServer.some(s => String(s.materi_id).trim() === kode);
+
+            html += `
+              <div class="col-md-4">
+                <div class="p-3 border rounded-4 bg-light h-100 d-flex flex-column justify-content-between">
+                  <div>
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                      <span class="badge bg-dark">${kode}</span>
+                      ${mat.kelas || mat.Kelas ? `<span class="badge bg-secondary">${mat.kelas || mat.Kelas}</span>` : ""}
+                    </div>
+                    <h6 class="fw-bold mb-2">${judul}</h6>
+                    <p class="small text-secondary mb-3">${deskripsi}</p>
+                  </div>
+                  <div class="d-grid gap-2">
+                    ${tautan ? `<a href="${tautan}" target="_blank" class="btn btn-primary btn-sm fw-semibold"><i class="bi bi-box-arrow-up-right me-1"></i> Buka Bahan Ajar / LKPD</a>` : ""}
+                    ${adaKuis ? `<button type="button" class="btn btn-warning btn-sm fw-bold" onclick="mulaiKerjakanKuis('${kode}')"><i class="bi bi-pencil-square me-1"></i> Latihan Kuis ${kode}</button>` : ""}
+                  </div>
+                </div>
+              </div>`;
+          });
+          html += `</div>`;
+          document.getElementById("isiArenaKuis").innerHTML = html;
+        }
+
+        document.getElementById("menuUtamaDashboard").classList.add("d-none");
+        document.getElementById("arenaKuis").classList.remove("d-none");
+      } catch (e) {
+        alert("Gagal memuat daftar materi dari server.");
+      } finally {
+        btn.disabled = false;
+        btn.innerHTML = '<i class="bi bi-journal-richtext me-1"></i> Lihat Daftar Materi';
+      }
+    }
+
+    async function bukaArenaKuis() {
+      const btn = document.getElementById("btnMulaiEvaluasi");
+      btn.disabled = true;
+      btn.innerHTML = '<span class="spinner-border spinner-border-sm me-1"></span>Memuat Bank Soal...';
+
+      try {
+        const res = await fetch(`${API_URL}?action=getSoal`);
+        const data = await res.json();
+        if (data.status === "success" && Array.isArray(data.soal) && data.soal.length > 0) {
+          semuaSoalServer = data.soal;
+          semuaMateriServer = data.materi || [];
+          tampilkanPilihanTopik(semuaMateriServer);
+          document.getElementById("menuUtamaDashboard").classList.add("d-none");
+          document.getElementById("arenaKuis").classList.remove("d-none");
+        } else {
+          alert("Soal di tab Bank_Soal belum tersedia.");
+        }
+      } catch (e) {
+        alert("Gagal mengambil soal dari server.");
+      } finally {
+        btn.disabled = false;
+        btn.innerHTML = '<i class="bi bi-play-circle-fill me-1"></i> Mulai Evaluasi';
+      }
+    }
+
+    function tampilkanPilihanTopik(daftarMateri) {
+      const badge = document.getElementById("labelMateriKuis");
+      badge.className = "badge bg-warning text-dark mb-1";
+      badge.textContent = "BANK SOAL FISIKA";
+      document.getElementById("judulArenaKuis").textContent = "Pilih Paket Materi Evaluasi";
+      const daftarKode = [...new Set(semuaSoalServer.map(s => String(s.materi_id).trim()).filter(Boolean))];
+
+      let html = `<p class="text-secondary small mb-3">Silakan pilih kode/topik materi evaluasi di bawah ini:</p><div class="row g-3">`;
+      daftarKode.forEach(kode => {
+        const jumlah = semuaSoalServer.filter(s => String(s.materi_id).trim() === kode).length;
+        const judulMat = cariJudulMateri(kode, daftarMateri);
+        html += `
+          <div class="col-md-4">
+            <div class="p-3 border rounded-4 bg-light h-100 d-flex flex-column justify-content-between">
+              <div>
+                <span class="badge bg-primary mb-2">${kode}</span>
+                <h6 class="fw-bold mb-1">${judulMat}</h6>
+                <p class="small text-secondary mb-3">${jumlah} Butir Soal Pilihan Ganda</p>
+              </div>
+              <button type="button" class="btn btn-dark btn-sm fw-bold w-100" onclick="mulaiKerjakanKuis('${kode}')">
+                Kerjakan ${kode} <i class="bi bi-arrow-right ms-1"></i>
+              </button>
+            </div>
+          </div>`;
+      });
+      html += `</div>`;
+      document.getElementById("isiArenaKuis").innerHTML = html;
+    }
+
+    function mulaiKerjakanKuis(kodeMateri) {
+      materiDipilih = kodeMateri;
+      jawabanSiswa = {};
+      soalTerpilih = semuaSoalServer.filter(s => String(s.materi_id).trim() === kodeMateri);
+      const badge = document.getElementById("labelMateriKuis");
+      badge.className = "badge bg-warning text-dark mb-1";
+      badge.textContent = `PAKET ${kodeMateri}`;
+      document.getElementById("judulArenaKuis").textContent = `${cariJudulMateri(kodeMateri, semuaMateriServer)}`;
+
+      let html = "";
+      soalTerpilih.forEach((item, idx) => {
+        const idSoal = item.soal_id || `NO_${idx + 1}`;
+        html += `
+          <div class="mb-4 pb-3 border-bottom">
+            <div class="fw-bold mb-2">${idx + 1}. ${item.pertanyaan}</div>
+            ${["A", "B", "C", "D"].map(huruf => {
+              const teksOpsi = item[`opsi_${huruf.toLowerCase()}`];
+              if (!teksOpsi) return "";
+              return `
+                <button type="button" id="btn_${idSoal}_${huruf}" class="opsi-kuis" onclick="pilihJawaban('${idSoal}', '${huruf}')">
+                  <strong>${huruf}.</strong> ${teksOpsi}
+                </button>`;
+            }).join("")}
+          </div>`;
+      });
+
+      html += `
+        <div class="d-flex justify-content-between align-items-center mt-3">
+          <button type="button" class="btn btn-outline-secondary btn-sm" onclick="tampilkanPilihanTopik(semuaMateriServer)">← Ganti Topik</button>
+          <button type="button" id="btnKirimKuis" class="btn btn-success fw-bold px-4" onclick="kirimHasilKuis()">
+            <i class="bi bi-check-circle-fill me-1"></i> Selesai & Simpan Nilai
+          </button>
+        </div>`;
+      document.getElementById("isiArenaKuis").innerHTML = html;
+    }
+
+    function pilihJawaban(idSoal, huruf) {
+      jawabanSiswa[idSoal] = huruf;
+      ["A", "B", "C", "D"].forEach(h => {
+        const el = document.getElementById(`btn_${idSoal}_${h}`);
+        if (el) el.classList.toggle("terpilih", h === huruf);
+      });
+    }
+
+    async function kirimHasilKuis() {
+      const jumlahDijawab = Object.keys(jawabanSiswa).length;
+      if (jumlahDijawab < soalTerpilih.length) {
+        if (!confirm(`Kamu baru menjawab ${jumlahDijawab} dari ${soalTerpilih.length} soal. Tetap kirim jawaban sekarang?`)) return;
+      }
+
+      let benar = 0;
+      soalTerpilih.forEach((item, idx) => {
+        const idSoal = item.soal_id || `NO_${idx + 1}`;
+        const kunci = String(item.kunci || "").trim().toUpperCase();
+        if ((jawabanSiswa[idSoal] || "") === kunci) benar++;
+      });
+
+      const skorAkhir = Math.round((benar / soalTerpilih.length) * 100);
+      const tombol = document.getElementById("btnKirimKuis");
+      tombol.disabled = true;
+      tombol.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Menyimpan ke Nilai_Tugas...';
+
+      try {
+        const urlSimpan = `${API_URL}?action=simpanNilai&user_id=${encodeURIComponent(userAktif.user_id)}&nama_lengkap=${encodeURIComponent(userAktif.nama_lengkap)}&materi_id=${encodeURIComponent(materiDipilih)}&skor_nilai=${skorAkhir}`;
+        await fetch(urlSimpan);
+      } catch (e) { console.warn(e); }
+
+      document.getElementById("isiArenaKuis").innerHTML = `
+        <div class="text-center py-4">
+          <div class="display-4 mb-2">${skorAkhir >= 75 ? "🎉" : "💪"}</div>
+          <h4 class="fw-bold">Evaluasi ${materiDipilih} Selesai!</h4>
+          <p class="text-secondary mb-3">Jawaban Benar: <strong>${benar} dari ${soalTerpilih.length} soal</strong></p>
+          <div class="d-inline-block bg-dark text-warning rounded-4 px-5 py-3 mb-3">
+            <div class="small text-uppercase">Skor Akhir Kamu</div>
+            <div class="display-4 fw-bold">${skorAkhir}</div>
+          </div>
+          <div class="small text-success fw-semibold mb-4">
+            <i class="bi bi-cloud-check-fill me-1"></i> Nilai otomatis tersimpan ke tab Nilai_Tugas!
+          </div>
+          <div>
+            <button type="button" class="btn btn-primary fw-bold px-4" onclick="tutupArenaKuis()">Kembali ke Dashboard</button>
+          </div>
+        </div>`;
+    }
+
+    document.addEventListener("keydown", function (e) {
+      if (e.key === "Enter" && document.getElementById("layarLogin").style.display !== "none") prosesLogin();
+    });
+
+    window.addEventListener("DOMContentLoaded", function () {
+      const sesi = localStorage.getItem("user_sman26bone");
+      if (sesi) {
+        try { bukaDashboard(JSON.parse(sesi)); } catch (e) { localStorage.removeItem("user_sman26bone"); }
+      }
+    });
+  </script>
+</body>
+</html>
