@@ -1,391 +1,554 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Portal Belajar Digital — UPT SMA Negeri 26 Bone</title>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
   <style>
-    :root { --navy: #0f172a; --cyan: #06b6d4; --amber: #f59e0b; }
-    * { box-sizing: border-box; }
-    body { margin: 0; min-height: 100vh; font-family: 'Segoe UI', system-ui, sans-serif; background: radial-gradient(circle at top right, #164e63 0%, #0f172a 55%, #090d16 100%); color: #1e293b; }
-    #layarLogin { min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 20px; }
-    .kartu-login { width: 100%; max-width: 420px; background: #fff; border-radius: 22px; border-top: 6px solid var(--amber); box-shadow: 0 25px 50px -12px rgba(0,0,0,.55); padding: 30px 26px; text-align: center; }
-    .logo-sekolah { width: 78px; height: 78px; object-fit: contain; margin-bottom: 10px; }
-    .btn-masuk { width: 100%; background: var(--navy); color: #fff; font-weight: 700; border: none; border-radius: 12px; padding: 12px; }
-    #layarDashboard { display: none; min-height: 100vh; background: #f1f5f9; }
-    .navbar-portal { background: var(--navy); color: #fff; padding: 14px 24px; border-bottom: 3px solid var(--amber); }
-    .kartu-fitur { background: #fff; border-radius: 16px; border: 1px solid #e2e8f0; padding: 22px; box-shadow: 0 4px 14px rgba(15,23,42,.05); height: 100%; }
-    .opsi-kuis { display: block; width: 100%; text-align: left; padding: 12px 16px; margin-bottom: 10px; border: 2px solid #e2e8f0; border-radius: 12px; background: #fff; }
-    .opsi-kuis.terpilih { border-color: var(--navy); background: #e0f2fe; font-weight: 700; }
+    :root{--navy:#10243b;--navy2:#173b5e;--cyan:#08b7d0;--gold:#f3b63f;--ink:#172334;--muted:#64748b;--surface:#f3f6fa}
+    *{box-sizing:border-box} body{margin:0;background:var(--surface);font-family:Inter,"Segoe UI",system-ui,sans-serif;color:var(--ink)}
+    .auth-screen{min-height:100vh;display:grid;place-items:center;padding:22px;background:radial-gradient(circle at 80% 10%,#1b6072 0,#10243b 42%,#08111e 100%)}
+    .auth-card{width:min(100%,460px);background:#fff;border-radius:24px;padding:30px;box-shadow:0 24px 70px #0005;border-top:6px solid var(--gold)}
+    .school-logo{width:76px;height:76px;object-fit:contain}.brand-kicker{font-size:.75rem;letter-spacing:1.5px;font-weight:800;color:#b77912}
+    .btn-primary-custom{background:var(--navy);color:white;border:0;border-radius:12px;padding:12px 16px;font-weight:700}.btn-primary-custom:hover{background:var(--navy2);color:white}
+    .topbar{background:var(--navy);color:white;border-bottom:4px solid var(--gold);padding:13px 22px}
+    .topbar .school-logo{width:44px;height:44px}.main-wrap{max-width:1200px;margin:auto;padding:24px 16px 50px}
+    .welcome{background:linear-gradient(120deg,#e5f4fb,#fff);border:1px solid #d7e8f0;border-radius:18px;padding:20px}
+    .feature-card,.panel{background:white;border:1px solid #e5eaf0;border-radius:18px;padding:20px;height:100%;box-shadow:0 5px 18px #17233408}
+    .feature-icon{font-size:2rem;color:var(--navy2)}.muted{color:var(--muted)}.section-title{font-weight:800;color:var(--navy)}
+    .choice{width:100%;display:block;text-align:left;border:2px solid #e2e8f0;background:#fff;border-radius:12px;padding:12px 14px;margin:8px 0}
+    .choice.selected{border-color:var(--cyan);background:#e9fbfd}.hidden{display:none!important}
+    .stat{border-radius:15px;padding:16px;background:#f6f9fc;border:1px solid #e6edf4}
+    .table thead th{white-space:nowrap}.task-pending{background:#fff8e6;color:#8a5a00}
+    .toast-area{position:fixed;right:18px;top:18px;z-index:2000;width:min(370px,calc(100% - 36px))}
+    @media(max-width:576px){.auth-card{padding:24px 19px}.topbar{padding:12px 14px}.main-wrap{padding:16px 12px 35px}}
   </style>
 </head>
 <body>
-  <div id="layarLogin">
-    <div class="kartu-login">
-      <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/9/9c/Logo_SMA_Negeri_26_Bone.png/240px-Logo_SMA_Negeri_26_Bone.png" onerror="this.src='https://cdn-icons-png.flaticon.com/512/3135/3135755.png'" alt="Logo" class="logo-sekolah" />
-      <div style="font-size:.78rem;font-weight:800;letter-spacing:1.2px;color:#d97706;">UPT SMA NEGERI 26 BONE</div>
-      <h4 class="fw-bold mt-1 mb-1" style="color:var(--navy);">Portal Belajar Digital</h4>
-      <p class="small text-secondary mb-3" id="subJudulKartu">Masuk menggunakan NIS 7 digit kalian</p>
+  <div id="toastArea" class="toast-area"></div>
 
-      <div id="formMasukBox">
-        <div class="mb-3 text-start">
-          <label class="form-label small fw-bold">Username / NIS (7 Digit)</label>
-          <input type="text" id="inputUsername" class="form-control" placeholder="Contoh: 2026001 atau guru_fisika" />
-        </div>
-        <div class="mb-3 text-start">
-          <label class="form-label small fw-bold">PIN Akses (7 Digit)</label>
-          <div class="input-group">
-            <input type="password" id="inputPin" class="form-control" placeholder="Masukkan PIN akses" />
-            <button type="button" class="btn btn-outline-secondary" onclick="intipPin()"><i id="ikonMata" class="bi bi-eye"></i></button>
-          </div>
-        </div>
-        <div id="kotakPesan" class="alert alert-danger py-2 px-3 small text-start d-none"></div>
-        <button type="button" id="btnLogin" class="btn-masuk mt-1" onclick="prosesLogin()"><i class="bi bi-box-arrow-in-right me-1"></i> Masuk ke Kelas</button>
-        <div class="mt-3 pt-2 border-top">
-          <span class="small text-secondary">Siswa baru belum punya akun?</span><br />
-          <button type="button" class="btn btn-link btn-sm fw-bold text-decoration-none" onclick="gantiModeAuth('daftar')">+ Daftar Mandiri Siswa Baru</button>
-        </div>
+  <section id="loginScreen" class="auth-screen">
+    <div class="auth-card">
+      <div class="text-center mb-4">
+        <img class="school-logo mb-2" src="https://upload.wikimedia.org/wikipedia/commons/thumb/9/9c/Logo_SMA_Negeri_26_Bone.png/240px-Logo_SMA_Negeri_26_Bone.png" onerror="this.src='https://cdn-icons-png.flaticon.com/512/3135/3135755.png'" alt="Logo sekolah">
+        <div class="brand-kicker">UPT SMA NEGERI 26 BONE</div>
+        <h3 class="fw-bold mt-1 mb-1" style="color:var(--navy)">Portal Belajar Digital</h3>
+        <p id="authSubtitle" class="small muted mb-0">Masuk menggunakan username/NIS dan PIN.</p>
       </div>
 
-      <div id="formDaftarBox" class="d-none text-start">
-        <div class="mb-2">
-          <label class="form-label small fw-bold mb-1">Nama Lengkap Siswa</label>
-          <input type="text" id="regNama" class="form-control form-control-sm" placeholder="Contoh: Andi Nurul Azizah" />
+      <form id="loginForm">
+        <div class="mb-3">
+          <label class="form-label fw-semibold small">Username / NIS</label>
+          <input id="loginUsername" class="form-control form-control-lg" autocomplete="username" placeholder="Masukkan username atau NIS" required>
         </div>
-        <div class="row g-2 mb-2">
-          <div class="col-6">
-            <label class="form-label small fw-bold mb-1">NIS (7 Digit)</label>
-            <input type="text" id="regNis" class="form-control form-control-sm" placeholder="2026015" />
-          </div>
-          <div class="col-6">
-            <label class="form-label small fw-bold mb-1">Kelas</label>
-            <select id="regKelas" class="form-select form-select-sm">
-              <option value="X-E.1">X-E.1</option><option value="X-E.2">X-E.2</option><option value="X-E.3">X-E.3</option>
-              <option value="XI-F.1">XI-F.1</option><option value="XI-F.2">XI-F.2</option><option value="XI-F.3">XI-F.3</option>
-              <option value="XII-F.1">XII-F.1</option><option value="XII-F.2">XII-F.2</option><option value="XII-F.3">XII-F.3</option>
-            </select>
+        <div class="mb-3">
+          <label class="form-label fw-semibold small">PIN</label>
+          <div class="input-group input-group-lg">
+            <input id="loginPin" type="password" class="form-control" autocomplete="current-password" placeholder="Masukkan PIN" required>
+            <button class="btn btn-outline-secondary" type="button" id="toggleLoginPin" aria-label="Tampilkan PIN"><i class="bi bi-eye"></i></button>
           </div>
         </div>
-        <div class="row g-2 mb-2">
-          <div class="col-6">
-            <label class="form-label small fw-bold mb-1">Buat PIN Akses</label>
-            <input type="text" id="regPin" class="form-control form-control-sm" placeholder="Minimal 6 angka" />
+        <div id="loginError" class="alert alert-danger py-2 small hidden" role="alert"></div>
+        <button id="loginButton" class="btn-primary-custom w-100" type="submit"><i class="bi bi-box-arrow-in-right me-1"></i> Masuk ke Kelas</button>
+      </form>
+
+      <div id="registerPanel" class="hidden">
+        <hr class="my-4">
+        <form id="registerForm">
+          <div class="mb-2"><label class="form-label small fw-semibold">Nama lengkap</label><input id="regName" class="form-control" maxlength="120" required></div>
+          <div class="row g-2 mb-2">
+            <div class="col-6"><label class="form-label small fw-semibold">NIS (7 digit)</label><input id="regNis" class="form-control" inputmode="numeric" maxlength="7" required></div>
+            <div class="col-6"><label class="form-label small fw-semibold">Kelas</label>
+              <select id="regClass" class="form-select">
+                <option>X-E.1</option><option>X-E.2</option><option>X-E.3</option>
+                <option>XI-F.1</option><option>XI-F.2</option><option>XI-F.3</option>
+                <option>XII-F.1</option><option>XII-F.2</option><option>XII-F.3</option>
+              </select>
+            </div>
           </div>
-          <div class="col-6">
-            <label class="form-label small fw-bold mb-1">Kode Kelas</label>
-            <input type="text" id="regKode" class="form-control form-control-sm" placeholder="Kode dari Guru" />
-          </div>
-        </div>
-        <div id="kotakPesanReg" class="alert alert-danger py-2 px-3 small d-none"></div>
-        <button type="button" id="btnDaftar" class="btn btn-warning w-100 fw-bold mt-1" onclick="prosesDaftar()"><i class="bi bi-person-plus-fill me-1"></i> Daftar & Masuk Sekarang</button>
-        <div class="text-center mt-2">
-          <button type="button" class="btn btn-link btn-sm text-secondary text-decoration-none" onclick="gantiModeAuth('masuk')">← Sudah punya akun? Kembali Masuk</button>
-        </div>
+          <div class="mb-2"><label class="form-label small fw-semibold">Buat PIN (minimal 6 karakter)</label><input id="regPin" type="password" class="form-control" minlength="6" required></div>
+          <div class="mb-3"><label class="form-label small fw-semibold">Kode registrasi dari guru</label><input id="regCode" type="password" class="form-control" required></div>
+          <div id="registerError" class="alert alert-danger py-2 small hidden"></div>
+          <button id="registerButton" class="btn btn-warning fw-bold w-100" type="submit">Daftar dan Masuk</button>
+        </form>
+      </div>
+      <div class="text-center border-top mt-4 pt-3">
+        <button id="showRegister" class="btn btn-link btn-sm text-decoration-none fw-semibold">Siswa baru? Daftar akun</button>
+        <button id="showLogin" class="btn btn-link btn-sm text-decoration-none hidden">Kembali ke halaman masuk</button>
       </div>
     </div>
-  </div>
-  <div id="layarDashboard">
-    <nav class="navbar-portal d-flex justify-content-between align-items-center flex-wrap gap-2">
+  </section>
+
+  <section id="appScreen" class="hidden">
+    <nav class="topbar d-flex justify-content-between align-items-center flex-wrap gap-3">
       <div class="d-flex align-items-center gap-3">
-        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/9/9c/Logo_SMA_Negeri_26_Bone.png/240px-Logo_SMA_Negeri_26_Bone.png" onerror="this.src='https://cdn-icons-png.flaticon.com/512/3135/3135755.png'" alt="Logo" style="width:42px;height:42px;object-fit:contain;" />
-        <div>
-          <div class="fw-bold fs-6">Portal Belajar Digital — UPT SMAN 26 Bone</div>
-          <div class="small text-info" id="infoPenggunaNavbar">Memuat profil...</div>
-        </div>
+        <img class="school-logo" src="https://upload.wikimedia.org/wikipedia/commons/thumb/9/9c/Logo_SMA_Negeri_26_Bone.png/240px-Logo_SMA_Negeri_26_Bone.png" onerror="this.src='https://cdn-icons-png.flaticon.com/512/3135/3135755.png'" alt="Logo">
+        <div><div class="fw-bold">Portal Belajar Digital</div><div class="small text-info">UPT SMA Negeri 26 Bone · <span id="navUser"></span></div></div>
       </div>
-      <button type="button" class="btn btn-sm btn-outline-warning fw-semibold" onclick="keluarAkun()"><i class="bi bi-box-arrow-left me-1"></i> Keluar</button>
+      <div class="d-flex gap-2">
+        <button id="changePinBtn" class="btn btn-sm btn-outline-light"><i class="bi bi-key me-1"></i> Ganti PIN</button>
+        <button id="logoutBtn" class="btn btn-sm btn-outline-warning fw-semibold"><i class="bi bi-box-arrow-right me-1"></i> Keluar</button>
+      </div>
     </nav>
 
-    <div class="container py-4">
-      <div class="alert alert-primary border-0 shadow-sm rounded-4 d-flex align-items-center justify-content-between flex-wrap gap-2">
-        <div>
-          <h5 class="fw-bold mb-1" id="salamDashboard">Selamat Datang!</h5>
-          <p class="mb-0 small text-secondary" id="subSalamDashboard">Siap belajar Fisika hari ini.</p>
+    <main class="main-wrap">
+      <section class="welcome mb-4 d-flex justify-content-between align-items-center flex-wrap gap-3">
+        <div><div class="small text-uppercase fw-bold muted">Ruang belajar digital</div><h4 id="welcomeTitle" class="fw-bold mb-1">Selamat datang!</h4><p id="welcomeText" class="mb-0 muted">Siap belajar Fisika hari ini.</p></div>
+        <span id="roleBadge" class="badge text-bg-dark rounded-pill px-3 py-2">AKTIF</span>
+      </section>
+
+      <div id="teacherPanel" class="hidden mb-4">
+        <div class="panel">
+          <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3">
+            <div><div class="small text-uppercase fw-bold text-warning">Ruang kendali guru</div><h5 class="section-title mb-0">Pemantauan kelas</h5></div>
+            <div class="d-flex flex-wrap gap-2">
+              <button class="btn btn-sm btn-dark" id="teacherRefresh"><i class="bi bi-arrow-clockwise me-1"></i>Segarkan</button>
+              <button class="btn btn-sm btn-outline-primary" id="exportCsv"><i class="bi bi-download me-1"></i>Ekspor CSV</button>
+            </div>
+          </div>
+          <div class="row g-2 mb-3">
+            <div class="col-md-4"><div class="stat"><div class="small muted">Akun siswa</div><div class="fs-3 fw-bold" id="studentCount">0</div></div></div>
+            <div class="col-md-4"><div class="stat"><div class="small muted">Aktivitas/nilai</div><div class="fs-3 fw-bold" id="scoreCount">0</div></div></div>
+            <div class="col-md-4"><div class="stat"><div class="small muted">Tugas menunggu</div><div class="fs-3 fw-bold" id="pendingCount">0</div></div></div>
+          </div>
+          <ul class="nav nav-tabs mb-3">
+            <li class="nav-item"><button class="nav-link active" data-teacher-tab="scores">Rekap Nilai</button></li>
+            <li class="nav-item"><button class="nav-link" data-teacher-tab="tasks">Penilaian Tugas</button></li>
+            <li class="nav-item"><button class="nav-link" data-teacher-tab="students">Daftar Siswa</button></li>
+          </ul>
+          <div id="teacherScores">
+            <div class="row g-2 mb-3">
+              <div class="col-md-5"><input id="scoreSearch" class="form-control form-control-sm" placeholder="Cari nama/NIS siswa"></div>
+              <div class="col-md-3"><select id="classFilter" class="form-select form-select-sm"><option value="">Semua kelas</option></select></div>
+            </div>
+            <div class="table-responsive"><table class="table table-hover align-middle small"><thead class="table-dark"><tr><th>Waktu</th><th>Nama</th><th>Kelas</th><th>Materi</th><th>Aktivitas</th><th>Nilai</th><th>Status</th></tr></thead><tbody id="scoreRows"></tbody></table></div>
+          </div>
+          <div id="teacherTasks" class="hidden">
+            <div class="table-responsive"><table class="table table-hover align-middle small"><thead class="table-dark"><tr><th>Nama</th><th>Kelas</th><th>Materi</th><th>Waktu</th><th>Bukti</th><th>Nilai</th><th>Aksi</th></tr></thead><tbody id="taskRows"></tbody></table></div>
+          </div>
+          <div id="teacherStudents" class="hidden">
+            <div class="row g-2 mb-3"><div class="col-md-6"><input id="studentSearch" class="form-control form-control-sm" placeholder="Cari nama atau NIS"></div><div class="col-md-3"><select id="studentClassFilter" class="form-select form-select-sm"><option value="">Semua kelas</option></select></div></div>
+            <div class="table-responsive"><table class="table table-hover align-middle small"><thead class="table-primary"><tr><th>Nama</th><th>NIS</th><th>Kelas</th><th>Status</th><th>Aksi</th></tr></thead><tbody id="studentRows"></tbody></table></div>
+          </div>
         </div>
-        <span class="badge bg-dark px-3 py-2 rounded-pill" id="badgeRoleKelas">AKTIF</span>
       </div>
 
-      <div id="wadahGuru"></div>
-      <div id="wadahTop5"></div>
-
-      <div class="row g-4 mt-1" id="menuUtamaDashboard">
-        <div class="col-md-4">
-          <div class="kartu-fitur">
-            <div class="fs-2 mb-2">⚛️</div>
-            <h6 class="fw-bold">Laboratorium Simulasi Interaktif</h6>
-            <p class="small text-secondary">Eksplorasi praktikum virtual Fisika (PhET & HTML5) langsung dari perangkatmu.</p>
-            <a href="https://phet.colorado.edu/in/" target="_blank" class="btn btn-sm btn-primary fw-semibold">Buka Simulasi PhET</a>
-          </div>
-        </div>
-        <div class="col-md-4">
-          <div class="kartu-fitur border-info">
-            <div class="fs-2 mb-2">📘</div>
-            <h6 class="fw-bold">Modul, LKPD & Bukti Praktikum</h6>
-            <p class="small text-secondary">Baca materi, kerjakan latihan, dan unggah foto hasil praktikum ke Google Drive kelas.</p>
-            <button type="button" id="btnLihatMateri" class="btn btn-sm btn-outline-dark fw-bold" onclick="bukaDaftarMateri()"><i class="bi bi-journal-richtext me-1"></i> Lihat Daftar Materi</button>
-          </div>
-        </div>
-        <div class="col-md-4">
-          <div class="kartu-fitur border-warning">
-            <div class="fs-2 mb-2">🏆</div>
-            <h6 class="fw-bold">Kuis Kilat & Rekap Nilai_Tugas</h6>
-            <p class="small text-secondary">Kerjakan evaluasi dari Bank_Soal dan rekam skor otomatis ke server sekolah.</p>
-            <button type="button" id="btnMulaiEvaluasi" class="btn btn-sm btn-warning fw-bold" onclick="bukaArenaKuis()"><i class="bi bi-play-circle-fill me-1"></i> Mulai Evaluasi</button>
-          </div>
+      <div id="studentPanel" class="hidden mb-4">
+        <div class="panel">
+          <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3"><div><h5 class="section-title mb-0">Ringkasan belajar saya</h5><div class="small muted">Nilai dan aktivitas akun ini saja</div></div><button id="refreshMyData" class="btn btn-sm btn-outline-primary">Segarkan</button></div>
+          <div id="myStats" class="row g-2"></div>
+          <div class="table-responsive mt-3"><table class="table table-sm align-middle"><thead><tr><th>Tanggal</th><th>Materi</th><th>Aktivitas</th><th>Nilai</th><th>Status</th><th>Catatan</th></tr></thead><tbody id="myScoreRows"></tbody></table></div>
         </div>
       </div>
 
-      <div id="arenaKuis" class="card border-0 shadow-sm rounded-4 p-4 mt-4 d-none">
-        <div class="d-flex justify-content-between align-items-center border-bottom pb-3 mb-3">
-          <div>
-            <span class="badge bg-warning text-dark mb-1" id="labelMateriKuis">PORTAL FISIKA</span>
-            <h5 class="fw-bold mb-0" id="judulArenaKuis">Memuat...</h5>
-          </div>
-          <button type="button" class="btn btn-sm btn-outline-secondary" onclick="tutupArenaKuis()">Kembali ke Menu</button>
-        </div>
-        <div id="isiArenaKuis"></div>
+      <div id="leaderboardPanel" class="panel mb-4 hidden"><h6 class="fw-bold"><i class="bi bi-trophy-fill text-warning me-2"></i>Top 5 Jawara Fisika</h6><div id="leaderboard" class="d-flex flex-wrap gap-2"></div></div>
+
+      <div id="featureMenu" class="row g-3">
+        <div class="col-md-4"><div class="feature-card"><div class="feature-icon mb-2"><i class="bi bi-atom"></i></div><h6 class="fw-bold">Laboratorium Simulasi</h6><p class="small muted">Eksplorasi praktikum virtual Fisika melalui PhET.</p><a href="https://phet.colorado.edu/in/" target="_blank" rel="noopener" class="btn btn-sm btn-primary">Buka Simulasi PhET</a></div></div>
+        <div class="col-md-4"><div class="feature-card"><div class="feature-icon mb-2"><i class="bi bi-journal-richtext"></i></div><h6 class="fw-bold">Modul dan LKPD</h6><p class="small muted">Baca materi, kerjakan latihan, dan unggah bukti praktikum.</p><button id="openMaterials" class="btn btn-sm btn-outline-primary">Lihat Daftar Materi</button></div></div>
+        <div class="col-md-4"><div class="feature-card"><div class="feature-icon mb-2"><i class="bi bi-trophy"></i></div><h6 class="fw-bold">Kuis dan Evaluasi</h6><p class="small muted">Kerjakan evaluasi berdasarkan bank soal.</p><button id="openQuizzes" class="btn btn-sm btn-warning fw-bold">Mulai Evaluasi</button></div></div>
       </div>
-    </div>
+
+      <section id="contentPanel" class="panel mt-4 hidden">
+        <div class="d-flex justify-content-between align-items-center gap-2 mb-3"><div><div class="small text-uppercase fw-bold muted" id="contentKicker">PEMBELAJARAN</div><h5 class="section-title mb-0" id="contentTitle">Daftar Materi</h5></div><button id="closeContent" class="btn btn-sm btn-outline-secondary">Kembali</button></div>
+        <div id="contentBody"></div>
+      </section>
+    </main>
+  </section>
+
+  <div class="modal fade" id="pinModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered"><div class="modal-content border-0 rounded-4"><div class="modal-header"><h5 class="modal-title fw-bold">Ganti PIN</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div><form id="changePinForm"><div class="modal-body"><div class="mb-3"><label class="form-label">PIN lama</label><input id="oldPin" type="password" class="form-control" required></div><div class="mb-3"><label class="form-label">PIN baru (minimal 6 karakter)</label><input id="newPin" type="password" class="form-control" minlength="6" required></div><div><label class="form-label">Ulangi PIN baru</label><input id="confirmPin" type="password" class="form-control" minlength="6" required></div><div id="pinError" class="alert alert-danger small mt-3 hidden"></div></div><div class="modal-footer"><button class="btn btn-primary" type="submit">Simpan PIN</button></div></form></div></div>
   </div>
+
+  <div class="modal fade" id="gradeModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered"><div class="modal-content border-0 rounded-4"><div class="modal-header"><h5 class="modal-title fw-bold">Periksa Tugas Praktikum</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div><form id="gradeForm"><div class="modal-body"><input id="gradeTaskId" type="hidden"><div class="mb-3"><label class="form-label">Nilai (0–100)</label><input id="gradeScore" type="number" min="0" max="100" class="form-control" required></div><div><label class="form-label">Catatan guru</label><textarea id="gradeNote" class="form-control" rows="3" maxlength="500"></textarea></div><div id="gradeError" class="alert alert-danger small mt-3 hidden"></div></div><div class="modal-footer"><button class="btn btn-primary" type="submit">Simpan Penilaian</button></div></form></div></div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
   <script>
+    // Ganti dengan URL deployment Web App V2 milik sekolah.
     const API_URL = "https://script.google.com/macros/s/AKfycbx7BY02VykL5vOUWtBxnyGSYVWptOQiP2ph84Vv9Myz8Ge3memFEGCF8kQgNgnJ2wtybw/exec";
-    let userAktif = null, semuaSoal = [], semuaMateri = [], soalTerpilih = [], jawabanSiswa = {}, materiDipilih = "";
+    const STORAGE_KEY = "portal_fisika_v2_session";
+    let activeUser = null, authToken = "", materials = [], questions = [], selectedQuiz = [], selectedMaterial = "";
+    let teacherData = { rekap: [], siswa: [], top5: [] };
+    let pinModal, gradeModal;
 
-    function gantiModeAuth(mode) {
-      document.getElementById("formMasukBox").classList.toggle("d-none", mode === "daftar");
-      document.getElementById("formDaftarBox").classList.toggle("d-none", mode !== "daftar");
-      document.getElementById("subJudulKartu").textContent = mode === "daftar" ? "Buat akun mandiri dengan Kode Kelas dari Guru" : "Masuk menggunakan NIS 7 digit kalian";
+    const $ = id => document.getElementById(id);
+    const escapeHTML = value => String(value ?? "").replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+    const safeUrl = value => { try { const u = new URL(value); return ['https:'].includes(u.protocol) ? u.href : '#'; } catch (_) { return '#'; } };
+
+    function toast(message, type="success") {
+      const node = document.createElement("div");
+      node.className = `alert alert-${type} shadow`;
+      node.textContent = message;
+      $("toastArea").appendChild(node);
+      setTimeout(() => node.remove(), 4000);
     }
-    function intipPin() {
-      const i = document.getElementById("inputPin"), m = document.getElementById("ikonMata");
-      i.type = i.type === "password" ? "text" : "password";
-      m.className = i.type === "password" ? "bi bi-eye" : "bi bi-eye-slash";
-    }
-    function tampilkanPesan(t, id = "kotakPesan") { const k = document.getElementById(id); k.textContent = t; k.classList.remove("d-none"); }
+    function showError(id, message) { $(id).textContent = message; $(id).classList.remove("hidden"); }
+    function hideError(id) { $(id).textContent = ""; $(id).classList.add("hidden"); }
 
-    async function prosesLogin() {
-      const u = document.getElementById("inputUsername").value.trim(), p = document.getElementById("inputPin").value.trim(), b = document.getElementById("btnLogin");
-      document.getElementById("kotakPesan").classList.add("d-none");
-      if (!u || !p) return tampilkanPesan("Isi Username / NIS dan PIN terlebih dahulu!");
-      b.disabled = true; b.textContent = "Memeriksa akun...";
-      try {
-        const res = await fetch(`${API_URL}?action=login&username=${encodeURIComponent(u)}&pin=${encodeURIComponent(p)}`);
-        const data = await res.json();
-        if (data.status === "success" && data.user) {
-          localStorage.setItem("user_sman26bone", JSON.stringify(data.user));
-          bukaDashboard(data.user);
-        } else tampilkanPesan(data.message || "Username atau PIN tidak cocok!");
-      } catch (e) { tampilkanPesan("Gagal terhubung ke server sekolah."); }
-      finally { b.disabled = false; b.innerHTML = '<i class="bi bi-box-arrow-in-right me-1"></i> Masuk ke Kelas'; }
-    }
-
-    async function prosesDaftar() {
-      const nama = document.getElementById("regNama").value.trim(), nis = document.getElementById("regNis").value.trim();
-      const kelas = document.getElementById("regKelas").value, pin = document.getElementById("regPin").value.trim(), kode = document.getElementById("regKode").value.trim();
-      const b = document.getElementById("btnDaftar");
-      document.getElementById("kotakPesanReg").classList.add("d-none");
-      if (!nama || !nis || !pin || !kode) return tampilkanPesan("Semua kolom wajib diisi!", "kotakPesanReg");
-      b.disabled = true; b.textContent = "Mendaftarkan akun...";
-      try {
-        const url = `${API_URL}?action=register&nama_lengkap=${encodeURIComponent(nama)}&username=${encodeURIComponent(nis)}&kelas=${encodeURIComponent(kelas)}&pin=${encodeURIComponent(pin)}&kode_kelas=${encodeURIComponent(kode)}`;
-        const res = await fetch(url), data = await res.json();
-        if (data.status === "success" && data.user) {
-          localStorage.setItem("user_sman26bone", JSON.stringify(data.user));
-          bukaDashboard(data.user);
-        } else tampilkanPesan(data.message || "Gagal mendaftar.", "kotakPesanReg");
-      } catch (e) { tampilkanPesan("Gagal terhubung ke server.", "kotakPesanReg"); }
-      finally { b.disabled = false; b.innerHTML = '<i class="bi bi-person-plus-fill me-1"></i> Daftar & Masuk Sekarang'; }
-    }
-
-    function bukaDashboard(user) {
-      userAktif = user;
-      document.getElementById("layarLogin").style.display = "none";
-      document.getElementById("layarDashboard").style.display = "block";
-      const isGuru = String(user.role).toLowerCase() === "guru";
-      document.getElementById("infoPenggunaNavbar").textContent = `${user.nama_lengkap} (${user.username})`;
-      document.getElementById("salamDashboard").textContent = isGuru ? `Selamat Datang, ${user.nama_lengkap}!` : `Halo, ${user.nama_lengkap}!`;
-      document.getElementById("subSalamDashboard").textContent = isGuru ? "Mode Guru Aktif — Pantau rekap nilai live, bukti foto praktikum & reset PIN siswa." : `Terdaftar di Kelas ${user.Kelas || "-"} • Siap belajar Fisika!`;
-      document.getElementById("badgeRoleKelas").textContent = isGuru ? "GURU PENGAMPU" : `SISWA • ${user.Kelas || "AKTIF"}`;
-      muatRekapDanTop5(isGuru);
-    }
-
-    function keluarAkun() { localStorage.removeItem("user_sman26bone"); document.getElementById("layarDashboard").style.display = "none"; document.getElementById("layarLogin").style.display = "flex"; document.getElementById("inputPin").value = ""; }
-    function tutupArenaKuis() { document.getElementById("arenaKuis").classList.add("d-none"); document.getElementById("menuUtamaDashboard").classList.remove("d-none"); }
-    function judulMat(k) { const m = semuaMateri.find(x => String(x.materi_id || "").trim() === k); return m && m.judul ? m.judul : `Paket Evaluasi ${k}`; }
-
-    async function muatRekapDanTop5(isGuru) {
-      const wGuru = document.getElementById("wadahGuru"), wTop = document.getElementById("wadahTop5");
-      if (isGuru) wGuru.innerHTML = `<div class="card border-0 shadow-sm rounded-4 p-4 mb-4">Memuat data kelas...</div>`;
-      else wGuru.innerHTML = "";
-
-      try {
-        const res = await fetch(`${API_URL}?action=getRekapGuru`), data = await res.json();
-        const daftar = data.rekap || [], top5 = data.top5 || [], siswa = data.siswa || [];
-        window._rekap = daftar; window._siswa = siswa;
-
-        if (top5.length > 0) {
-          const medali = ["🥇", "🥈", "🥉", "🏅", "🏅"];
-          wTop.innerHTML = `<div class="card border-0 shadow-sm rounded-4 p-3 mb-4 bg-white">
-            <div class="d-flex justify-content-between align-items-center mb-2">
-              <span class="fw-bold small text-uppercase text-primary"><i class="bi bi-trophy-fill text-warning me-1"></i> Top 5 Jawara Fisika Tercepat</span>
-              <span class="badge bg-light text-dark border">Live Leaderboard</span>
-            </div>
-            <div class="d-flex flex-wrap gap-2">${top5.map((t, i) => `<span class="badge rounded-pill bg-dark px-3 py-2">${medali[i]} ${t.nama_lengkap} (${t.kelas}) • <span class="text-warning">${t.skor_nilai}</span></span>`).join("")}</div>
-          </div>`;
+    async function api(action, payload={}) {
+      if (!API_URL || API_URL.includes("TEMPEL_URL")) throw new Error("URL Web App V2 belum dipasang pada Index.html.");
+      const response = await fetch(API_URL, {
+        method: "POST",
+        headers: { "Content-Type": "text/plain;charset=utf-8" },
+        body: JSON.stringify({ action, token: authToken, ...payload })
+      });
+      if (!response.ok) throw new Error("Server mengembalikan HTTP " + response.status);
+      const data = await response.json();
+      if (data.status !== "success") {
+        if (data.message && /sesi tidak valid|sudah berakhir/i.test(data.message)) {
+          clearSession();
+          showLogin();
         }
-
-        if (isGuru) {
-          const kelasList = [...new Set([...daftar.map(d => d.kelas), ...siswa.map(s => s.kelas)].filter(k => k && k !== "-"))].sort();
-          wGuru.innerHTML = `<div class="card border-0 shadow-sm rounded-4 p-4 mb-4 border-start border-5 border-warning">
-            <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3">
-              <div>
-                <span class="badge bg-warning text-dark mb-1">RUANG KENDALI GURU • KODE REGISTRASI: FISIKA26</span>
-                <h5 class="fw-bold mb-0">Panel Pemantauan Kelas (${daftar.length} Nilai • ${siswa.length} Akun Siswa)</h5>
-              </div>
-              <div class="d-flex flex-wrap gap-2">
-                <button id="tabBtnNilai" class="btn btn-sm btn-dark fw-bold" onclick="gantiTabGuru('nilai')">Rekap Nilai</button>
-                <button id="tabBtnSiswa" class="btn btn-sm btn-outline-dark fw-bold" onclick="gantiTabGuru('siswa')">Daftar Siswa (${siswa.length})</button>
-                <select id="filterKelas" class="form-select form-select-sm w-auto" onchange="renderGuru()"><option value="SEMUA">Semua Kelas</option>${kelasList.map(k => `<option value="${k}">${k}</option>`).join("")}</select>
-                <button class="btn btn-sm btn-outline-secondary" onclick="muatRekapDanTop5(true)">Segarkan</button>
-                <button class="btn btn-sm btn-success" onclick="unduhCSV()">CSV</button>
-              </div>
-            </div>
-            <div id="boxCariSiswa" class="mb-3 d-none">
-              <input type="text" id="inputCariSiswa" class="form-control form-control-sm" placeholder="🔍 Ketik nama atau NIS siswa untuk mencari cepat..." oninput="renderGuru()" />
-            </div>
-            <div id="boxTabelNilai" class="table-responsive"><table class="table table-hover align-middle small mb-0"><thead class="table-dark"><tr><th>Waktu</th><th>Nama Siswa</th><th>Kelas</th><th>Materi</th><th>Aktivitas</th><th>Skor</th><th>Bukti Drive</th></tr></thead><tbody id="tbodyGuru"></tbody></table></div>
-            <div id="boxTabelSiswa" class="table-responsive d-none"><table class="table table-hover align-middle small mb-0"><thead class="table-primary"><tr><th>ID</th><th>Nama Lengkap</th><th>NIS / Username</th><th>PIN Akses</th><th>Kelas</th><th>Aksi</th></tr></thead><tbody id="tbodySiswa"></tbody></table></div>
-          </div>`;
-          renderGuru();
-        }
-      } catch (e) { if (isGuru) wGuru.innerHTML = `<div class="alert alert-danger">Gagal memuat rekap guru.</div>`; }
+        throw new Error(data.message || "Permintaan gagal.");
+      }
+      return data;
     }
 
-    function gantiTabGuru(tab) {
-      document.getElementById("boxTabelNilai").classList.toggle("d-none", tab === "siswa");
-      document.getElementById("boxTabelSiswa").classList.toggle("d-none", tab !== "siswa");
-      document.getElementById("boxCariSiswa").classList.toggle("d-none", tab !== "siswa");
-      document.getElementById("tabBtnNilai").className = tab === "nilai" ? "btn btn-sm btn-dark fw-bold" : "btn btn-sm btn-outline-dark fw-bold";
-      document.getElementById("tabBtnSiswa").className = tab === "siswa" ? "btn btn-sm btn-dark fw-bold" : "btn btn-sm btn-outline-dark fw-bold";
+    function setBusy(button, busy, label) {
+      if (!button) return;
+      button.disabled = busy;
+      if (busy) { button.dataset.originalText = button.innerHTML; button.textContent = label || "Memproses..."; }
+      else if (button.dataset.originalText) { button.innerHTML = button.dataset.originalText; delete button.dataset.originalText; }
     }
 
-    function renderGuru() {
-      const k = document.getElementById("filterKelas").value;
-      const kata = (document.getElementById("inputCariSiswa")?.value || "").trim().toLowerCase();
-      const rows = (window._rekap || []).filter(r => k === "SEMUA" || r.kelas === k);
-      document.getElementById("tbodyGuru").innerHTML = rows.length ? rows.map(r => `<tr>
-        <td>${r.timestamp}</td><td class="fw-semibold">${r.nama_lengkap}</td><td><span class="badge bg-secondary">${r.kelas}</span></td>
-        <td><span class="badge bg-primary">${r.materi_id}</span></td><td>${r.jenis_aktivitas}</td>
-        <td><span class="badge ${Number(r.skor_nilai)>=75?'bg-success':'bg-danger'}">${r.skor_nilai}</span></td>
-        <td>${r.link_file_drive && r.link_file_drive !== "-" ? `<a href="${r.link_file_drive}" target="_blank" class="btn btn-outline-primary py-0 px-2 small">Lihat Foto</a>` : "-"}</td>
-      </tr>`).join("") : `<tr><td colspan="7" class="text-center text-secondary py-3">Belum ada data nilai.</td></tr>`;
-
-      const listS = (window._siswa || []).filter(s => (k === "SEMUA" || s.kelas === k) && (!kata || String(s.nama_lengkap).toLowerCase().includes(kata) || String(s.username).toLowerCase().includes(kata)));
-      document.getElementById("tbodySiswa").innerHTML = listS.length ? listS.map(s => `<tr>
-        <td>${s.user_id}</td><td class="fw-semibold">${s.nama_lengkap}</td><td><code>${s.username}</code></td>
-        <td><span class="badge bg-light text-dark border">${s.pin}</span></td><td><span class="badge bg-dark">${s.kelas}</span></td>
-        <td><button type="button" class="btn btn-warning py-0 px-2 small fw-bold" onclick="resetPinSiswa('${s.username}', '${s.nama_lengkap}')">Reset PIN</button></td>
-      </tr>`).join("") : `<tr><td colspan="6" class="text-center text-secondary py-3">Siswa tidak ditemukan.</td></tr>`;
+    function saveSession(data) {
+      authToken = data.token;
+      activeUser = data.user;
+      activeUser.force_pin_change = Boolean(data.force_pin_change);
+      localStorage.setItem(STORAGE_KEY, JSON.stringify({ token: authToken, user: activeUser }));
+    }
+    function clearSession() {
+      authToken = ""; activeUser = null;
+      localStorage.removeItem(STORAGE_KEY);
+    }
+    function showLogin() {
+      $("appScreen").classList.add("hidden");
+      $("loginScreen").classList.remove("hidden");
+    }
+    function showApp() {
+      $("loginScreen").classList.add("hidden");
+      $("appScreen").classList.remove("hidden");
+      renderIdentity();
+      if (activeUser.role === "guru") loadTeacherData();
+      else loadMyData();
+    }
+    function renderIdentity() {
+      const isTeacher = activeUser.role === "guru";
+      $("navUser").textContent = `${activeUser.nama_lengkap} (${activeUser.username})`;
+      $("welcomeTitle").textContent = `${isTeacher ? "Selamat datang" : "Halo"}, ${activeUser.nama_lengkap}!`;
+      $("welcomeText").textContent = isTeacher ? "Mode guru aktif. Pantau hasil belajar dan periksa tugas siswa." : `Kelas ${activeUser.kelas || "-"} · Selamat belajar Fisika!`;
+      $("roleBadge").textContent = isTeacher ? "GURU PENGAMPU" : `SISWA · ${activeUser.kelas || "-"}`;
+      $("teacherPanel").classList.toggle("hidden", !isTeacher);
+      $("studentPanel").classList.toggle("hidden", isTeacher);
+      $("leaderboardPanel").classList.toggle("hidden", !isTeacher);
     }
 
-    async function resetPinSiswa(nis, nama) {
-      if (!confirm(`Reset PIN milik ${nama} (${nis}) agar kembali sama dengan NIS-nya (${nis})?`)) return;
+    $("loginForm").addEventListener("submit", async e => {
+      e.preventDefault(); hideError("loginError");
+      const button = $("loginButton");
+      setBusy(button, true, "Memeriksa akun...");
       try {
-        const res = await fetch(`${API_URL}?action=resetPin&username=${encodeURIComponent(nis)}`);
-        const data = await res.json();
-        alert(data.message || "PIN berhasil di-reset!");
-        muatRekapDanTop5(true);
-        setTimeout(() => gantiTabGuru("siswa"), 600);
-      } catch (e) { alert("Gagal mereset PIN."); }
+        const data = await apiPublic("login", { username: $("loginUsername").value.trim(), pin: $("loginPin").value });
+        saveSession(data);
+        showApp();
+        if (data.force_pin_change) {
+          toast("PIN sementara terdeteksi. Segera ganti PIN Anda.", "warning");
+          openPinModal(true);
+        } else toast("Login berhasil. Selamat belajar!");
+      } catch (err) { showError("loginError", err.message); }
+      finally { setBusy(button, false); }
+    });
+
+    async function apiPublic(action, payload) {
+      if (!API_URL || API_URL.includes("TEMPEL_URL")) throw new Error("URL Web App V2 belum dipasang pada Index.html.");
+      const response = await fetch(API_URL, {
+        method: "POST",
+        headers: { "Content-Type": "text/plain;charset=utf-8" },
+        body: JSON.stringify({ action, ...payload })
+      });
+      const data = await response.json();
+      if (data.status !== "success") throw new Error(data.message || "Permintaan gagal.");
+      return data;
     }
 
-    function unduhCSV() {
-      const k = document.getElementById("filterKelas").value;
-      const rows = (window._rekap || []).filter(r => k === "SEMUA" || r.kelas === k);
-      const csv = ["Waktu,User_ID,Nama,Kelas,Materi,Aktivitas,Skor,Link_Drive", ...rows.map(r => `"${r.timestamp}","${r.user_id}","${r.nama_lengkap}","${r.kelas}","${r.materi_id}","${r.jenis_aktivitas}",${r.skor_nilai},"${r.link_file_drive}"`)].join("\n");
-      const a = document.createElement("a"); a.href = URL.createObjectURL(new Blob([csv], {type:"text/csv"})); a.download = `Rekap_Fisika_${k}.csv`; a.click();
-    }
-
-    async function bukaDaftarMateri() {
-      const b = document.getElementById("btnLihatMateri"); b.disabled = true; b.textContent = "Memuat...";
-      try {
-        const res = await fetch(`${API_URL}?action=getMateri`), data = await res.json();
-        semuaSoal = data.soal || []; semuaMateri = data.materi || [];
-        document.getElementById("labelMateriKuis").textContent = "MODUL & BUKTI PRAKTIKUM";
-        document.getElementById("judulArenaKuis").textContent = "Daftar Materi Fisika & Unggah Praktikum";
-        document.getElementById("isiArenaKuis").innerHTML = semuaMateri.length ? `<div class="row g-3">${semuaMateri.map((m,i) => {
-          const kd = String(m.materi_id || `M0${i+1}`).trim(), link = m.link_materi || m.url || "";
-          return `<div class="col-md-4"><div class="p-3 border rounded-4 bg-light h-100 d-flex flex-column justify-content-between">
-            <div><span class="badge bg-dark mb-2">${kd}</span><h6 class="fw-bold">${m.judul || kd}</h6><p class="small text-secondary">${m.deskripsi || m.ringkasan || "Materi pembelajaran Fisika."}</p></div>
-            <div class="d-grid gap-2">
-              ${link ? `<a href="${link}" target="_blank" class="btn btn-primary btn-sm">Buka Materi</a>` : ""}
-              <button class="btn btn-warning btn-sm fw-bold" onclick="mulaiKuis('${kd}')">Latihan Kuis ${kd}</button>
-              <label class="btn btn-outline-success btn-sm fw-semibold mb-0"><i class="bi bi-camera-fill me-1"></i> Unggah Foto Praktikum<input type="file" accept="image/*" capture="environment" hidden onchange="unggahFoto('${kd}', this)" /></label>
-            </div>
-          </div></div>`;
-        }).join("")}</div>` : `<div class="alert alert-light">Belum ada data pada tab Materi.</div>`;
-        document.getElementById("menuUtamaDashboard").classList.add("d-none"); document.getElementById("arenaKuis").classList.remove("d-none");
-      } finally { b.disabled = false; b.innerHTML = '<i class="bi bi-journal-richtext me-1"></i> Lihat Daftar Materi'; }
-    }
-
-    function unggahFoto(kodeMateri, inputEl) {
-      const file = inputEl.files[0]; if (!file) return;
-      const reader = new FileReader();
-      reader.onload = async function (ev) {
-        alert("Sedang mengunggah foto praktikum ke Google Drive sekolah...");
-        try {
-          await fetch(API_URL, { method: "POST", body: JSON.stringify({ action: "uploadTugas", user_id: userAktif.user_id, nama_lengkap: userAktif.nama_lengkap, materi_id: kodeMateri, image_base64: ev.target.result }) });
-          alert("Berhasil! Foto praktikum tersimpan ke Drive & tercatat di Nilai_Tugas.");
-          muatRekapDanTop5(String(userAktif.role).toLowerCase() === "guru");
-        } catch (e) { alert("Foto terkirim! Silakan cek di Ruang Kendali Guru."); }
+    $("registerForm").addEventListener("submit", async e => {
+      e.preventDefault(); hideError("registerError");
+      const button = $("registerButton");
+      const payload = {
+        nama_lengkap: $("regName").value.trim(),
+        username: $("regNis").value.trim(),
+        kelas: $("regClass").value,
+        pin: $("regPin").value,
+        kode_kelas: $("regCode").value.trim()
       };
-      reader.readAsDataURL(file);
-    }
-
-    async function bukaArenaKuis() {
-      const b = document.getElementById("btnMulaiEvaluasi"); b.disabled = true; b.textContent = "Memuat Soal...";
+      if (!/^\d{7}$/.test(payload.username)) return showError("registerError", "NIS harus tepat 7 angka.");
+      if (payload.pin.length < 6) return showError("registerError", "PIN minimal 6 karakter.");
+      setBusy(button, true, "Mendaftarkan...");
       try {
-        const res = await fetch(`${API_URL}?action=getSoal`), data = await res.json();
-        semuaSoal = data.soal || []; semuaMateri = data.materi || [];
-        const kodeList = [...new Set(semuaSoal.map(s => String(s.materi_id).trim()).filter(Boolean))];
-        document.getElementById("labelMateriKuis").textContent = "BANK SOAL FISIKA";
-        document.getElementById("judulArenaKuis").textContent = "Pilih Paket Materi Evaluasi";
-        document.getElementById("isiArenaKuis").innerHTML = `<div class="row g-3">${kodeList.map(k => `<div class="col-md-4"><div class="p-3 border rounded-4 bg-light">
-          <span class="badge bg-primary mb-2">${k}</span><h6 class="fw-bold">${judulMat(k)}</h6>
-          <p class="small text-secondary">${semuaSoal.filter(s=>String(s.materi_id).trim()===k).length} Butir Soal</p>
-          <button class="btn btn-dark btn-sm fw-bold w-100" onclick="mulaiKuis('${k}')">Kerjakan ${k} →</button>
-        </div></div>`).join("")}</div>`;
-        document.getElementById("menuUtamaDashboard").classList.add("d-none"); document.getElementById("arenaKuis").classList.remove("d-none");
-      } finally { b.disabled = false; b.innerHTML = '<i class="bi bi-play-circle-fill me-1"></i> Mulai Evaluasi'; }
+        const data = await apiPublic("register", payload);
+        saveSession(data); showApp(); toast("Pendaftaran berhasil.");
+      } catch (err) { showError("registerError", err.message); }
+      finally { setBusy(button, false); }
+    });
+
+    $("showRegister").addEventListener("click", () => {
+      $("loginForm").classList.add("hidden"); $("registerPanel").classList.remove("hidden");
+      $("showRegister").classList.add("hidden"); $("showLogin").classList.remove("hidden");
+      $("authSubtitle").textContent = "Buat akun siswa menggunakan kode registrasi dari guru.";
+    });
+    $("showLogin").addEventListener("click", () => {
+      $("loginForm").classList.remove("hidden"); $("registerPanel").classList.add("hidden");
+      $("showRegister").classList.remove("hidden"); $("showLogin").classList.add("hidden");
+      $("authSubtitle").textContent = "Masuk menggunakan username/NIS dan PIN.";
+    });
+    $("toggleLoginPin").addEventListener("click", () => {
+      const input = $("loginPin"); input.type = input.type === "password" ? "text" : "password";
+      $("toggleLoginPin").innerHTML = input.type === "password" ? '<i class="bi bi-eye"></i>' : '<i class="bi bi-eye-slash"></i>';
+    });
+
+    $("logoutBtn").addEventListener("click", async () => {
+      try { await api("logout"); } catch (_) {}
+      clearSession(); showLogin(); toast("Anda telah keluar.");
+    });
+
+    async function loadMyData() {
+      try {
+        const data = await api("getMyData");
+        const rows = data.nilai || [];
+        const graded = rows.filter(r => r.skor_nilai !== "" && r.skor_nilai !== null);
+        const average = graded.length ? Math.round(graded.reduce((n,r)=>n+Number(r.skor_nilai||0),0)/graded.length) : 0;
+        $("myStats").innerHTML = `
+          <div class="col-6 col-md-4"><div class="stat"><div class="small muted">Total aktivitas</div><div class="fs-3 fw-bold">${rows.length}</div></div></div>
+          <div class="col-6 col-md-4"><div class="stat"><div class="small muted">Rata-rata nilai</div><div class="fs-3 fw-bold">${average}</div></div></div>
+          <div class="col-12 col-md-4"><div class="stat"><div class="small muted">Tugas menunggu</div><div class="fs-3 fw-bold">${rows.filter(r=>r.status_penilaian==="Menunggu Penilaian").length}</div></div></div>`;
+        $("myScoreRows").innerHTML = rows.length ? rows.map(r=>`<tr><td>${escapeHTML(r.timestamp)}</td><td>${escapeHTML(r.materi_id)}</td><td>${escapeHTML(r.jenis_aktivitas)}</td><td>${r.skor_nilai===""?"—":escapeHTML(r.skor_nilai)}</td><td>${escapeHTML(r.status_penilaian||"Selesai")}</td><td>${escapeHTML(r.catatan_guru||"—")}</td></tr>`).join("") : '<tr><td colspan="6" class="text-center muted">Belum ada aktivitas.</td></tr>';
+      } catch (err) { toast(err.message, "danger"); }
     }
 
-    function mulaiKuis(k) {
-      materiDipilih = k; jawabanSiswa = {}; soalTerpilih = semuaSoal.filter(s => String(s.materi_id).trim() === k);
-      document.getElementById("labelMateriKuis").textContent = `PAKET ${k}`;
-      document.getElementById("judulArenaKuis").textContent = judulMat(k);
-      document.getElementById("isiArenaKuis").innerHTML = soalTerpilih.map((it, idx) => {
-        const id = it.soal_id || `S_${idx}`;
-        return `<div class="mb-4 pb-3 border-bottom"><div class="fw-bold mb-2">${idx+1}. ${it.pertanyaan}</div>
-          ${["A","B","C","D"].map(h => it[`opsi_${h.toLowerCase()}`] ? `<button type="button" id="btn_${id}_${h}" class="opsi-kuis" onclick="pilih('${id}','${h}')"><strong>${h}.</strong> ${it[`opsi_${h.toLowerCase()}`]}</button>` : "").join("")}
-        </div>`;
-      }).join("") + `<button id="btnKirim" class="btn btn-success fw-bold px-4" onclick="kirimKuis()">Selesai & Simpan Nilai</button>`;
+    async function loadTeacherData() {
+      try {
+        const data = await api("getRekapGuru");
+        teacherData = { rekap: data.rekap || [], siswa: data.siswa || [], top5: data.top5 || [] };
+        renderTeacher();
+      } catch (err) { toast(err.message, "danger"); }
+    }
+    function renderTeacher() {
+      const {rekap,siswa,top5} = teacherData;
+      const pending = rekap.filter(r=>r.jenis_aktivitas==="Foto Praktikum" && r.status_penilaian==="Menunggu Penilaian");
+      $("studentCount").textContent = siswa.length;
+      $("scoreCount").textContent = rekap.length;
+      $("pendingCount").textContent = pending.length;
+      const classes = [...new Set(siswa.map(s=>s.kelas).filter(Boolean))].sort();
+      ["classFilter","studentClassFilter"].forEach(id => {
+        const old = $(id).value;
+        $(id).innerHTML = '<option value="">Semua kelas</option>' + classes.map(c=>`<option value="${escapeHTML(c)}">${escapeHTML(c)}</option>`).join("");
+        $(id).value = old;
+      });
+      const q = $("scoreSearch").value.trim().toLowerCase(), cls = $("classFilter").value;
+      const filtered = rekap.filter(r=>(!cls || r.kelas===cls) && (!q || `${r.nama_lengkap} ${r.user_id}`.toLowerCase().includes(q)));
+      $("scoreRows").innerHTML = filtered.length ? filtered.map(r=>`<tr><td>${escapeHTML(r.timestamp)}</td><td>${escapeHTML(r.nama_lengkap)}</td><td>${escapeHTML(r.kelas)}</td><td>${escapeHTML(r.materi_id)}</td><td>${escapeHTML(r.jenis_aktivitas)}</td><td>${r.skor_nilai===""?"—":escapeHTML(r.skor_nilai)}</td><td>${escapeHTML(r.status_penilaian||"Selesai")}</td></tr>`).join("") : '<tr><td colspan="7" class="text-center muted">Tidak ada data.</td></tr>';
+      $("taskRows").innerHTML = pending.length ? pending.map(r=>`<tr><td>${escapeHTML(r.nama_lengkap)}</td><td>${escapeHTML(r.kelas)}</td><td>${escapeHTML(r.materi_id)}</td><td>${escapeHTML(r.timestamp)}</td><td><a class="btn btn-sm btn-outline-primary" href="${safeUrl(r.link_file_drive)}" target="_blank" rel="noopener">Buka bukti</a></td><td>—</td><td><button class="btn btn-sm btn-warning" data-grade="${escapeHTML(r.task_id)}">Nilai</button></td></tr>`).join("") : '<tr><td colspan="7" class="text-center muted">Tidak ada tugas yang menunggu penilaian.</td></tr>';
+      renderStudents();
+      $("leaderboard").innerHTML = top5.length ? top5.map((r,i)=>`<span class="badge rounded-pill text-bg-dark p-2">${["🥇","🥈","🥉","🏅","🏅"][i]} ${escapeHTML(r.nama_lengkap)} · ${escapeHTML(r.kelas)} · ${escapeHTML(r.skor_nilai)}</span>`).join("") : '<span class="small muted">Belum ada hasil kuis.</span>';
+    }
+    function renderStudents() {
+      const q = $("studentSearch").value.trim().toLowerCase(), cls = $("studentClassFilter").value;
+      const rows = teacherData.siswa.filter(s=>(!cls||s.kelas===cls)&&(!q||`${s.nama_lengkap} ${s.username}`.toLowerCase().includes(q)));
+      $("studentRows").innerHTML = rows.length ? rows.map(s=>`<tr><td>${escapeHTML(s.nama_lengkap)}</td><td>${escapeHTML(s.username)}</td><td>${escapeHTML(s.kelas)}</td><td>${escapeHTML(s.status)}</td><td><button class="btn btn-sm btn-outline-warning" data-reset="${escapeHTML(s.username)}">Reset PIN</button></td></tr>`).join("") : '<tr><td colspan="5" class="text-center muted">Siswa tidak ditemukan.</td></tr>';
     }
 
-    function pilih(id, h) { jawabanSiswa[id] = h; ["A","B","C","D"].forEach(x => { const e = document.getElementById(`btn_${id}_${x}`); if(e) e.classList.toggle("terpilih", x===h); }); }
+    $("teacherPanel").addEventListener("click", async e => {
+      const tab = e.target.closest("[data-teacher-tab]");
+      if (tab) {
+        document.querySelectorAll("[data-teacher-tab]").forEach(b=>b.classList.toggle("active",b===tab));
+        $("teacherScores").classList.toggle("hidden",tab.dataset.teacherTab!=="scores");
+        $("teacherTasks").classList.toggle("hidden",tab.dataset.teacherTab!=="tasks");
+        $("teacherStudents").classList.toggle("hidden",tab.dataset.teacherTab!=="students");
+      }
+      const grade = e.target.closest("[data-grade]");
+      if (grade) {
+        $("gradeTaskId").value = grade.dataset.grade; $("gradeScore").value = ""; $("gradeNote").value = "";
+        gradeModal.show();
+      }
+      const reset = e.target.closest("[data-reset]");
+      if (reset && confirm(`Reset PIN siswa ${reset.dataset.reset} menjadi NIS? Siswa wajib mengganti PIN setelah login.`)) {
+        try { const d=await api("resetPin",{username:reset.dataset.reset}); toast(d.message); }
+        catch(err){toast(err.message,"danger");}
+      }
+    });
+    ["scoreSearch","classFilter"].forEach(id=>$(id).addEventListener("input",renderTeacher));
+    ["studentSearch","studentClassFilter"].forEach(id=>$(id).addEventListener("input",renderStudents));
+    $("teacherRefresh").addEventListener("click",loadTeacherData);
+    $("refreshMyData").addEventListener("click",loadMyData);
 
-    async function kirimKuis() {
-      let benar = 0;
-      soalTerpilih.forEach((it, idx) => { if ((jawabanSiswa[it.soal_id || `S_${idx}`] || "") === String(it.kunci || "").trim().toUpperCase()) benar++; });
-      const skor = Math.round((benar / soalTerpilih.length) * 100);
-      const b = document.getElementById("btnKirim"); b.disabled = true; b.textContent = "Menyimpan...";
-      try { await fetch(`${API_URL}?action=simpanNilai&user_id=${encodeURIComponent(userAktif.user_id)}&nama_lengkap=${encodeURIComponent(userAktif.nama_lengkap)}&materi_id=${encodeURIComponent(materiDipilih)}&skor_nilai=${skor}`); } catch (e) {}
-      document.getElementById("isiArenaKuis").innerHTML = `<div class="text-center py-4"><h4>Evaluasi ${materiDipilih} Selesai!</h4><p>Benar ${benar} dari ${soalTerpilih.length} soal</p><div class="display-4 fw-bold text-primary mb-3">Skor: ${skor}</div><button class="btn btn-primary" onclick="tutupArenaKuis();muatRekapDanTop5(String(userAktif.role).toLowerCase()==='guru');">Kembali ke Dashboard</button></div>`;
+    $("exportCsv").addEventListener("click", () => {
+      const rows = teacherData.rekap;
+      const quote = v => '"' + String(v ?? "").replace(/"/g,'""').replace(/^[=+\-@]/, "'$&") + '"';
+      const csv = ["Waktu,User_ID,Nama,Kelas,Materi,Aktivitas,Nilai,Status", ...rows.map(r=>[r.timestamp,r.user_id,r.nama_lengkap,r.kelas,r.materi_id,r.jenis_aktivitas,r.skor_nilai,r.status_penilaian].map(quote).join(","))].join("\r\n");
+      const blob = new Blob(["\uFEFF"+csv],{type:"text/csv;charset=utf-8"});
+      const url = URL.createObjectURL(blob), a=document.createElement("a");
+      a.href=url; a.download="Rekap_Nilai_Fisika.csv"; a.click(); URL.revokeObjectURL(url);
+    });
+
+    $("openMaterials").addEventListener("click", () => loadLearning("getMateri"));
+    $("openQuizzes").addEventListener("click", () => loadLearning("getSoal"));
+    async function loadLearning(action) {
+      $("contentPanel").classList.remove("hidden"); $("featureMenu").classList.add("hidden");
+      $("contentBody").innerHTML = '<div class="text-center py-4"><div class="spinner-border text-primary"></div><div class="small muted mt-2">Memuat data...</div></div>';
+      try {
+        const data = await api(action);
+        materials = data.materi || []; questions = data.soal || [];
+        if (action==="getMateri") renderMaterials(); else renderQuizPackages();
+      } catch(err) { $("contentBody").innerHTML=`<div class="alert alert-danger">${escapeHTML(err.message)}</div>`; }
+    }
+    function showContent(title,kicker) {
+      $("contentTitle").textContent=title; $("contentKicker").textContent=kicker;
+      $("contentPanel").classList.remove("hidden"); $("featureMenu").classList.add("hidden");
+    }
+    function renderMaterials() {
+      showContent("Daftar Materi Fisika","MODUL & LKPD");
+      $("contentBody").innerHTML = materials.length ? `<div class="row g-3">${materials.map((m,i)=>{
+        const id=String(m.materi_id||`M${i+1}`), link=safeUrl(m.link_materi||m.url||"");
+        return `<div class="col-md-6 col-lg-4"><div class="feature-card"><span class="badge text-bg-dark mb-2">${escapeHTML(id)}</span><h6 class="fw-bold">${escapeHTML(m.judul||id)}</h6><p class="small muted">${escapeHTML(m.deskripsi||m.ringkasan||"Materi pembelajaran Fisika.")}</p><div class="d-grid gap-2 mt-3">${link!=="#" ? `<a class="btn btn-sm btn-primary" href="${link}" target="_blank" rel="noopener">Buka Materi</a>`:""}<button class="btn btn-sm btn-outline-primary" data-practice="${escapeHTML(id)}">Latihan kuis</button><label class="btn btn-sm btn-outline-success mb-0">Unggah foto praktikum<input type="file" accept="image/jpeg,image/png,image/webp" hidden data-upload="${escapeHTML(id)}"></label></div></div></div>`;
+      }).join("")}</div>` : '<div class="alert alert-light">Belum ada materi pada sheet Materi.</div>';
+    }
+    function renderQuizPackages() {
+      showContent("Pilih Paket Evaluasi","BANK SOAL FISIKA");
+      const codes=[...new Set(questions.map(q=>String(q.materi_id||"").trim()).filter(Boolean))];
+      $("contentBody").innerHTML = codes.length ? `<div class="row g-3">${codes.map(k=>`<div class="col-md-4"><div class="feature-card"><span class="badge text-bg-primary mb-2">${escapeHTML(k)}</span><h6 class="fw-bold">${escapeHTML(findMaterialTitle(k))}</h6><p class="small muted">${questions.filter(q=>String(q.materi_id).trim()===k).length} butir soal</p><button class="btn btn-sm btn-dark w-100" data-practice="${escapeHTML(k)}">Kerjakan kuis</button></div></div>`).join("")}</div>` : '<div class="alert alert-light">Belum ada soal pada Bank_Soal.</div>';
+    }
+    function findMaterialTitle(id) { const m=materials.find(x=>String(x.materi_id||"").trim()===id); return m&&m.judul?m.judul:"Paket Evaluasi "+id; }
+
+    $("contentBody").addEventListener("click", e => {
+      const btn=e.target.closest("[data-practice]");
+      if(btn) startQuiz(btn.dataset.practice);
+    });
+    $("contentBody").addEventListener("change", async e => {
+      const input=e.target.closest("[data-upload]");
+      if(input && input.files && input.files[0]) await uploadPhoto(input.dataset.upload,input.files[0]);
+    });
+
+    function startQuiz(materialId) {
+      if(activeUser.role!=="siswa") return toast("Akun guru tidak dapat mengirim jawaban kuis siswa.","warning");
+      selectedMaterial=materialId;
+      selectedQuiz=questions.filter(q=>String(q.materi_id||"").trim()===materialId);
+      if(!selectedQuiz.length) return toast("Soal untuk paket ini tidak ditemukan.","danger");
+      const answers={};
+      $("contentTitle").textContent=findMaterialTitle(materialId);
+      $("contentKicker").textContent="KERJAKAN DENGAN TELITI";
+      $("contentBody").innerHTML=selectedQuiz.map((q,i)=>{
+        const id=String(q.soal_id||`S_${i}`);
+        const options=["a","b","c","d","e"].filter(k=>q["opsi_"+k]!==undefined&&q["opsi_"+k]!=="");
+        return `<div class="mb-4 pb-3 border-bottom"><div class="fw-bold mb-2">${i+1}. ${escapeHTML(q.pertanyaan||"")}</div>${options.map(k=>`<button type="button" class="choice" data-question="${escapeHTML(id)}" data-answer="${k.toUpperCase()}"><strong>${k.toUpperCase()}.</strong> ${escapeHTML(q["opsi_"+k])}</button>`).join("")}</div>`;
+      }).join("")+`<div class="d-flex justify-content-between align-items-center flex-wrap gap-2"><span class="small muted">Periksa kembali jawaban sebelum dikirim.</span><button id="submitQuizBtn" class="btn btn-success fw-bold">Selesai & Simpan Nilai</button></div>`;
+      $("contentBody").dataset.answers="{}";
+      $("contentBody").onclick = async e => {
+        const choice=e.target.closest("[data-question]");
+        if(choice) {
+          const state=JSON.parse($("contentBody").dataset.answers||"{}");
+          state[choice.dataset.question]=choice.dataset.answer;
+          $("contentBody").dataset.answers=JSON.stringify(state);
+          choice.parentElement.querySelectorAll(".choice").forEach(b=>b.classList.toggle("selected",b.dataset.answer===choice.dataset.answer));
+        }
+        if(e.target.closest("#submitQuizBtn")) {
+          const state=JSON.parse($("contentBody").dataset.answers||"{}");
+          if(!Object.keys(state).length) return toast("Pilih minimal satu jawaban.","warning");
+          if(!confirm("Kirim jawaban dan akhiri kuis?")) return;
+          const b=$("submitQuizBtn"); setBusy(b,true,"Memeriksa jawaban...");
+          try {
+            const result=await api("submitQuiz",{materi_id:selectedMaterial,jawaban:state});
+            $("contentBody").innerHTML=`<div class="text-center py-5"><div class="display-5 fw-bold text-primary">${result.skor_nilai}</div><h4 class="fw-bold">Evaluasi selesai!</h4><p class="muted">Benar ${result.benar} dari ${result.total} soal.</p><button id="backAfterQuiz" class="btn btn-primary">Kembali ke materi</button></div>`;
+            $("contentBody").onclick=()=>{renderMaterials();loadMyData();};
+          } catch(err) { toast(err.message,"danger"); setBusy(b,false); }
+        }
+      };
     }
 
-    document.addEventListener("keydown", e => { if (e.key === "Enter" && document.getElementById("layarLogin").style.display !== "none" && !document.getElementById("formMasukBox").classList.contains("d-none")) prosesLogin(); });
-    window.addEventListener("DOMContentLoaded", () => { const s = localStorage.getItem("user_sman26bone"); if (s) try { bukaDashboard(JSON.parse(s)); } catch (e) {} });
+    async function uploadPhoto(materialId,file) {
+      if(!["image/jpeg","image/png","image/webp"].includes(file.type)) return toast("Pilih file JPG, PNG, atau WEBP.","danger");
+      if(file.size>10*1024*1024) return toast("Ukuran file awal maksimal 10 MB.","danger");
+      try {
+        const dataUrl=await compressImage(file);
+        const result=await api("uploadTugas",{materi_id:materialId,image_base64:dataUrl});
+        toast(result.message); loadMyData();
+      } catch(err) { toast(err.message,"danger"); }
+    }
+    function compressImage(file) {
+      return new Promise((resolve,reject)=>{
+        const reader=new FileReader();
+        reader.onerror=()=>reject(new Error("Gagal membaca file."));
+        reader.onload=()=>{
+          const img=new Image();
+          img.onerror=()=>reject(new Error("File gambar tidak dapat dibuka."));
+          img.onload=()=>{
+            const max=1800, scale=Math.min(1,max/Math.max(img.width,img.height));
+            const canvas=document.createElement("canvas");
+            canvas.width=Math.round(img.width*scale); canvas.height=Math.round(img.height*scale);
+            canvas.getContext("2d").drawImage(img,0,0,canvas.width,canvas.height);
+            resolve(canvas.toDataURL("image/jpeg",0.78));
+          };
+          img.src=reader.result;
+        };
+        reader.readAsDataURL(file);
+      });
+    }
+
+    $("changePinBtn").addEventListener("click",()=>openPinModal(false));
+    function openPinModal(force) {
+      $("pinError").classList.add("hidden");
+      $("changePinForm").reset();
+      pinModal.show();
+      if(force) toast("Demi keamanan, silakan ganti PIN sementara sekarang.","warning");
+    }
+    $("changePinForm").addEventListener("submit",async e=>{
+      e.preventDefault(); $("pinError").classList.add("hidden");
+      const oldPin=$("oldPin").value,newPin=$("newPin").value,confirmPin=$("confirmPin").value;
+      if(newPin!==confirmPin) return showError("pinError","Konfirmasi PIN baru tidak sama.");
+      try {
+        const data=await api("changePin",{pin_lama:oldPin,pin_baru:newPin});
+        pinModal.hide(); toast(data.message);
+      } catch(err) { showError("pinError",err.message); }
+    });
+    $("gradeForm").addEventListener("submit",async e=>{
+      e.preventDefault(); $("gradeError").classList.add("hidden");
+      try {
+        const data=await api("gradeTask",{task_id:$("gradeTaskId").value,skor_nilai:Number($("gradeScore").value),catatan_guru:$("gradeNote").value.trim()});
+        gradeModal.hide(); toast(data.message); loadTeacherData();
+      } catch(err) { showError("gradeError",err.message); }
+    });
+
+    $("closeContent").addEventListener("click",()=>{
+      $("contentPanel").classList.add("hidden"); $("featureMenu").classList.remove("hidden");
+      $("contentBody").onclick=null;
+    });
+
+    async function restoreSession() {
+      const raw=localStorage.getItem(STORAGE_KEY);
+      if(!raw) return showLogin();
+      try {
+        const saved=JSON.parse(raw);
+        if(!saved.token || !saved.user) throw new Error("Sesi tidak ditemukan.");
+        authToken=saved.token;
+        // Panggilan terproteksi memvalidasi token di server.
+        const action=saved.user.role==="guru"?"getRekapGuru":"getMyData";
+        const check=await api(action);
+        activeUser=saved.user;
+        showApp();
+        if (activeUser.force_pin_change) openPinModal(true);
+      } catch(err) {
+        clearSession(); showLogin();
+      }
+    }
+
+    document.addEventListener("DOMContentLoaded",()=>{
+      pinModal=new bootstrap.Modal($("pinModal"));
+      gradeModal=new bootstrap.Modal($("gradeModal"));
+      restoreSession();
+    });
   </script>
 </body>
 </html>
