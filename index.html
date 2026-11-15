@@ -65,6 +65,7 @@
       </div>
 
       <div id="wadahGuru"></div>
+      <div id="wadahTop5"></div>
 
       <div class="row g-4 mt-1" id="menuUtamaDashboard">
         <div class="col-md-4">
@@ -78,8 +79,8 @@
         <div class="col-md-4">
           <div class="kartu-fitur border-info">
             <div class="fs-2 mb-2">📘</div>
-            <h6 class="fw-bold">Modul & LKPD Kurikulum Merdeka</h6>
-            <p class="small text-secondary">Akses bahan ajar terstruktur dan ringkasan konsep dari tab Materi.</p>
+            <h6 class="fw-bold">Modul, LKPD & Bukti Praktikum</h6>
+            <p class="small text-secondary">Baca materi, kerjakan latihan, dan unggah foto hasil praktikum ke Google Drive kelas.</p>
             <button type="button" id="btnLihatMateri" class="btn btn-sm btn-outline-dark fw-bold" onclick="bukaDaftarMateri()"><i class="bi bi-journal-richtext me-1"></i> Lihat Daftar Materi</button>
           </div>
         </div>
@@ -139,47 +140,73 @@
       const isGuru = String(user.role).toLowerCase() === "guru";
       document.getElementById("infoPenggunaNavbar").textContent = `${user.nama_lengkap} (${user.username})`;
       document.getElementById("salamDashboard").textContent = isGuru ? `Selamat Datang, ${user.nama_lengkap}!` : `Halo, ${user.nama_lengkap}!`;
-      document.getElementById("subSalamDashboard").textContent = isGuru ? "Mode Guru Aktif — Pantau rekap nilai live siswa." : `Terdaftar di Kelas ${user.Kelas || "-"} • Siap belajar Fisika!`;
+      document.getElementById("subSalamDashboard").textContent = isGuru ? "Mode Guru Aktif — Pantau rekap nilai live & bukti foto praktikum siswa." : `Terdaftar di Kelas ${user.Kelas || "-"} • Siap belajar Fisika!`;
       document.getElementById("badgeRoleKelas").textContent = isGuru ? "GURU PENGAMPU" : `SISWA • ${user.Kelas || "AKTIF"}`;
-      if (isGuru) muatPanelGuru(); else document.getElementById("wadahGuru").innerHTML = "";
+      muatRekapDanTop5(isGuru);
     }
 
     function keluarAkun() { localStorage.removeItem("user_sman26bone"); document.getElementById("layarDashboard").style.display = "none"; document.getElementById("layarLogin").style.display = "flex"; document.getElementById("inputPin").value = ""; }
     function tutupArenaKuis() { document.getElementById("arenaKuis").classList.add("d-none"); document.getElementById("menuUtamaDashboard").classList.remove("d-none"); }
     function judulMat(k) { const m = semuaMateri.find(x => String(x.materi_id || "").trim() === k); return m && m.judul ? m.judul : `Paket Evaluasi ${k}`; }
 
-    async function muatPanelGuru() {
-      const w = document.getElementById("wadahGuru");
-      w.innerHTML = `<div class="card border-0 shadow-sm rounded-4 p-4 mb-4">Memuat rekap nilai live...</div>`;
+    async function muatRekapDanTop5(isGuru) {
+      const wGuru = document.getElementById("wadahGuru"), wTop = document.getElementById("wadahTop5");
+      if (isGuru) wGuru.innerHTML = `<div class="card border-0 shadow-sm rounded-4 p-4 mb-4">Memuat rekap nilai live...</div>`;
+      else wGuru.innerHTML = "";
+
       try {
-        const res = await fetch(`${API_URL}?action=getRekapGuru`), data = await res.json(), daftar = data.rekap || [];
-        const kelasList = [...new Set(daftar.map(d => d.kelas).filter(k => k && k !== "-"))].sort();
+        const res = await fetch(`${API_URL}?action=getRekapGuru`), data = await res.json();
+        const daftar = data.rekap || [], top5 = data.top5 || [];
         window._rekap = daftar;
-        w.innerHTML = `<div class="card border-0 shadow-sm rounded-4 p-4 mb-4 border-start border-5 border-warning">
-          <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3">
-            <div><span class="badge bg-warning text-dark mb-1">RUANG KENDALI GURU</span><h5 class="fw-bold mb-0">Rekap Nilai Live Siswa (${daftar.length} Kiriman)</h5></div>
-            <div class="d-flex gap-2">
-              <select id="filterKelas" class="form-select form-select-sm" onchange="renderGuru()"><option value="SEMUA">Semua Kelas</option>${kelasList.map(k => `<option value="${k}">${k}</option>`).join("")}</select>
-              <button class="btn btn-sm btn-outline-dark" onclick="muatPanelGuru()">Segarkan</button>
-              <button class="btn btn-sm btn-success" onclick="unduhCSV()">Unduh CSV</button>
+
+        if (top5.length > 0) {
+          const medali = ["🥇", "🥈", "🥉", "🏅", "🏅"];
+          wTop.innerHTML = `<div class="card border-0 shadow-sm rounded-4 p-3 mb-4 bg-white">
+            <div class="d-flex justify-content-between align-items-center mb-2">
+              <span class="fw-bold small text-uppercase text-primary"><i class="bi bi-trophy-fill text-warning me-1"></i> Top 5 Jawara Fisika Tercepat</span>
+              <span class="badge bg-light text-dark border">Live Leaderboard</span>
             </div>
-          </div>
-          <div class="table-responsive"><table class="table table-hover small mb-0"><thead class="table-dark"><tr><th>Waktu</th><th>Nama Siswa</th><th>Kelas</th><th>Materi</th><th>Skor</th></tr></thead><tbody id="tbodyGuru"></tbody></table></div>
-        </div>`;
-        renderGuru();
-      } catch (e) { w.innerHTML = `<div class="alert alert-danger">Gagal memuat rekap guru.</div>`; }
+            <div class="d-flex flex-wrap gap-2">
+              ${top5.map((t, i) => `<span class="badge rounded-pill bg-dark px-3 py-2">${medali[i]} ${t.nama_lengkap} (${t.kelas}) • <span class="text-warning">${t.skor_nilai}</span></span>`).join("")}
+            </div>
+          </div>`;
+        }
+
+        if (isGuru) {
+          const kelasList = [...new Set(daftar.map(d => d.kelas).filter(k => k && k !== "-"))].sort();
+          wGuru.innerHTML = `<div class="card border-0 shadow-sm rounded-4 p-4 mb-4 border-start border-5 border-warning">
+            <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3">
+              <div><span class="badge bg-warning text-dark mb-1">RUANG KENDALI GURU</span><h5 class="fw-bold mb-0">Rekap Nilai Live & Bukti Praktikum (${daftar.length} Kiriman)</h5></div>
+              <div class="d-flex gap-2">
+                <select id="filterKelas" class="form-select form-select-sm" onchange="renderGuru()"><option value="SEMUA">Semua Kelas</option>${kelasList.map(k => `<option value="${k}">${k}</option>`).join("")}</select>
+                <button class="btn btn-sm btn-outline-dark" onclick="muatRekapDanTop5(true)">Segarkan</button>
+                <button class="btn btn-sm btn-success" onclick="unduhCSV()">Unduh CSV</button>
+              </div>
+            </div>
+            <div class="table-responsive"><table class="table table-hover align-middle small mb-0"><thead class="table-dark"><tr><th>Waktu</th><th>Nama Siswa</th><th>Kelas</th><th>Materi</th><th>Aktivitas</th><th>Skor</th><th>Bukti Drive</th></tr></thead><tbody id="tbodyGuru"></tbody></table></div>
+          </div>`;
+          renderGuru();
+        }
+      } catch (e) { if (isGuru) wGuru.innerHTML = `<div class="alert alert-danger">Gagal memuat rekap guru.</div>`; }
     }
 
     function renderGuru() {
       const k = document.getElementById("filterKelas").value;
       const rows = (window._rekap || []).filter(r => k === "SEMUA" || r.kelas === k);
-      document.getElementById("tbodyGuru").innerHTML = rows.length ? rows.map(r => `<tr><td>${r.timestamp}</td><td class="fw-semibold">${r.nama_lengkap}</td><td><span class="badge bg-secondary">${r.kelas}</span></td><td><span class="badge bg-primary">${r.materi_id}</span></td><td><span class="badge ${Number(r.skor_nilai)>=75?'bg-success':'bg-danger'}">${r.skor_nilai}</span></td></tr>`).join("") : `<tr><td colspan="5" class="text-center text-secondary py-3">Belum ada data nilai.</td></tr>`;
+      document.getElementById("tbodyGuru").innerHTML = rows.length ? rows.map(r => `<tr>
+        <td>${r.timestamp}</td><td class="fw-semibold">${r.nama_lengkap}</td>
+        <td><span class="badge bg-secondary">${r.kelas}</span></td>
+        <td><span class="badge bg-primary">${r.materi_id}</span></td>
+        <td>${r.jenis_aktivitas}</td>
+        <td><span class="badge ${Number(r.skor_nilai)>=75?'bg-success':'bg-danger'}">${r.skor_nilai}</span></td>
+        <td>${r.link_file_drive && r.link_file_drive !== "-" ? `<a href="${r.link_file_drive}" target="_blank" class="btn btn-xs btn-outline-primary py-0 px-2 small">Lihat Foto</a>` : "-"}</td>
+      </tr>`).join("") : `<tr><td colspan="7" class="text-center text-secondary py-3">Belum ada data nilai.</td></tr>`;
     }
 
     function unduhCSV() {
       const k = document.getElementById("filterKelas").value;
       const rows = (window._rekap || []).filter(r => k === "SEMUA" || r.kelas === k);
-      const csv = ["Waktu,User_ID,Nama,Kelas,Materi,Skor", ...rows.map(r => `"${r.timestamp}","${r.user_id}","${r.nama_lengkap}","${r.kelas}","${r.materi_id}",${r.skor_nilai}`)].join("\n");
+      const csv = ["Waktu,User_ID,Nama,Kelas,Materi,Aktivitas,Skor,Link_Drive", ...rows.map(r => `"${r.timestamp}","${r.user_id}","${r.nama_lengkap}","${r.kelas}","${r.materi_id}","${r.jenis_aktivitas}",${r.skor_nilai},"${r.link_file_drive}"`)].join("\n");
       const a = document.createElement("a"); a.href = URL.createObjectURL(new Blob([csv], {type:"text/csv"})); a.download = `Rekap_Fisika_${k}.csv`; a.click();
     }
 
@@ -188,19 +215,53 @@
       try {
         const res = await fetch(`${API_URL}?action=getMateri`), data = await res.json();
         semuaSoal = data.soal || []; semuaMateri = data.materi || [];
-        document.getElementById("labelMateriKuis").textContent = "MODUL & LKPD";
-        document.getElementById("judulArenaKuis").textContent = "Daftar Materi Fisika";
+        document.getElementById("labelMateriKuis").textContent = "MODUL & BUKTI PRAKTIKUM";
+        document.getElementById("judulArenaKuis").textContent = "Daftar Materi Fisika & Unggah Praktikum";
         document.getElementById("isiArenaKuis").innerHTML = semuaMateri.length ? `<div class="row g-3">${semuaMateri.map((m,i) => {
           const kd = String(m.materi_id || `M0${i+1}`).trim(), link = m.link_materi || m.url || "";
-          return `<div class="col-md-4"><div class="p-3 border rounded-4 bg-light h-100">
-            <span class="badge bg-dark mb-2">${kd}</span><h6 class="fw-bold">${m.judul || kd}</h6>
-            <p class="small text-secondary">${m.deskripsi || m.ringkasan || "Materi pembelajaran Fisika."}</p>
-            ${link ? `<a href="${link}" target="_blank" class="btn btn-primary btn-sm w-100 mb-2">Buka Materi</a>` : ""}
-            <button class="btn btn-warning btn-sm fw-bold w-100" onclick="mulaiKuis('${kd}')">Latihan Kuis ${kd}</button>
+          return `<div class="col-md-4"><div class="p-3 border rounded-4 bg-light h-100 d-flex flex-column justify-content-between">
+            <div>
+              <span class="badge bg-dark mb-2">${kd}</span><h6 class="fw-bold">${m.judul || kd}</h6>
+              <p class="small text-secondary">${m.deskripsi || m.ringkasan || "Materi pembelajaran Fisika."}</p>
+            </div>
+            <div class="d-grid gap-2">
+              ${link ? `<a href="${link}" target="_blank" class="btn btn-primary btn-sm">Buka Materi</a>` : ""}
+              <button class="btn btn-warning btn-sm fw-bold" onclick="mulaiKuis('${kd}')">Latihan Kuis ${kd}</button>
+              <label class="btn btn-outline-success btn-sm fw-semibold mb-0">
+                <i class="bi bi-camera-fill me-1"></i> Unggah Foto Praktikum
+                <input type="file" accept="image/*" capture="environment" hidden onchange="unggahFoto('${kd}', this)" />
+              </label>
+            </div>
           </div></div>`;
         }).join("")}</div>` : `<div class="alert alert-light">Belum ada data pada tab Materi.</div>`;
         document.getElementById("menuUtamaDashboard").classList.add("d-none"); document.getElementById("arenaKuis").classList.remove("d-none");
       } finally { b.disabled = false; b.innerHTML = '<i class="bi bi-journal-richtext me-1"></i> Lihat Daftar Materi'; }
+    }
+
+    function unggahFoto(kodeMateri, inputEl) {
+      const file = inputEl.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = async function (ev) {
+        alert("Sedang mengunggah foto praktikum ke Google Drive sekolah...");
+        try {
+          await fetch(API_URL, {
+            method: "POST",
+            body: JSON.stringify({
+              action: "uploadTugas",
+              user_id: userAktif.user_id,
+              nama_lengkap: userAktif.nama_lengkap,
+              materi_id: kodeMateri,
+              image_base64: ev.target.result
+            })
+          });
+          alert("Berhasil! Foto praktikum tersimpan ke Google Drive & tercatat di Nilai_Tugas.");
+          muatRekapDanTop5(String(userAktif.role).toLowerCase() === "guru");
+        } catch (e) {
+          alert("Foto terkirim! Silakan cek di Ruang Kendali Guru.");
+        }
+      };
+      reader.readAsDataURL(file);
     }
 
     async function bukaArenaKuis() {
@@ -240,7 +301,7 @@
       const skor = Math.round((benar / soalTerpilih.length) * 100);
       const b = document.getElementById("btnKirim"); b.disabled = true; b.textContent = "Menyimpan...";
       try { await fetch(`${API_URL}?action=simpanNilai&user_id=${encodeURIComponent(userAktif.user_id)}&nama_lengkap=${encodeURIComponent(userAktif.nama_lengkap)}&materi_id=${encodeURIComponent(materiDipilih)}&skor_nilai=${skor}`); } catch (e) {}
-      document.getElementById("isiArenaKuis").innerHTML = `<div class="text-center py-4"><h4>Evaluasi ${materiDipilih} Selesai!</h4><p>Benar ${benar} dari ${soalTerpilih.length} soal</p><div class="display-4 fw-bold text-primary mb-3">Skor: ${skor}</div><button class="btn btn-primary" onclick="tutupArenaKuis()">Kembali ke Dashboard</button></div>`;
+      document.getElementById("isiArenaKuis").innerHTML = `<div class="text-center py-4"><h4>Evaluasi ${materiDipilih} Selesai!</h4><p>Benar ${benar} dari ${soalTerpilih.length} soal</p><div class="display-4 fw-bold text-primary mb-3">Skor: ${skor}</div><button class="btn btn-primary" onclick="tutupArenaKuis();muatRekapDanTop5(String(userAktif.role).toLowerCase()==='guru');">Kembali ke Dashboard</button></div>`;
     }
 
     document.addEventListener("keydown", e => { if (e.key === "Enter" && document.getElementById("layarLogin").style.display !== "none") prosesLogin(); });
